@@ -257,9 +257,11 @@
 		<aff>
 			<xsl:attribute name="id"><xsl:text>A</xsl:text><xsl:value-of select="$num"/></xsl:attribute>
 			<label><xsl:value-of select="$num"/></label>
-			<xsl:value-of select="$affiliation"/>
-			<xsl:text>, </xsl:text><xsl:value-of select="$city"/>
-			<xsl:text>, </xsl:text><xsl:value-of select="$country"/>
+			<addr-line>
+				<xsl:value-of select="$affiliation"/>
+				<xsl:text>, </xsl:text><xsl:value-of select="$city"/>
+				<xsl:text>, </xsl:text><xsl:value-of select="$country"/>
+			</addr-line>
 		</aff>
 	</xsl:template>
 	<xsl:template name="position">

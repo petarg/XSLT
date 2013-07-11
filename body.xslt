@@ -40,7 +40,10 @@
 						<xsl:apply-templates mode="software-specification" select="."/>
 					</xsl:when>
 					<!-- Software Description Article Type specific sections -->
-					<xsl:when test="@object_id='112' or @object_id='113' or @object_id='114' or @object_id='115' or @object_id='116'">
+					<xsl:when test="@object_id='112' or @object_id='113' or @object_id='114'">
+						<xsl:apply-templates mode="web-locations-section" select="."/>
+					</xsl:when>
+					<xsl:when test="@object_id='115' or @object_id='116'">
 						<xsl:apply-templates mode="software-description-section" select="."/>
 					</xsl:when>
 					<!-- Data paper specific -->

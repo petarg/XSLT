@@ -6,7 +6,7 @@
 			<xsl:attribute name="sec-type"><xsl:value-of select="$title"/></xsl:attribute>
 			<xsl:choose>
 				<xsl:when test="normalize-space(fields/title/value)!=''">
-					<title><xsl:apply-templates mode="format" select="fields/title/value"/></title>
+					<title><xsl:apply-templates mode="title" select="fields/title/value"/></title>
 				</xsl:when>
 				<xsl:otherwise>
 					<title><xsl:value-of select="$title"/></title>
@@ -21,7 +21,7 @@
 			<xsl:variable name="title" select="fields/enter_title_of_this_subsection/value"/>
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="normalize-space($title)"/></xsl:attribute>
-				<title><xsl:apply-templates mode="format" select="$title"/></title>
+				<title><xsl:apply-templates mode="title" select="$title"/></title>
 				<xsl:apply-templates mode="p" select="fields/content/value" />
 			</sec>
 		</xsl:for-each>
@@ -32,6 +32,25 @@
 			<title><xsl:value-of select="@field_name"/></title>
 			<xsl:apply-templates mode="p" select="value"/>
 		</sec>
+	</xsl:template>
+	<xsl:template mode="little-p" match="*">
+		<xsl:choose>
+			<xsl:when test="@id='307' or @id='293' or @id='294' or @id='295' or @id='296' or @id='297' or @id='298' or @id='299' or @id='300'">
+				<xsl:variable name="address" select="normalize-space(value)"/>
+				<p>
+					<xsl:value-of select="@field_name"/>
+					<xsl:text>: </xsl:text>
+					<ext-link>
+						<xsl:attribute name="ext-link-type">uri</xsl:attribute>
+						<xsl:attribute name="xlink:href"><xsl:value-of select="$address"/></xsl:attribute>
+						<xsl:value-of select="$address"/>
+					</ext-link>
+				</p>
+			</xsl:when>
+			<xsl:otherwise>
+				<p><xsl:value-of select="@field_name"/><xsl:text>: </xsl:text><xsl:apply-templates mode="format" select="value"/></p>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	<xsl:template mode="data-p" match="*">
 		<xsl:if test="normalize-space(value)!=''">
@@ -58,6 +77,7 @@
 
 	<xsl:template mode="p" match="*">
 		<xsl:choose>
+			<xsl:when test="normalize-space(.)='' and count(.//*[name()!='' and name!='p' and name()!='ol' and name()!='ul'])=0"></xsl:when>
 			<xsl:when test="count(*[(name()='p') or (name()='ul') or (name()='ol')])!=0">
 				<xsl:for-each select="node()[(normalize-space(.)!='') or (count(*[name()!='p' and name()!='ul' and name()!='ol'])!=0) or (name()!='')]">
 					<xsl:choose>
@@ -116,6 +136,31 @@
 			<xsl:choose>
 				<xsl:when test="name()=''">
 					<xsl:value-of select="$text"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates mode="format-nodes" select="."/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:for-each>
+	</xsl:template> -->
+
+<!-- 	<xsl:template mode="format0" match="*">
+		<xsl:for-each select="node()">
+			<xsl:choose>
+				<xsl:when test="name()=''">
+					<xsl:variable name="val" select="normalize-space(.)"/>
+					<xsl:choose>
+						<xsl:when test="contains($val, 'http://') or contains($val, 'https://')">
+							<xsl:value-of select="substring-before($val, 'http')"/>
+							<xsl:variable name="after" select="substring-after($val, 'http')"/>
+							<xsl:variable name="address" select="concat('http',substring-before($after, ' '))"/>
+							<uri><xsl:value-of select="$address"/></uri>
+							<xsl:value-of select="substring-after($after, ' ')"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="."/>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:apply-templates mode="format-nodes" select="."/>
@@ -424,6 +469,58 @@
 				<xsl:apply-templates mode="subsection" select="."/>
 			</sec>
 		</xsl:for-each>
+	</xsl:template>
+
+	<xsl:template mode="web-locations-section" match="*">
+		<xsl:for-each select="fields[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+			<sec>
+				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
+				<title><xsl:value-of select="../@display_name"/></title>
+				<xsl:for-each select="node()[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+					<xsl:apply-templates mode="little-p" select="."/>
+				</xsl:for-each>
+				<xsl:apply-templates mode="subsection" select="."/>
+			</sec>
+		</xsl:for-each>
+	</xsl:template>
+
+	<xsl:template mode="web-locations-section1" match="*">
+		<xsl:variable name="homepage" select="normalize-space(fields/homepage/value)"/>
+		<xsl:variable name="wiki" select="normalize-space(fields/wiki/value)"/>
+		<xsl:variable name="download_page" select="normalize-space(fields/download_page/value)"/>
+		<xsl:variable name="download_mirror" select="normalize-space(fields/download_mirror/value)"/>
+		<xsl:variable name="bug_database" select="normalize-space(fields/bug_database/value)"/>
+		<xsl:variable name="mailing_list" select="normalize-space(fields/mailing_list/value)"/>
+		<xsl:variable name="blog" select="normalize-space(fields/blog/value)"/>
+		<xsl:variable name="vendor" select="normalize-space(fields/vendor/value)"/>
+		<sec>
+			<xsl:attribute name="sec-type"><xsl:value-of select="@display_name"/></xsl:attribute>
+			<title><xsl:value-of select="@display_name"/></title>
+			<xsl:if test="$homepage!=''">
+				<p><xsl:value-of select="fields/homepage/@field_name"/><xsl:text>: </xsl:text><uri><xsl:value-of select="$homepage"/></uri></p>
+			</xsl:if>
+			<xsl:if test="$wiki!=''">
+				<p><xsl:value-of select="fields/wiki/@field_name"/><xsl:text>: </xsl:text><uri><xsl:value-of select="$wiki"/></uri></p>
+			</xsl:if>
+			<xsl:if test="$download_page!=''">
+				<p><xsl:value-of select="fields/download_page/@field_name"/><xsl:text>: </xsl:text><uri><xsl:value-of select="$download_page"/></uri></p>
+			</xsl:if>
+			<xsl:if test="$download_mirror!=''">
+				<p><xsl:value-of select="fields/download_mirror/@field_name"/><xsl:text>: </xsl:text><uri><xsl:value-of select="$download_mirror"/></uri></p>
+			</xsl:if>
+			<xsl:if test="$bug_database!=''">
+				<p><xsl:value-of select="fields/bug_database/@field_name"/><xsl:text>: </xsl:text><uri><xsl:value-of select="$bug_database"/></uri></p>
+			</xsl:if>
+			<xsl:if test="$mailing_list!=''">
+				<p><xsl:value-of select="fields/mailing_list/@field_name"/><xsl:text>: </xsl:text><uri><xsl:value-of select="$mailing_list"/></uri></p>
+			</xsl:if>
+			<xsl:if test="$blog!=''">
+				<p><xsl:value-of select="fields/blog/@field_name"/><xsl:text>: </xsl:text><uri><xsl:value-of select="$blog"/></uri></p>
+			</xsl:if>
+			<xsl:if test="$vendor!=''">
+				<p><xsl:value-of select="fields/vendor/@field_name"/><xsl:text>: </xsl:text><uri><xsl:value-of select="$vendor"/></uri></p>
+			</xsl:if>
+		</sec>
 	</xsl:template>
 
 	<!-- Data paper specific -->
