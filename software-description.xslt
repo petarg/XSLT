@@ -3,11 +3,11 @@
 	<xsl:import href="section.xslt" />
 
 	<xsl:template mode="software-description-section" match="*">
-		<xsl:for-each select="fields[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="fields[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="../@display_name"/></title>
-				<xsl:for-each select="node()[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 					<sec>
 						<xsl:variable name="title" select="normalize-space(@field_name)"/>
 						<xsl:attribute name="sec-type"><xsl:value-of select="$title"/></xsl:attribute>

@@ -8,7 +8,7 @@
 		<sec>
 			<xsl:attribute name="sec-type">Systematics</xsl:attribute>
 			<title>Systematics</title>
-			<xsl:for-each select="fields/node()[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+			<xsl:for-each select="fields/node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 				<xsl:choose>
 					<xsl:when test="name()!='title'">
 						<xsl:apply-templates mode="p" select="value" />

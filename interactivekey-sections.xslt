@@ -3,10 +3,10 @@
 	<xsl:import href="section.xslt" />
 
 	<xsl:template mode="ik-project-decription" match="*">
-		<xsl:for-each select="fields[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="fields[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
-				<xsl:for-each select="node()[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 					<xsl:choose>
 						<xsl:when test="name()='title'">
 							<title><xsl:apply-templates mode="format" select="value//*"/></title>
@@ -25,11 +25,11 @@
 	</xsl:template>
 
 	<xsl:template mode="ik-geographic-coverage" match="*">
-		<xsl:for-each select="fields[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="fields[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="../@display_name"/></title>
-				<xsl:for-each select="description[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="description[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 					<sec>
 						<xsl:attribute name="sec-type"><xsl:value-of select="@field_name"/></xsl:attribute>
 						<title><xsl:value-of select="@field_name"/></title>
@@ -48,18 +48,18 @@
 	</xsl:template>
 
 	<xsl:template mode="ik-taxonomic-coverage" match="*">
-		<xsl:if test="normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0">
+		<xsl:if test="count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="@display_name"/></title>
-				<xsl:for-each select="fields/node()[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="fields/node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 					<sec>
 						<xsl:attribute name="sec-type"><xsl:value-of select="@field_name"/></xsl:attribute>
 						<title><xsl:value-of select="@field_name"/></title>
 						<xsl:apply-templates mode="p" select="value"/>
 					</sec>
 				</xsl:for-each>
-				<xsl:for-each select="taxa[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="taxa[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 					<xsl:apply-templates mode="ik-taxa" select="."/>
 				</xsl:for-each>
 			</sec>
@@ -85,11 +85,11 @@
 	</xsl:template>
 
 	<xsl:template mode="ik-usage" match="*">
-		<xsl:for-each select="fields[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="fields[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="../@display_name"/></title>
-				<xsl:for-each select="node()[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 					<sec>
 						<xsl:attribute name="sec-type"><xsl:value-of select="@field_name"/></xsl:attribute>
 						<title><xsl:value-of select="@field_name"/></title>
@@ -101,11 +101,11 @@
 	</xsl:template>
 
 	<xsl:template mode="ik-software" match="*">
-		<xsl:for-each select="fields[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="fields[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="../@display_name"/></title>
-				<xsl:for-each select="node()[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 					<sec>
 						<xsl:attribute name="sec-type"><xsl:value-of select="@field_name"/></xsl:attribute>
 						<title><xsl:value-of select="@field_name"/></title>
@@ -115,13 +115,4 @@
 			</sec>
 		</xsl:for-each>
 	</xsl:template>
-
-
-
-
-
-
-
-
-
 </xsl:stylesheet>

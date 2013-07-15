@@ -6,7 +6,7 @@
 	<xsl:import href="taxon-materials.xslt"/>
 
 	<xsl:template mode="checklists" match="*">
-		<xsl:for-each select="checklist[count((.//value//text()[normalize-space(.)!='']))!=0 or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="checklist[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 			<xsl:apply-templates mode="checklist" select="."/>
 		</xsl:for-each>
 	</xsl:template>
@@ -16,7 +16,7 @@
 			<xsl:attribute name="sec-type"><xsl:value-of select="@display_name"/></xsl:attribute>
 			<xsl:apply-templates mode="checklist-meta" select="."/>
 			<title><xsl:value-of select="@display_name"/></title>
-			<xsl:for-each select="checklist_taxon[count((.//value//text()[normalize-space(.)!='']))!=0 or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+			<xsl:for-each select="checklist_taxon[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 				<xsl:apply-templates mode="checklist_taxon" select="."/>
 			</xsl:for-each>
 			<xsl:apply-templates mode="checklist-locality" select="."/>
@@ -162,7 +162,7 @@
 			<tp:treatment-sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="@display_name"/></title>
-				<xsl:for-each select="fields/*[(count((.//value//text()[normalize-space(.)!='']))!=0 or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0)]">
+				<xsl:for-each select="fields/*[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 					<xsl:apply-templates mode="little-section" select="."/>
 				</xsl:for-each>
 			</tp:treatment-sec>
@@ -174,7 +174,7 @@
 			<sec>
 				<xsl:attribute name="sec-type">Locality</xsl:attribute>
 				<title><xsl:value-of select="normalize-space(@display_name)"/></title>
-				<xsl:for-each select="fields/node()[(count((.//value//text()[normalize-space(.)!='']))!=0 or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0) and (@id!='476')]">
+				<xsl:for-each select="fields/node()[(count((.//value//text()[normalize-space(.)!=''])) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0) and (@id!='476')]">
 					<xsl:apply-templates mode="little-section" select="."/>
 				</xsl:for-each>
 				<xsl:for-each select="checklist_taxon">

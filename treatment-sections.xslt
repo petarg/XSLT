@@ -3,7 +3,7 @@
 	<xsl:import href="section.xslt" />
 
 	<xsl:template mode="treatment-sections" match="*">
-		<xsl:for-each select="node()[normalize-space(.)!='']">
+		<xsl:for-each select="node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 			<xsl:choose>
 				<xsl:when test="(@display_name='') and (name()!='section')">
 					<xsl:comment>There is invalid content</xsl:comment>
@@ -21,7 +21,7 @@
 	<xsl:template mode="treatment-section" match="*">
 		<!-- This template matches all treatment sections with predefined names -->
 		<xsl:variable name="content" select="fields/*/value"/>
-		<xsl:if test="normalize-space($content)!=''">
+		<xsl:if test="count($content//*[normalize-space(text())!='']) + count($content//*[name()!='p' and name()!='ul' and name()!='ol'])!=0">
 			<tp:treatment-sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="@display_name"/></title>
@@ -39,7 +39,7 @@
 			<tp:treatment-sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="normalize-space($title)"/></xsl:attribute>
 				<xsl:if test="normalize-space($title)!=''">
-					<title><xsl:apply-templates mode="format" select="$title"/></title>
+					<title><xsl:apply-templates mode="title" select="$title"/></title>
 				</xsl:if>
 				<xsl:apply-templates mode="p" select="$content"/>
 				<xsl:apply-templates mode="subsection" select="."/>

@@ -35,9 +35,6 @@
 		</xsl:if>
 	</xsl:template>
 
-
-
-
 	<xsl:template mode="materials_mode" match="*">
 		<p>
 			<xsl:for-each select=".//fields/*[@field_name!='']">
@@ -51,7 +48,6 @@
 			</xsl:for-each>
 		</p>
 	</xsl:template>
-
 
 <!-- 
 	PRIORITY

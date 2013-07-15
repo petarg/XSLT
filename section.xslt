@@ -149,24 +149,63 @@
 			<xsl:choose>
 				<xsl:when test="name()=''">
 					<xsl:variable name="val" select="normalize-space(.)"/>
-					<xsl:choose>
-						<xsl:when test="contains($val, 'http://') or contains($val, 'https://')">
-							<xsl:value-of select="substring-before($val, 'http')"/>
-							<xsl:variable name="after" select="substring-after($val, 'http')"/>
-							<xsl:variable name="address" select="concat('http',substring-before($after, ' '))"/>
-							<uri><xsl:value-of select="$address"/></uri>
-							<xsl:value-of select="substring-after($after, ' ')"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:value-of select="."/>
-						</xsl:otherwise>
-					</xsl:choose>
+					<xsl:call-template name="tag-uri">
+						<xsl:with-param name="string" select="$val"/>
+					</xsl:call-template>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:apply-templates mode="format-nodes" select="."/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:for-each>
+	</xsl:template>
+
+	<xsl:template name="tag-uri">
+		<xsl:param name="string" select="''"/>
+		<xsl:choose>
+			<xsl:when test="contains($string, 'http://') or contains($string, 'https://')">
+				<xsl:value-of select="substring-before(string, 'http')"/>
+				<xsl:variable name="after" select="substring-after($string, 'http')"/>
+				<xsl:variable name="address" select="concat('http',substring-before($after, ' '))"/>
+				<xsl:call-template name="tag-uri-uri">
+					<xsl:with-param name="string" select="$address"/>
+				</xsl:call-template>
+				<xsl:text> </xsl:text>
+				<xsl:value-of select="substring-after($after, ' ')"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="."/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="tag-uri-uri">
+		<xsl:param name="string" select="''"/>
+		<xsl:choose>
+			<xsl:when test="contains($string, ')')">
+				<xsl:call-template name="tag-uri-uri">
+					<xsl:with-param name="string" select="substring-before($string, ')')"/>
+				</xsl:call-template>
+				<xsl:text>)</xsl:text>
+				<xsl:value-of select="substring-after($string, ')')"/>
+			</xsl:when>
+			<xsl:when test="contains($string, ']')">
+				<xsl:call-template name="tag-uri-uri">
+					<xsl:with-param name="string" select="substring-before($string, ']')"/>
+				</xsl:call-template>
+				<xsl:text>]</xsl:text>
+				<xsl:value-of select="substring-after($string, ']')"/>
+			</xsl:when>
+			<xsl:when test="contains($string, '}')">
+				<xsl:call-template name="tag-uri-uri">
+					<xsl:with-param name="string" select="substring-before($string, '}')"/>
+				</xsl:call-template>
+				<xsl:text>}</xsl:text>
+				<xsl:value-of select="substring-after($string, '}')"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<uri><xsl:value-of select="$string"/></uri>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template> -->
 
 	<xsl:template mode="format" match="*">
@@ -356,10 +395,10 @@
 
 <!-- Some non-trivial sections -->
 	<xsl:template mode="project-decription" match="*">
-		<xsl:for-each select="fields[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="fields[count(.//value//*[normalize-space(text())!=''])!=0 or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
-				<xsl:for-each select="node()[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="node()[count(.//value//*[normalize-space(text())!=''])!=0 or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 					<xsl:choose>
 						<xsl:when test="name()='title'">
 							<title><xsl:apply-templates mode="title" select="value"/></title>
@@ -375,7 +414,7 @@
 	</xsl:template>
 
 	<xsl:template mode="geographic-coverage" match="*">
-		<xsl:for-each select="fields[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="fields[count(.//value//*[normalize-space(text())!=''])!=0 or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 			<xsl:variable name="west" select="node()[@id='317']"/>
 			<xsl:variable name="east" select="node()[@id='318']"/>
 			<xsl:variable name="south" select="node()[@id='319']"/>
@@ -384,7 +423,7 @@
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="../@display_name"/></title>
-				<xsl:for-each select="description[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="description[count(.//value//*[normalize-space(text())!=''])!=0 or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 					<p><bold><xsl:value-of select="@field_name"/><xsl:text>:</xsl:text></bold></p>
 					<xsl:apply-templates mode="p" select="value"/>
 				</xsl:for-each>
@@ -399,11 +438,11 @@
 	</xsl:template>
 
 	<xsl:template mode="usage-rights" match="*">
-		<xsl:for-each select="fields[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="fields[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="../@display_name"/></title>
-				<xsl:for-each select="node()[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 					<xsl:apply-templates mode="little-section" select="."/>
 				</xsl:for-each>
 				<xsl:apply-templates mode="subsection" select="."/>
@@ -412,11 +451,11 @@
 	</xsl:template>
 
 	<xsl:template mode="software-specification" match="*">
-		<xsl:for-each select="fields[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="fields[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="../@display_name"/></title>
-				<xsl:for-each select="node()[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 					<xsl:apply-templates mode="little-section" select="."/>
 				</xsl:for-each>
 				<xsl:apply-templates mode="subsection" select="."/>
@@ -425,14 +464,14 @@
 	</xsl:template>
 
 	<xsl:template mode="taxonomic-coverage" match="*">
-		<xsl:if test="normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0">
+		<xsl:if test="count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="@display_name"/></title>
-				<xsl:for-each select="fields/node()[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="fields/node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 					<xsl:apply-templates mode="little-section" select="."/>
 				</xsl:for-each>
-				<xsl:for-each select="taxa[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="taxa[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 					<xsl:apply-templates mode="taxa" select="."/>
 				</xsl:for-each>
 				<xsl:apply-templates mode="subsection" select="."/>
@@ -459,11 +498,11 @@
 	</xsl:template>
 
 	<xsl:template mode="software-description-section" match="*">
-		<xsl:for-each select="fields[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="fields[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="../@display_name"/></title>
-				<xsl:for-each select="node()[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 					<xsl:apply-templates mode="little-section" select="."/>
 				</xsl:for-each>
 				<xsl:apply-templates mode="subsection" select="."/>
@@ -472,11 +511,11 @@
 	</xsl:template>
 
 	<xsl:template mode="web-locations-section" match="*">
-		<xsl:for-each select="fields[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="fields[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="../@display_name"/></title>
-				<xsl:for-each select="node()[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 					<xsl:apply-templates mode="little-p" select="."/>
 				</xsl:for-each>
 				<xsl:apply-templates mode="subsection" select="."/>
@@ -525,11 +564,11 @@
 
 	<!-- Data paper specific -->
 	<xsl:template mode="general-description-section" match="*">
-		<xsl:for-each select="fields[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="fields[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="../@display_name"/></title>
-				<xsl:for-each select="node()[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 					<xsl:apply-templates mode="little-section" select="."/>
 				</xsl:for-each>
 				<xsl:apply-templates mode="subsection" select="."/>
@@ -538,11 +577,11 @@
 	</xsl:template>
 
 	<xsl:template mode="sampling-methods-section" match="*">
-		<xsl:for-each select="fields[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="fields[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="../@display_name"/></title>
-				<xsl:for-each select="node()[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 					<xsl:apply-templates mode="little-section" select="."/>
 				</xsl:for-each>
 				<xsl:apply-templates mode="subsection" select="."/>
@@ -551,11 +590,11 @@
 	</xsl:template>
 
 	<xsl:template mode="collection-data-section" match="*">
-		<xsl:for-each select="fields[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="fields[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="../@display_name"/></title>
-				<xsl:for-each select="node()[normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 					<xsl:apply-templates mode="little-section" select="."/>
 				</xsl:for-each>
 				<xsl:apply-templates mode="subsection" select="."/>
@@ -564,11 +603,11 @@
 	</xsl:template>
 	
 	<xsl:template mode="temporal-coverage-wrapper-section" match="*">
-		<xsl:if test="normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0">
+		<xsl:if test="count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="@display_name"/></title>
-				<xsl:for-each select="node()[@object_id='124'][normalize-space(.//value)!='' or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="node()[@object_id='124'][count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 					<xsl:apply-templates mode="temporal-coverage-section" select="."/>
 				</xsl:for-each>
 				<xsl:apply-templates mode="subsection" select="."/>

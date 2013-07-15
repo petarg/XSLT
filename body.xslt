@@ -9,7 +9,7 @@
 	<xsl:template name="body">
 		<xsl:variable name="body" select="/document/objects"/>
 		<body>
-			<xsl:for-each select="$body/node()[count((.//value//text()[normalize-space(.)!='']))!=0 or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+			<xsl:for-each select="$body/node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 				<xsl:choose>
 					<!-- NON-TRIVIAL SECTIONS -->
 					<xsl:when test="name()='systematics'">

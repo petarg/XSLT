@@ -423,7 +423,41 @@
 		</xsl:for-each>
 	</xsl:template>
 	<xsl:template mode="kwd" match="*">
-		<kwd><xsl:apply-templates mode="format" select="."/></kwd>
+		<!-- <kwd><xsl:apply-templates mode="format" select="."/></kwd> -->
+		<xsl:for-each select="node()">
+			<xsl:call-template name="kwd">
+				<xsl:with-param name="string" select="normalize-space(.)"/>
+			</xsl:call-template>
+		</xsl:for-each>
+	</xsl:template>
+	<xsl:template name="kwd">
+		<xsl:param name="string" select="''"/>
+		<xsl:choose>
+			<xsl:when test="contains($string, ',')">
+				<xsl:variable name="kwd" select="normalize-space(substring-before($string, ','))"/>
+				<xsl:if test="$kwd!=''">
+					<kwd><xsl:value-of select="$kwd"/></kwd>
+				</xsl:if>
+				<xsl:call-template name="kwd">
+					<xsl:with-param name="string" select="substring-after($string, ',')"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:when test="contains($string, ';')">
+				<xsl:variable name="kwd" select="normalize-space(substring-before($string, ';'))"/>
+				<xsl:if test="$kwd!=''">
+					<kwd><xsl:value-of select="$kwd"/></kwd>
+				</xsl:if>
+				<xsl:call-template name="kwd">
+					<xsl:with-param name="string" select="substring-after($string, ';')"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:variable name="kwd" select="normalize-space($string)"/>
+				<xsl:if test="$kwd!=''">
+					<kwd><xsl:value-of select="$kwd"/></kwd>
+				</xsl:if>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template name="front-funding">
