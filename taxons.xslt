@@ -10,9 +10,9 @@
 		</tp:taxon-name>
 	</xsl:template>
 	<xsl:template mode="lower-taxon-name-parts" match="*">
-		<xsl:variable name="genus" select="genus/value"/>
-		<xsl:variable name="subgenus" select="subgenus/value"/>
-		<xsl:variable name="species" select="species/value"/>
+		<xsl:variable name="genus" select="normalize-space(genus/value)"/>
+		<xsl:variable name="subgenus" select="normalize-space(subgenus/value)"/>
+		<xsl:variable name="species" select="normalize-space(species/value)"/>
 		<xsl:if test="$genus!=''">
 			<tp:taxon-name-part>
 				<xsl:attribute name="taxon-name-part-type">genus</xsl:attribute>
@@ -35,17 +35,18 @@
 		</xsl:if>
 	</xsl:template>
 	<xsl:template mode="taxon-object-id" match="*">
-		<xsl:for-each select="external_links/external_link">
+		<xsl:for-each select="external_links/external_link[normalize-space(.)!='']"><!-- Do not edit! -->
+			<xsl:variable name="link" select="normalize-space(fields/link_type/value)"/>
 			<object-id>
 				<xsl:attribute name="xlink:type">simple</xsl:attribute>
-				<xsl:attribute name="object-id-type"><xsl:value-of select="fields/link_type/value"/></xsl:attribute>
-				<xsl:value-of select="fields/link/value"/>
+				<xsl:attribute name="object-id-type"><xsl:value-of select="$link"/></xsl:attribute>
+				<xsl:value-of select="$link"/>
 			</object-id>
 		</xsl:for-each>
 	</xsl:template>
 	<xsl:template mode="taxon-authority" match="*">
-		<xsl:variable name="authors" select="fields/taxon_authors/value"/>
-		<xsl:if test="normalize-space($authors)!=''">
+		<xsl:variable name="authors" select="normalize-space(fields/taxon_authors/value)"/>
+		<xsl:if test="$authors!=''">
 			<tp:taxon-authority><xsl:value-of select="$authors"/></tp:taxon-authority>
 		</xsl:if>
 	</xsl:template>
@@ -79,7 +80,7 @@
 			<xsl:for-each select="fields">
 				<xsl:for-each select="nomenclature">
 					<xsl:for-each select="value">
-						<xsl:for-each select="p">
+						<xsl:for-each select="p"><!-- Empty p test? -->
 							<tp:nomenclature-citation>
 								<tp:taxon-name>
 									<xsl:apply-templates mode="lower-taxon-name-parts" select="../../../../../taxon_name/fields"/>
@@ -110,7 +111,7 @@
 		</tp:type-species>
 	</xsl:template>
 	<xsl:template mode="taxon-type-species-reason" match="*">
-		<xsl:if test="normalize-space(value)!=''">
+		<xsl:if test="count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0">
 			<xsl:text> </xsl:text>
 			<xsl:value-of select="@field_name"/>
 			<xsl:text>: </xsl:text>
@@ -119,11 +120,11 @@
 		</xsl:if>
 	</xsl:template>
 	<xsl:template mode="taxon-type-species-reference-citations" match="*">
-		<xsl:for-each select="citation">
+		<xsl:for-each select="citation[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 			<xsl:if test="normalize-space(citation/fields/reference_citation/value)!=''">
 				<xsl:text> </xsl:text>
 			</xsl:if>
-			<xsl:for-each select="citation/fields/reference_citation/value/p">
+			<xsl:for-each select="citation/fields/reference_citation/value/p[normalize-space(.)!='' or count(node()[name()!=''])!=0]">
 				<xsl:apply-templates mode="format" select="."/>
 				<xsl:if test="position()!=last()">
 					<xsl:text>, </xsl:text>
@@ -149,20 +150,24 @@
 		</xsl:for-each>
 	</xsl:template>
 	<xsl:template mode="taxon-type-species-synonyms" match="*">
-		<xsl:for-each select="synonymy">
+		<xsl:variable name="authors" select="normalize-space(taxon_name/fields/taxon_authors)"/>
+		<xsl:for-each select="synonymy[normalize-space(.)!='']"><!-- Do not edit! -->
 			<tp:taxon-name>
 				<xsl:apply-templates mode="lower-taxon-name-parts" select="taxon_name/fields"/>
 			</tp:taxon-name>
+			<xsl:if test="$authors!=''">
+				<xsl:text> </xsl:text>
+				<xsl:value-of select="$authors"/>
+			</xsl:if>
 			<xsl:text> </xsl:text>
-			<xsl:value-of select="taxon_name/fields/taxon_authors"/>
-			<xsl:text> </xsl:text><italic><xsl:text>synon</xsl:text></italic>
+			<italic><xsl:text>Syn.</xsl:text></italic>
 			<xsl:apply-templates mode="taxon-type-species-reference-citations" select="reference_citations"/>
 		</xsl:for-each>
 	</xsl:template>
 
 	<xsl:template mode="taxon-nomenclature-citation-iczn" match="*">
 		<xsl:choose>
-			<xsl:when test="nomenclature/fields/nomenclature/value/text()=''">
+			<xsl:when test="normalize-space(nomenclature/fields/nomenclature/value)=''">
 				<tp:nomenclature-citation-list>
 					<xsl:apply-templates mode="taxon-nomenclature-citation-type-species-iczn" select="."/>
 				</tp:nomenclature-citation-list>
@@ -185,8 +190,11 @@
 			<xsl:apply-templates mode="taxon-put-taxon-name" select="."/>
 			<xsl:apply-templates mode="taxon-put-type-species" select="$ts_name/fields"/>
 			<comment>
-				<xsl:value-of select="$ts_authors/value/text()"/>
-				<xsl:text>. </xsl:text>
+				<xsl:variable name="authors" select="normalize-space($ts_authors/value)"/>
+				<xsl:if test="$authors!=''">
+					<xsl:value-of select="$authors"/>
+					<xsl:text>. </xsl:text>
+				</xsl:if>
 				<xsl:apply-templates mode="taxon-type-species-reference-citations" select="$ts/reference_citations"/>
 				<xsl:apply-templates mode="taxon-type-species-synonyms" select="$ts_synonyms"/>
 				<xsl:apply-templates mode="taxon-type-species-reason" select="$ts_reason"/>
@@ -234,7 +242,7 @@
 
 
 	<xsl:template mode="taxon-type-species-reference-citations-new" match="*">
-		<xsl:for-each select="reference_single_citation">
+		<xsl:for-each select="reference_single_citation[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
 			<xsl:if test="normalize-space(citation/fields/reference_citation/value)!=''">
 				<xsl:text> </xsl:text>
 			</xsl:if>

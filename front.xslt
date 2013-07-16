@@ -291,7 +291,7 @@
 				</xsl:call-template>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:text><xsl:value-of select="$count"/></xsl:text>
+				<xsl:value-of select="$count"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -300,7 +300,7 @@
 		<xsl:variable name="order"><xsl:call-template name="front-get-aff-order"/></xsl:variable>
 		<xsl:for-each select="$addr//address">
 			<xsl:if test="contains($order, string(position()))">
-				<xsl:text><xsl:value-of select="position()"/></xsl:text>
+				<xsl:value-of select="position()"/>
 				<xsl:text>,</xsl:text>
 			</xsl:if>
 		</xsl:for-each>
@@ -314,7 +314,7 @@
 			<xsl:variable name="an">
 				<xsl:value-of select="substring-before($addrnum, ',')"/>
 			</xsl:variable>
-			<xsl:text><xsl:value-of select="$an"/></xsl:text>
+			<xsl:value-of select="$an"/>
 			<xsl:text>,</xsl:text>
 		</xsl:for-each>
 	</xsl:template>
@@ -323,7 +323,7 @@
 		<xsl:for-each select="/document/objects/article_metadata//address">
 			<xsl:variable name="outaddr" select="normalize-space(.)"/>
 			<xsl:if test="$inaddr=$outaddr">
-				<xsl:text><xsl:value-of select="position()"/></xsl:text>
+				<xsl:value-of select="position()"/>
 				<xsl:text>,</xsl:text>
 			</xsl:if>
 		</xsl:for-each>

@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs"  xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tp="http://www.plazi.org/taxpub">
+
+	<xsl:template name="raise-error">
+		<xsl:param name="content"/>
+		<ERROR><xsl:value-of select="$content"/></ERROR>
+	</xsl:template>
+
 	<xsl:template mode="section" match="*">
 		<xsl:param name="title" />
 		<sec>
