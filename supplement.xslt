@@ -33,8 +33,14 @@
 							<xsl:attribute name="orientation">portrait</xsl:attribute>
 							<xsl:attribute name="xlink:type">simple</xsl:attribute>
 						</media>
-						<p><bold><xsl:value-of select="fields/authors/@field_name"/><xsl:text>: </xsl:text></bold><xsl:value-of select="fields/authors/value"/></p>
-						<p><bold><xsl:text>Data type: </xsl:text></bold><xsl:value-of select="$type"/></p>
+						<p>
+							<bold><xsl:value-of select="fields/authors/@field_name"/><xsl:text>: </xsl:text></bold>
+							<xsl:value-of select="fields/authors/value"/>
+						</p>
+						<p>
+							<bold><xsl:text>Data type: </xsl:text></bold>
+							<xsl:value-of select="$type"/>
+						</p>
 						<p><bold>Description:</bold></p>
 						<xsl:apply-templates mode="p" select="fields/brief_description/value"/>
 						<p><bold><xsl:text>File name: </xsl:text></bold><xsl:value-of select="$file"/></p>
@@ -54,13 +60,10 @@
 				<xsl:text>Microsoft Word Document</xsl:text>
 			</xsl:when>
 			<xsl:when test="$ext='pdf'">
-				<xsl:text>Adobe Acrobat  Document</xsl:text>
+				<xsl:text>Adobe PDF File</xsl:text>
 			</xsl:when>
 			<xsl:when test="($ext='zip') or ($ext='rar') or ($ext='tar') or ($ext='bz2') or ($ext='gz') or ($ext='tgz')">
 				<xsl:text>Archive file</xsl:text>
-			</xsl:when>
-			<xsl:when test="$ext='scv'">
-				<xsl:text>ScanVec CASmate Sign File</xsl:text>
 			</xsl:when>
 			<xsl:when test="$ext='csv'">
 				<xsl:text>Comma Separated Values</xsl:text>

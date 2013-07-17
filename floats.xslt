@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs"  xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tp="http://www.plazi.org/taxpub">
 	<xsl:import href="section.xslt" />
+	<xsl:param name="figures" select="/document/figures"/>
+	<xsl:param name="tables" select="/document/tables"/>
 	
 	<xsl:template name="floats">
 		<xsl:if test="(normalize-space(/document/figures)!='') or (normalize-space(/document/tables)!='')">
@@ -14,7 +16,6 @@
 		FIGURES
 	-->
 	<xsl:template name="figures">
-		<xsl:variable name="figures" select="/document/figures"/>
 		<xsl:for-each select="$figures/figure">
 			<xsl:variable name="num"><xsl:value-of select="position()"/></xsl:variable>
 			<fig>
@@ -47,7 +48,6 @@
 		TABLES
 	-->
 	<xsl:template name="tables">
-		<xsl:variable name="tables" select="/document/tables"/>
 		<xsl:for-each select="$tables/table">
 			<xsl:variable name="num"><xsl:value-of select="position()"/></xsl:variable>
 			<table-wrap>

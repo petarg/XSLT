@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs"  xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tp="http://www.plazi.org/taxpub">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tp="http://www.plazi.org/taxpub">
 	<xsl:import href="section.xslt"/>
 	<xsl:import href="taxons.xslt"/>
 	<xsl:import href="treatment.xslt"/>
 
 	<xsl:template mode="checklists" match="*">
-		<xsl:for-each select="checklist[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="checklist[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 			<xsl:apply-templates mode="checklist" select="."/>
 		</xsl:for-each>
 	</xsl:template>
@@ -15,7 +15,7 @@
 			<xsl:attribute name="sec-type"><xsl:value-of select="@display_name"/></xsl:attribute>
 			<xsl:apply-templates mode="checklist-meta" select="."/>
 			<title><xsl:value-of select="@display_name"/></title>
-			<xsl:for-each select="checklist_taxon[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+			<xsl:for-each select="checklist_taxon[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 				<xsl:apply-templates mode="checklist_taxon" select="."/>
 			</xsl:for-each>
 			<xsl:apply-templates mode="checklist-locality" select="."/>
@@ -33,7 +33,11 @@
 								<kwd><xsl:value-of select="$value"/></kwd>
 							</xsl:when>
 							<xsl:otherwise>
-								<kwd><xsl:value-of select="@field_name"/><xsl:text>: </xsl:text><xsl:value-of select="$value"/></kwd>
+								<kwd>
+									<xsl:value-of select="@field_name"/>
+									<xsl:text>: </xsl:text>
+									<xsl:value-of select="$value"/>
+								</kwd>
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:for-each>
@@ -56,7 +60,7 @@
 				</xsl:if>
 				<xsl:if test="normalize-space($nomenclature)!='' or count($nomenclature/*/*[name()!=''])!=0">
 					<tp:nomenclature-citation-list>
-						<xsl:for-each select="$nomenclature/*[normalize-space(.)!='' or count(./*[name()!=''])!=0]">
+						<xsl:for-each select="$nomenclature/*[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 							<tp:nomenclature-citation>
 								<tp:taxon-name><xsl:apply-templates mode="checklist-taxon-name-short" select="../../../../../fields"/></tp:taxon-name>
 								<comment><xsl:apply-templates mode="format" select="."/></comment>
@@ -67,12 +71,18 @@
 			</tp:nomenclature>
 			<xsl:apply-templates mode="materials" select="materials"/>
 			<xsl:apply-templates mode="checklist-eco-interactions" select="."/>
-			<xsl:for-each select="node()[(name()='distribution') or (name()='horizon') or (name()='notes')]">
+			<xsl:for-each select="node()[(name()='distribution') or (name()='horizon') or (name()='notes')][normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 				<xsl:apply-templates mode="treatment-section" select="."/>
 			</xsl:for-each>
 		</tp:taxon-treatment>
 	</xsl:template>
-	
+
+	<xsl:template mode="checklist-taxon-name-part" match="*">
+		<tp:taxon-name-part>
+			<xsl:attribute name="taxon-name-part-type"><xsl:value-of select="name()"/></xsl:attribute>
+			<xsl:value-of select="value"/>
+		</tp:taxon-name-part>
+	</xsl:template>
 	<xsl:template mode="checklist-taxon-name" match="*">
 		<xsl:for-each select="kingdom[normalize-space(value)!='']"><xsl:apply-templates mode="checklist-taxon-name-part" select="."/></xsl:for-each>
 		<xsl:for-each select="subkingdom[normalize-space(value)!='']"><xsl:apply-templates mode="checklist-taxon-name-part" select="."/></xsl:for-each>
@@ -107,14 +117,6 @@
 			<xsl:apply-templates mode="checklist-taxon-name-part" select="."/>
 		</xsl:for-each>
 	</xsl:template>
-
-	<xsl:template mode="checklist-taxon-name-part" match="*">
-		<tp:taxon-name-part>
-			<xsl:attribute name="taxon-name-part-type"><xsl:value-of select="name()"/></xsl:attribute>
-			<xsl:value-of select="value"/>
-		</tp:taxon-name-part>
-	</xsl:template>
-
 	<xsl:template mode="checklist-taxon-name-short" match="*">
 		<xsl:for-each select="kingdom[normalize-space(value)!='']"><xsl:value-of select="value"/></xsl:for-each>
 		<xsl:for-each select="subkingdom[normalize-space(value)!='']"><xsl:value-of select="value"/></xsl:for-each>
@@ -161,7 +163,7 @@
 			<tp:treatment-sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="@display_name"/></title>
-				<xsl:for-each select="fields/*[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="fields/*[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 					<xsl:apply-templates mode="little-section" select="."/>
 				</xsl:for-each>
 			</tp:treatment-sec>
@@ -173,7 +175,7 @@
 			<sec>
 				<xsl:attribute name="sec-type">Locality</xsl:attribute>
 				<title><xsl:value-of select="normalize-space(@display_name)"/></title>
-				<xsl:for-each select="fields/node()[(count((.//value//text()[normalize-space(.)!=''])) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0) and (@id!='476')]">
+				<xsl:for-each select="fields/node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 					<xsl:apply-templates mode="little-section" select="."/>
 				</xsl:for-each>
 				<xsl:for-each select="checklist_taxon">

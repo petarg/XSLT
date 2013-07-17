@@ -111,7 +111,7 @@
 		</tp:type-species>
 	</xsl:template>
 	<xsl:template mode="taxon-type-species-reason" match="*">
-		<xsl:if test="count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0">
+		<xsl:if test="normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0">
 			<xsl:text> </xsl:text>
 			<xsl:value-of select="@field_name"/>
 			<xsl:text>: </xsl:text>
@@ -120,7 +120,7 @@
 		</xsl:if>
 	</xsl:template>
 	<xsl:template mode="taxon-type-species-reference-citations" match="*">
-		<xsl:for-each select="citation[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="citation[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 			<xsl:if test="normalize-space(citation/fields/reference_citation/value)!=''">
 				<xsl:text> </xsl:text>
 			</xsl:if>
@@ -242,7 +242,7 @@
 
 
 	<xsl:template mode="taxon-type-species-reference-citations-new" match="*">
-		<xsl:for-each select="reference_single_citation[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="reference_single_citation[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 			<xsl:if test="normalize-space(citation/fields/reference_citation/value)!=''">
 				<xsl:text> </xsl:text>
 			</xsl:if>

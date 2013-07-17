@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs"  xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tp="http://www.plazi.org/taxpub">
 	<xsl:import href="section.xslt" />
+	<xsl:param name="jname" select="/document/document_info/journal_name"/>
+	<xsl:param name="front_classifications" select="/document/objects/article_metadata/classifications"/>
+	<xsl:param name="front_article_title" select="/document/objects/article_metadata/title_and_authors/fields/title/value"/>
+	<xsl:param name="front_authors" select="/document/objects/article_metadata/title_and_authors"/>
+	<xsl:param name="front_authors_number" select="count($front_authors/author)"/>
+	<xsl:param name="front_contributors" select="/document/objects/article_metadata/contributors"/>
+	<xsl:param name="front_abstract" select="/document/objects/article_metadata/abstract_and_keywords/fields/abstract"/>
+	<xsl:param name="front_keywords" select="/document/objects/article_metadata/abstract_and_keywords/fields/keywords"/>
+	<xsl:param name="front_funding" select="/document/objects/article_metadata/funding_agencies"/>
 	
 	<xsl:template name="front">
 		<front>
@@ -10,7 +19,6 @@
 	</xsl:template>
 	
 	<xsl:template name="front-journal-meta">
-		<xsl:variable name="jname" select="/document/document_info/journal_name"/>
 		<journal-meta>
 			<journal-id journal-id-type="pmc"><xsl:value-of select="$jname"/></journal-id>
 			<journal-id journal-id-type="publisher-id"><xsl:value-of select="$jname"/></journal-id>
@@ -27,7 +35,6 @@
 	</xsl:template>
 
 	<xsl:template name="front-article-meta">
-		<xsl:variable name="jname" select="/document/document_info/journal_name"/>
 		<article-meta>
 			<article-id pub-id-type="publisher-id"><xsl:value-of select="$jname"/></article-id>
 			<article-id pub-id-type="doi">10.3897/xxx.000.0000</article-id>
@@ -73,11 +80,11 @@
 	
 	<xsl:template name="front-article-categories">
 		<article-categories>
-			<xsl:for-each select="/document/objects/article_metadata/classifications/fields">
-					<xsl:apply-templates mode="front-classification" select="taxon_classification"/>
-					<xsl:apply-templates mode="front-classification" select="subject_classification"/>
-					<xsl:apply-templates mode="front-classification" select="chronological_classification"/>
-					<xsl:apply-templates mode="front-classification" select="geographical_classification"/>
+			<xsl:for-each select="$front_classifications/fields">
+				<xsl:apply-templates mode="front-classification" select="taxon_classification"/>
+				<xsl:apply-templates mode="front-classification" select="subject_classification"/>
+				<xsl:apply-templates mode="front-classification" select="chronological_classification"/>
+				<xsl:apply-templates mode="front-classification" select="geographical_classification"/>
 			</xsl:for-each>
 		</article-categories>
 	</xsl:template>
@@ -93,18 +100,16 @@
 	</xsl:template>
 
 	<xsl:template name="front-title-group">
-		<xsl:variable name="title" select="/document/objects/article_metadata/title_and_authors/fields/title/value"/>
 		<title-group>
-			<article-title><xsl:apply-templates mode="title" select="$title"/></article-title>
+			<article-title><xsl:apply-templates mode="title" select="$front_article_title"/></article-title>
 		</title-group>
 	</xsl:template>
 
 	<xsl:template name="front-authors">
-		<xsl:variable name="authors" select="/document/objects/article_metadata/title_and_authors"/>
 		<contrib-group>
 			<xsl:attribute name="content-type">authors</xsl:attribute>
-			<xsl:for-each select="$authors/author">
-				<xsl:variable name="num"><xsl:value-of select="position()"/></xsl:variable>
+			<xsl:for-each select="$front_authors/author">
+				<xsl:variable name="num" select="position()"/>
 				<contrib>
 					<xsl:attribute name="contrib-type">author</xsl:attribute>
 					<xsl:attribute name="corresp">
@@ -114,7 +119,7 @@
 						</xsl:choose>
 					</xsl:attribute>
 					<xsl:apply-templates mode="front-author-name" select="fields"/>
-					<xsl:for-each select="fields/e-mail">
+					<xsl:for-each select="fields/e-mail[normalize-space(.)!='']">
 						<email>
 							<xsl:attribute name="xlink:type">simple</xsl:attribute>
 							<xsl:value-of select="normalize-space(value)"/>
@@ -126,10 +131,10 @@
 							<p><xsl:value-of select="value"/></p>
 						</author-comment>
 					</xsl:for-each>
-					<xsl:for-each select="address">
+					<xsl:for-each select="address[normalize-space(.)!='']">
 						<xsl:apply-templates mode="front-author-aff" select="fields" />
 					</xsl:for-each>
-					<xsl:for-each select="address">
+					<xsl:for-each select="address[normalize-space(.)!='']">
 						<xsl:apply-templates mode="front-xref-aff" select="."/>
 					</xsl:for-each>
 				</contrib>
@@ -138,13 +143,11 @@
 	</xsl:template>
 
 	<xsl:template name="front-editors">
-		<xsl:variable name="authors" select="/document/objects/article_metadata/title_and_authors"/>
-		<xsl:variable name="contributors" select="/document/objects/article_metadata/contributors"/>
-		<xsl:if test="normalize-space($contributors)!=''">
+		<xsl:if test="normalize-space($front_contributors)!=''">
 			<contrib-group>
 				<xsl:attribute name="content-type">editors</xsl:attribute>
-				<xsl:for-each select="$contributors/contributor">
-					<xsl:variable name="num"><xsl:value-of select="position() + count($authors/author)"/></xsl:variable>
+				<xsl:for-each select="$front_contributors/contributor">
+					<xsl:variable name="num" select="position() + $front_authors_number"/>
 					<contrib>
 						<xsl:attribute name="contrib-type">editor</xsl:attribute>
 						<xsl:apply-templates mode="front-author-name" select="fields"/>
@@ -165,10 +168,10 @@
 								<p><xsl:value-of select="value"/></p>
 							</author-comment>
 						</xsl:for-each>
-						<xsl:for-each select="address">
+						<xsl:for-each select="address[normalize-space(.)!='']">
 							<xsl:apply-templates mode="front-author-aff" select="fields" />
 						</xsl:for-each>
-						<xsl:for-each select="address">
+						<xsl:for-each select="address[normalize-space(.)!='']">
 							<xsl:apply-templates mode="front-xref-aff" select="."/>
 						</xsl:for-each>
 					</contrib>
@@ -231,8 +234,6 @@
 	</xsl:template>
 
 	<xsl:template name="front-affiliations">
-		<xsl:variable name="authors" select="/document/objects/article_metadata/title_and_authors"/>
-		<xsl:variable name="contributors" select="/document/objects/article_metadata/contributors"/>
 		<xsl:variable name="addr" select="/document/objects/article_metadata"/>
 		<xsl:variable name="order"><xsl:call-template name="front-aff-order"/></xsl:variable>
 		<xsl:for-each select="$addr//address">
@@ -351,19 +352,18 @@
 		</author-notes>
 	</xsl:template>
 	<xsl:template name="front-corresponding-authors">
-		<xsl:variable name="authors" select="/document/objects/article_metadata/title_and_authors"/>
 		<fn>
 			<xsl:attribute name="fn-type">corresp</xsl:attribute>
 			<p>
 				<xsl:choose>
-					<xsl:when test="count($authors/author[fields/corresponding_author/value!=''])=1">
+					<xsl:when test="count($front_authors/author[fields/corresponding_author/value!=''])=1">
 						<xsl:text>Corresponding author: </xsl:text>
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:text>Corresponding authors: </xsl:text>
 					</xsl:otherwise>
 				</xsl:choose>
-				<xsl:for-each select="$authors/author[fields/corresponding_author/value!='']">
+				<xsl:for-each select="$front_authors/author[fields/corresponding_author/value!='']">
 					<xsl:apply-templates mode="front-getname" select="fields"/>
 					<xsl:text> (</xsl:text><email xlink:type="simple"><xsl:value-of select="fields/e-mail"/></email><xsl:text>)</xsl:text>
 					<xsl:choose>
@@ -386,10 +386,9 @@
 	</xsl:template>
 
 	<xsl:template name="front-permissions">
-		<xsl:variable name="authors" select="/document/objects/article_metadata/title_and_authors"/>
 		<permissions>
 			<copyright-statement>
-				<xsl:for-each select="$authors/author">
+				<xsl:for-each select="$front_authors/author">
 					<xsl:apply-templates mode="front-getname" select="fields"/><xsl:if test="position()!=last()"><xsl:text>, </xsl:text></xsl:if>
 				</xsl:for-each>
 			</copyright-statement>
@@ -400,8 +399,7 @@
 	</xsl:template>
 	
 	<xsl:template name="front-abstract">
-		<xsl:variable name="abstract" select="/document/objects/article_metadata/abstract_and_keywords/fields/abstract"/>
-		<xsl:for-each select="$abstract[count((.//value//text()[normalize-space(.)!='']))!=0 or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="$front_abstract[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 			<abstract>
 				<label>Abstract</label>
 				<xsl:apply-templates mode="p" select="value"/>
@@ -410,8 +408,7 @@
 	</xsl:template>
 	
 	<xsl:template name="front-keywords">
-		<xsl:variable name="keywords" select="/document/objects/article_metadata/abstract_and_keywords/fields/keywords"/>
-		<xsl:for-each select="$keywords[normalize-space(value)!='']">
+		<xsl:for-each select="$front_keywords[normalize-space(value)!='']">
 			<kwd-group>
 				<label>Keywords</label>
 				<xsl:for-each select="value">
@@ -461,7 +458,7 @@
 	</xsl:template>
 	
 	<xsl:template name="front-funding">
-		<xsl:for-each select="/document/objects/article_metadata/funding_agencies/fields">
+		<xsl:for-each select="$front_funding/fields">
 			<xsl:if test="count(supporting_agencies[.//value!=''])!=0">
 				<funding-group>
 					<xsl:for-each select="supporting_agencies">

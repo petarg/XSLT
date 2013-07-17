@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs"  xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tp="http://www.plazi.org/taxpub">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tp="http://www.plazi.org/taxpub">
 	<xsl:import href="section.xslt" />
 
 	<xsl:template mode="data-resources" match="*">
-		<xsl:if test="count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0">
+		<xsl:if test="normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="@display_name"/></title>
@@ -19,7 +19,7 @@
 						<xsl:apply-templates mode="data-p" select="$number_of_data_sets"/>
 					</caption>
 					<!-- Data sets -->
-					<xsl:for-each select="node()[@object_id='141'][count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+					<xsl:for-each select="node()[@object_id='141'][normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 						<xsl:apply-templates mode="data-set" select=".">
 							<xsl:with-param name="n" select="position()"/>
 						</xsl:apply-templates>

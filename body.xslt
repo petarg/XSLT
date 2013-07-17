@@ -9,7 +9,7 @@
 	<xsl:template name="body">
 		<xsl:variable name="body" select="/document/objects"/>
 		<body>
-			<xsl:for-each select="$body/node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+			<xsl:for-each select="$body/node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 				<xsl:choose>
 					<!-- NON-TRIVIAL SECTIONS -->
 					<xsl:when test="name()='systematics'">
@@ -50,7 +50,7 @@
 					<xsl:when test="@object_id='189'">
 						<xsl:apply-templates mode="general-description-section" select="."/>
 					</xsl:when>
-					<xsl:when test="object_id='123'">
+					<xsl:when test="@object_id='123'">
 						<xsl:apply-templates mode="sampling-methods-section" select="."/>
 					</xsl:when>
 					<xsl:when test="@object_id='125'">

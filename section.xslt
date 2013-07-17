@@ -59,33 +59,34 @@
 		</xsl:choose>
 	</xsl:template>
 	<xsl:template mode="data-p" match="*">
-		<xsl:if test="normalize-space(value)!=''">
+		<xsl:for-each select="value[normalize-space(.)!='']">
 			<p>
-				<bold><xsl:value-of select="@field_name"/><xsl:text>:</xsl:text></bold>
+				<bold><xsl:value-of select="../@field_name"/><xsl:text>:</xsl:text></bold>
 				<xsl:text> </xsl:text>
-				<xsl:value-of select="normalize-space(value)"/>
+				<xsl:value-of select="normalize-space(.)"/>
 			</p>
-		</xsl:if>
+		</xsl:for-each>
 	</xsl:template>
 	<xsl:template mode="data-p-link" match="*">
-		<xsl:if test="normalize-space(value)!=''">
+		<xsl:for-each select="value[normalize-space(.)!='']">
+			<xsl:variable name="value" select="normalize-space(.)"/>
 			<p>
-				<bold><xsl:value-of select="@field_name"/><xsl:text>:</xsl:text></bold>
+				<bold><xsl:value-of select="../@field_name"/><xsl:text>:</xsl:text></bold>
 				<xsl:text> </xsl:text>
 				<ext-link>
 					<xsl:attribute name="ext-link-type">uri</xsl:attribute>
-					<xsl:attribute name="xlink:href"><xsl:value-of select="normalize-space(value)"/></xsl:attribute>
-					<xsl:value-of select="normalize-space(value)"/>
+					<xsl:attribute name="xlink:href"><xsl:value-of select="$value"/></xsl:attribute>
+					<xsl:value-of select="$value"/>
 				</ext-link>
 			</p>
-		</xsl:if>
+		</xsl:for-each>
 	</xsl:template>
 
 	<xsl:template mode="p" match="*">
 		<xsl:choose>
-			<xsl:when test="normalize-space(.)='' and count(.//*[name()!='' and name!='p' and name()!='ol' and name()!='ul'])=0"></xsl:when>
-			<xsl:when test="count(*[(name()='p') or (name()='ul') or (name()='ol')])!=0">
-				<xsl:for-each select="node()[(normalize-space(.)!='') or (count(*[name()!='p' and name()!='ul' and name()!='ol'])!=0) or (name()!='')]">
+			<xsl:when test="normalize-space(.)='' and count(.//node()[@citation_id!=''])=0"></xsl:when>
+			<xsl:when test="count(node()[(name()='p') or (name()='ul') or (name()='ol')])!=0">
+				<xsl:for-each select="node()[(normalize-space(.)!='') or (count(.//node()[@citation_id!=''])!=0) or (name()!='')]">
 					<xsl:choose>
 						<xsl:when test="(name()='p') or (name()='')">
 							<p><xsl:apply-templates mode="format" select="."/></p>
@@ -97,7 +98,7 @@
 							<xsl:apply-templates mode="section-ordered-list" select="."/>
 						</xsl:when>
 						<xsl:otherwise>
-							<invalid-tag><xsl:copy-of select="."/></invalid-tag>
+							<INVALID-TAG><xsl:copy-of select="."/></INVALID-TAG>
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:for-each>
@@ -118,7 +119,6 @@
 			</xsl:for-each>
 		</list>
 	</xsl:template>
-
 	<xsl:template mode="section-unordered-list" match="*">
 		<list>
 			<xsl:attribute name="list-type">bullet</xsl:attribute>
@@ -226,7 +226,6 @@
 			</xsl:choose>
 		</xsl:for-each>
 	</xsl:template>
-
 	<xsl:template mode="format-nodes" match="*">
 		<xsl:choose>
 			<xsl:when test="name()='em'">
@@ -396,15 +395,16 @@
 		</xsl:for-each>
 	</xsl:template>
 
-
-
-
-<!-- Some non-trivial sections -->
+<!-- 
+#
+#	Some non-trivial sections
+#
+ -->
 	<xsl:template mode="project-decription" match="*">
-		<xsl:for-each select="fields[count(.//value//*[normalize-space(text())!=''])!=0 or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="fields[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
-				<xsl:for-each select="node()[count(.//value//*[normalize-space(text())!=''])!=0 or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 					<xsl:choose>
 						<xsl:when test="name()='title'">
 							<title><xsl:apply-templates mode="title" select="value"/></title>
@@ -420,7 +420,7 @@
 	</xsl:template>
 
 	<xsl:template mode="geographic-coverage" match="*">
-		<xsl:for-each select="fields[count(.//value//*[normalize-space(text())!=''])!=0 or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="fields[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 			<xsl:variable name="west" select="node()[@id='317']"/>
 			<xsl:variable name="east" select="node()[@id='318']"/>
 			<xsl:variable name="south" select="node()[@id='319']"/>
@@ -429,7 +429,7 @@
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="../@display_name"/></title>
-				<xsl:for-each select="description[count(.//value//*[normalize-space(text())!=''])!=0 or count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="description[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 					<p><bold><xsl:value-of select="@field_name"/><xsl:text>:</xsl:text></bold></p>
 					<xsl:apply-templates mode="p" select="value"/>
 				</xsl:for-each>
@@ -444,11 +444,11 @@
 	</xsl:template>
 
 	<xsl:template mode="usage-rights" match="*">
-		<xsl:for-each select="fields[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="fields[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="../@display_name"/></title>
-				<xsl:for-each select="node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 					<xsl:apply-templates mode="little-section" select="."/>
 				</xsl:for-each>
 				<xsl:apply-templates mode="subsection" select="."/>
@@ -457,11 +457,11 @@
 	</xsl:template>
 
 	<xsl:template mode="software-specification" match="*">
-		<xsl:for-each select="fields[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="fields[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="../@display_name"/></title>
-				<xsl:for-each select="node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 					<xsl:apply-templates mode="little-section" select="."/>
 				</xsl:for-each>
 				<xsl:apply-templates mode="subsection" select="."/>
@@ -470,14 +470,14 @@
 	</xsl:template>
 
 	<xsl:template mode="taxonomic-coverage" match="*">
-		<xsl:if test="count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0">
+		<xsl:if test="normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="@display_name"/></title>
-				<xsl:for-each select="fields/node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="fields/node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 					<xsl:apply-templates mode="little-section" select="."/>
 				</xsl:for-each>
-				<xsl:for-each select="taxa[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="taxa[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 					<xsl:apply-templates mode="taxa" select="."/>
 				</xsl:for-each>
 				<xsl:apply-templates mode="subsection" select="."/>
@@ -504,11 +504,11 @@
 	</xsl:template>
 
 	<xsl:template mode="software-description-section" match="*">
-		<xsl:for-each select="fields[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="fields[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="../@display_name"/></title>
-				<xsl:for-each select="node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 					<xsl:apply-templates mode="little-section" select="."/>
 				</xsl:for-each>
 				<xsl:apply-templates mode="subsection" select="."/>
@@ -517,11 +517,11 @@
 	</xsl:template>
 
 	<xsl:template mode="web-locations-section" match="*">
-		<xsl:for-each select="fields[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="fields[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="../@display_name"/></title>
-				<xsl:for-each select="node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 					<xsl:apply-templates mode="little-p" select="."/>
 				</xsl:for-each>
 				<xsl:apply-templates mode="subsection" select="."/>
@@ -570,11 +570,11 @@
 
 	<!-- Data paper specific -->
 	<xsl:template mode="general-description-section" match="*">
-		<xsl:for-each select="fields[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="fields[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="../@display_name"/></title>
-				<xsl:for-each select="node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 					<xsl:apply-templates mode="little-section" select="."/>
 				</xsl:for-each>
 				<xsl:apply-templates mode="subsection" select="."/>
@@ -583,11 +583,11 @@
 	</xsl:template>
 
 	<xsl:template mode="sampling-methods-section" match="*">
-		<xsl:for-each select="fields[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="fields[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="../@display_name"/></title>
-				<xsl:for-each select="node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 					<xsl:apply-templates mode="little-section" select="."/>
 				</xsl:for-each>
 				<xsl:apply-templates mode="subsection" select="."/>
@@ -596,11 +596,11 @@
 	</xsl:template>
 
 	<xsl:template mode="collection-data-section" match="*">
-		<xsl:for-each select="fields[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+		<xsl:for-each select="fields[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="../@display_name"/></title>
-				<xsl:for-each select="node()[count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 					<xsl:apply-templates mode="little-section" select="."/>
 				</xsl:for-each>
 				<xsl:apply-templates mode="subsection" select="."/>
@@ -609,11 +609,11 @@
 	</xsl:template>
 	
 	<xsl:template mode="temporal-coverage-wrapper-section" match="*">
-		<xsl:if test="count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0">
+		<xsl:if test="normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0">
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="@display_name"/></title>
-				<xsl:for-each select="node()[@object_id='124'][count(.//value//*[normalize-space(text())!='']) + count(.//value//*[name()!='p' and name()!='ul' and name()!='ol'])!=0]">
+				<xsl:for-each select="node()[@object_id='124'][normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 					<xsl:apply-templates mode="temporal-coverage-section" select="."/>
 				</xsl:for-each>
 				<xsl:apply-templates mode="subsection" select="."/>
