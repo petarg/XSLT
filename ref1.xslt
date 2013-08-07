@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs"  xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tp="http://www.plazi.org/taxpub">
-	<xsl:import href="section.xslt" />
+<!-- 	<xsl:import href="section.xslt" /> -->
 	
 	<xsl:template name="reference">
 		<xsl:for-each select="/document/objects/references/reference">
@@ -21,7 +21,7 @@
 	<xsl:template mode="ref-book-biblio" match="*">
 		<element-citation>
 			<xsl:attribute name="publication-type">book</xsl:attribute>
-			<xsl:apply-templates mode="ref-author-name" select="authors"/>
+			<xsl:apply-templates mode="ref-author-name" select="node()[@object_id='92']"/>
 			<xsl:apply-templates mode="ref-year" select="."/>
 			<xsl:apply-templates mode="ref-book-title" select="."/>
 			<xsl:apply-templates mode="ref-translated-title" select="."/>
@@ -40,11 +40,10 @@
 	<xsl:template mode="ref-book-chapter-biblio" match="*">
 		<element-citation>
 			<xsl:attribute name="publication-type">chapter</xsl:attribute>
-			<xsl:apply-templates mode="ref-author-name" select="authors_reference"/>
-			<xsl:apply-templates mode="ref-author-name" select="authors"/>
+			<xsl:apply-templates mode="ref-author-name" select="node()[@object_id='100']"/>
 			<xsl:apply-templates mode="ref-year" select="."/>
 			<chapter-title><xsl:apply-templates mode="format" select="fields/chapter_title/value"/></chapter-title>
-			<xsl:apply-templates mode="ref-editor-name" select="series_editors"/>
+			<xsl:apply-templates mode="ref-editor-name" select="node()[@object_id='93']"/>
 			<xsl:apply-templates mode="ref-book-title" select="."/>
 			<xsl:apply-templates mode="ref-edition" select="."/>
 			<xsl:apply-templates mode="ref-volume" select="."/>
@@ -61,8 +60,7 @@
 	<xsl:template mode="ref-journal-article-biblio" match="*">
 		<element-citation>
 			<xsl:attribute name="publication-type">article</xsl:attribute>
-			<xsl:apply-templates mode="ref-author-name" select="authors_reference"/>
-			<xsl:apply-templates mode="ref-author-name" select="authors"/>
+			<xsl:apply-templates mode="ref-author-name" select="node()[@object_id='100']"/>
 			<xsl:apply-templates mode="ref-year" select="."/>
 			<xsl:apply-templates mode="ref-article-title" select="."/>
 			<xsl:if test="normalize-space(fields/journal/value)!=''">
@@ -87,10 +85,9 @@
 	<xsl:template mode="ref-conference-paper" match="*">
 		<element-citation>
 			<xsl:attribute name="publication-type">conference-paper</xsl:attribute>
-			<xsl:apply-templates mode="ref-author-name" select="authors_reference"/>
-			<xsl:apply-templates mode="ref-author-name" select="authors"/>
+			<xsl:apply-templates mode="ref-author-name" select="node()[@object_id='100']"/>
 			<xsl:apply-templates mode="ref-year" select="."/>
-			<xsl:apply-templates mode="ref-editor-name" select="series_editors"/>
+			<xsl:apply-templates mode="ref-editor-name" select="node()[@object_id='93']"/>
 			<xsl:apply-templates mode="ref-conf-paper-title" select="."/>
 			<xsl:apply-templates mode="ref-volume" select="."/>
 			<xsl:apply-templates mode="ref-conference" select="."/>
@@ -106,7 +103,7 @@
 	<xsl:template mode="ref-conference-proceedings-biblio" match="*">
 		<element-citation>
 			<xsl:attribute name="publication-type">conference-preoceeding</xsl:attribute>
-			<xsl:apply-templates mode="ref-author-name" select="authors"/>
+			<xsl:apply-templates mode="ref-author-name" select="node()[@object_id='92']"/>
 			<xsl:apply-templates mode="ref-year" select="."/>
 			<xsl:apply-templates mode="ref-book-title" select="."/>
 			<xsl:apply-templates mode="ref-volume" select="."/>
@@ -123,8 +120,7 @@
 	<xsl:template mode="ref-thesis-biblio" match="*">
 		<element-citation>
 			<xsl:attribute name="publication-type">thesis</xsl:attribute>
-			<xsl:apply-templates mode="ref-author-name" select="authors_reference_biblio"/>
-			<xsl:apply-templates mode="ref-author-name" select="authors"/>
+			<xsl:apply-templates mode="ref-author-name" select="node()[@object_id='101']"/>
 			<xsl:apply-templates mode="ref-year" select="."/>
 			<xsl:apply-templates mode="ref-book-title" select="."/>
 			<xsl:apply-templates mode="ref-translated-title" select="."/>
@@ -141,8 +137,7 @@
 	<xsl:template mode="ref-software-biblio" match="*">
 		<element-citation>
 			<xsl:attribute name="publication-type">software</xsl:attribute>
-			<xsl:apply-templates mode="ref-author-name" select="authors_reference"/>
-			<xsl:apply-templates mode="ref-author-name" select="authors"/>
+			<xsl:apply-templates mode="ref-author-name" select="node()[@object_id='100']"/>
 			<xsl:apply-templates mode="ref-year" select="."/>
 			<xsl:apply-templates mode="ref-title" select="."/>
 			<xsl:apply-templates mode="ref-publisher-name" select="."/>
@@ -171,16 +166,14 @@
 			<xsl:if test="normalize-space(fields/access_date/value)!=''">
 				<date-in-citation>
 					<xsl:attribute name="content-type">access-date</xsl:attribute>
-					<xsl:text>accessed: </xsl:text>
+					<xsl:text>[Accessed: </xsl:text>
 					<xsl:value-of select="fields/access_date/value"/>
+					<xsl:text>]</xsl:text>
 				</date-in-citation>
 			</xsl:if>
 		</element-citation>
 	</xsl:template>
 
-
-<!-- authors_reference -> authors, object_id  = 100 -->
-<!-- reference_author -> author, object_id=90 -->
 
 	<xsl:template mode="ref-author-name" match="*">
 		<person-group person-group-type="author">

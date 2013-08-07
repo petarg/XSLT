@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs"  xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tp="http://www.plazi.org/taxpub">
-	<xsl:import href="keys.xslt"/>
-	<xsl:import href="section.xslt" />
-	<xsl:import href="systematics.xslt"/>
-	<xsl:import href="checklists.xslt"/>
-	<xsl:import href="data-resources.xslt"/>
 
 	<xsl:template name="body">
 		<xsl:variable name="body" select="/document/objects"/>
@@ -12,31 +7,34 @@
 			<xsl:for-each select="$body/node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 				<xsl:choose>
 					<!-- NON-TRIVIAL SECTIONS -->
-					<xsl:when test="name()='systematics'">
+					<xsl:when test="@object_id='54'"><!-- Systematics -->
 						<xsl:apply-templates mode="systematics" select="."/>
 					</xsl:when>
-					<xsl:when test="name()='checklists'">
+					<xsl:when test="@object_id='203'"><!-- Check lists -->
 						<xsl:apply-templates mode="checklists" select="."/>
 					</xsl:when>
-					<xsl:when test="name()='checklist'">
+					<xsl:when test="@object_id='204'">
 						<xsl:apply-templates mode="checklist" select="."/>
 					</xsl:when>
-					<xsl:when test="name()='identification_keys'">
+					<xsl:when test="@object_id='211'">
+						<xsl:apply-templates mode="checklist" select="."/>
+					</xsl:when>
+					<xsl:when test="@object_id='24'">
 						<xsl:apply-templates mode="keys" select="." />
 					</xsl:when>
-					<xsl:when test="name()='project_description'">
+					<xsl:when test="@object_id='111'">
 						<xsl:apply-templates mode="project-decription" select="."/>
 					</xsl:when>
-					<xsl:when test="name()='geographic_coverage'">
+					<xsl:when test="@object_id='118'">
 						<xsl:apply-templates mode="geographic-coverage" select="."/>
 					</xsl:when>
-					<xsl:when test="name()='taxonomic_coverage'">
+					<xsl:when test="@object_id='119'">
 						<xsl:apply-templates mode="taxonomic-coverage" select="."/>
 					</xsl:when>
-					<xsl:when test="name()='usage_rights'">
+					<xsl:when test="@object_id='115'">
 						<xsl:apply-templates mode="usage-rights" select="."/>
 					</xsl:when>
-					<xsl:when test="name()='software_specification'">
+					<xsl:when test="@object_id='121'">
 						<xsl:apply-templates mode="software-specification" select="."/>
 					</xsl:when>
 					<!-- Software Description Article Type specific sections -->
@@ -66,7 +64,7 @@
 						<xsl:apply-templates mode="data-resources" select="."/>
 					</xsl:when>
 					<!-- TRIVIAL SECTIONS -->
-					<xsl:when test="@object_id!='14' and @object_id!='21' and @object_id!='56' and @object_id!='57' and @object_id!='202'">
+					<xsl:when test="@object_id!='14' and @object_id!='21' and @object_id!='56' and @object_id!='57' and @object_id!='202' and @object_id!='237' and @object_id!='236'">
 						<xsl:apply-templates mode="section" select="." >
 							<xsl:with-param name="title"><xsl:value-of select="normalize-space(@display_name)"/></xsl:with-param>
 						</xsl:apply-templates>

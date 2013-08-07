@@ -3,6 +3,13 @@
 <!-- TAXONOMIC PAPER -->
 
 	<xsl:import href="section.xslt" />
+	<xsl:import href="taxons.xslt"/>
+	<xsl:import href="ref1.xslt"/>
+	<xsl:import href="supplement.xslt"/>
+	<xsl:import href="keys.xslt"/>
+	<xsl:import href="systematics.xslt"/>
+	<xsl:import href="checklists.xslt"/>
+	<xsl:import href="data-resources.xslt"/>
 	<xsl:import href="front.xslt"/>
 	<xsl:import href="body.xslt"/>
 	<xsl:import href="back.xslt"/>

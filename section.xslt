@@ -7,24 +7,31 @@
 	</xsl:template>
 
 	<xsl:template mode="section" match="*">
-		<xsl:param name="title" />
-		<sec>
-			<xsl:attribute name="sec-type"><xsl:value-of select="$title"/></xsl:attribute>
-			<xsl:choose>
-				<xsl:when test="normalize-space(fields/title/value)!=''">
-					<title><xsl:apply-templates mode="title" select="fields/title/value"/></title>
-				</xsl:when>
-				<xsl:otherwise>
+		<xsl:param name="title"/>
+		<xsl:choose>
+			<xsl:when test="normalize-space(fields/title/value)!=''">
+				<xsl:if test="count(fields/node()[name()!='' and name()!='title'][normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0])!=0">
+					<sec>
+						<xsl:attribute name="sec-type"><xsl:value-of select="$title"/></xsl:attribute>
+						<title><xsl:apply-templates mode="title" select="fields/title/value"/></title>
+						<xsl:apply-templates mode="p" select="fields/*[name()!='title']/value" />
+						<xsl:apply-templates mode="subsection" select="."/>
+					</sec>
+				</xsl:if>
+			</xsl:when>
+			<xsl:otherwise>
+				<sec>
+					<xsl:attribute name="sec-type"><xsl:value-of select="$title"/></xsl:attribute>
 					<title><xsl:value-of select="$title"/></title>
-				</xsl:otherwise>
-			</xsl:choose>
-			<xsl:apply-templates mode="p" select="fields/*[name()!='title']/value" />
-			<xsl:apply-templates mode="subsection" select="."/>
-		</sec>
+					<xsl:apply-templates mode="p" select="fields/*[name()!='title']/value" />
+					<xsl:apply-templates mode="subsection" select="."/>
+				</sec>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	<xsl:template mode="subsection" match="*">
 		<xsl:for-each select="subsection">
-			<xsl:variable name="title" select="fields/enter_title_of_this_subsection/value"/>
+			<xsl:variable name="title" select="fields/node()[@id='211']/value"/>
 			<sec>
 				<xsl:attribute name="sec-type"><xsl:value-of select="normalize-space($title)"/></xsl:attribute>
 				<title><xsl:apply-templates mode="title" select="$title"/></title>
@@ -37,6 +44,13 @@
 			<xsl:attribute name="sec-type"><xsl:value-of select="@field_name"/></xsl:attribute>
 			<title><xsl:value-of select="@field_name"/></title>
 			<xsl:apply-templates mode="p" select="value"/>
+		</sec>
+	</xsl:template>
+	<xsl:template mode="little-section-uri" match="*">
+		<sec>
+			<xsl:attribute name="sec-type"><xsl:value-of select="@field_name"/></xsl:attribute>
+			<title><xsl:value-of select="@field_name"/></title>
+			<p><uri><xsl:value-of select="normalize-space(value)"/></uri></p>
 		</sec>
 	</xsl:template>
 	<xsl:template mode="little-p" match="*">
@@ -130,96 +144,13 @@
 		</list>
 	</xsl:template>
 
-
-	
-<!-- 	<xsl:template mode="format1" match="*">
-		<xsl:for-each select="node()[normalize-space(.)!='']">
-			<xsl:variable name="text"><xsl:value-of select="normalize-space(.)"/></xsl:variable>
-			<xsl:variable name="first"><xsl:value-of select="substring($text,1,1)"/></xsl:variable>
-			<xsl:if test="(position() &gt; 1) and ($first!=',') and ($first!='.') and ($first!=';') and ($first!=')')">
-				<xsl:text> </xsl:text>
-			</xsl:if>
-			<xsl:choose>
-				<xsl:when test="name()=''">
-					<xsl:value-of select="$text"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates mode="format-nodes" select="."/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:for-each>
-	</xsl:template> -->
-
-<!-- 	<xsl:template mode="format0" match="*">
-		<xsl:for-each select="node()">
-			<xsl:choose>
-				<xsl:when test="name()=''">
-					<xsl:variable name="val" select="normalize-space(.)"/>
-					<xsl:call-template name="tag-uri">
-						<xsl:with-param name="string" select="$val"/>
-					</xsl:call-template>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates mode="format-nodes" select="."/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:for-each>
-	</xsl:template>
-
-	<xsl:template name="tag-uri">
-		<xsl:param name="string" select="''"/>
-		<xsl:choose>
-			<xsl:when test="contains($string, 'http://') or contains($string, 'https://')">
-				<xsl:value-of select="substring-before(string, 'http')"/>
-				<xsl:variable name="after" select="substring-after($string, 'http')"/>
-				<xsl:variable name="address" select="concat('http',substring-before($after, ' '))"/>
-				<xsl:call-template name="tag-uri-uri">
-					<xsl:with-param name="string" select="$address"/>
-				</xsl:call-template>
-				<xsl:text> </xsl:text>
-				<xsl:value-of select="substring-after($after, ' ')"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="."/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-	<xsl:template name="tag-uri-uri">
-		<xsl:param name="string" select="''"/>
-		<xsl:choose>
-			<xsl:when test="contains($string, ')')">
-				<xsl:call-template name="tag-uri-uri">
-					<xsl:with-param name="string" select="substring-before($string, ')')"/>
-				</xsl:call-template>
-				<xsl:text>)</xsl:text>
-				<xsl:value-of select="substring-after($string, ')')"/>
-			</xsl:when>
-			<xsl:when test="contains($string, ']')">
-				<xsl:call-template name="tag-uri-uri">
-					<xsl:with-param name="string" select="substring-before($string, ']')"/>
-				</xsl:call-template>
-				<xsl:text>]</xsl:text>
-				<xsl:value-of select="substring-after($string, ']')"/>
-			</xsl:when>
-			<xsl:when test="contains($string, '}')">
-				<xsl:call-template name="tag-uri-uri">
-					<xsl:with-param name="string" select="substring-before($string, '}')"/>
-				</xsl:call-template>
-				<xsl:text>}</xsl:text>
-				<xsl:value-of select="substring-after($string, '}')"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<uri><xsl:value-of select="$string"/></uri>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template> -->
-
 	<xsl:template mode="format" match="*">
 		<xsl:for-each select="node()">
 			<xsl:choose>
 				<xsl:when test="name()=''">
 					<xsl:value-of select="."/>
 				</xsl:when>
+<!-- 				<xsl:when test="name()='p' or name()='ol' or name()='ul'"></xsl:when> -->
 				<xsl:otherwise>
 					<xsl:apply-templates mode="format-nodes" select="."/>
 				</xsl:otherwise>
@@ -228,10 +159,10 @@
 	</xsl:template>
 	<xsl:template mode="format-nodes" match="*">
 		<xsl:choose>
-			<xsl:when test="name()='em'">
+			<xsl:when test="name()='em' or name()='i'">
 				<italic><xsl:apply-templates mode="format" select="."/></italic>
 			</xsl:when>
-			<xsl:when test="name()='strong'">
+			<xsl:when test="name()='strong'or name()='b'">
 				<bold><xsl:apply-templates mode="format" select="."/></bold>
 			</xsl:when>
 			<xsl:when test="name()='u'">
@@ -244,11 +175,23 @@
 				<sub><xsl:apply-templates mode="format" select="."/></sub>
 			</xsl:when>
 			<xsl:when test="name()='fig-citation'">
-				<xref>
-					<xsl:attribute name="ref-type">fig</xsl:attribute>
-					<xsl:attribute name="rid"><xsl:text>F1</xsl:text></xsl:attribute>
-					<xsl:apply-templates mode="format" select="."/>
-				</xref>
+				<xsl:variable name="text" select="normalize-space(.)"/>
+				<xsl:choose>
+					<xsl:when test="$text=''">
+						<xref>
+							<xsl:attribute name="ref-type" select="'fig'"/>
+							<xsl:attribute name="rid"><xsl:text>B1</xsl:text></xsl:attribute>
+							<xsl:text>EMPTY FIGURE REFERENCE</xsl:text>
+						</xref>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:call-template name="resolve-figures">
+							<xsl:with-param name="text" select="$text"/>
+							<xsl:with-param name="number" select="1"/>
+							<xsl:with-param name="max_number" select="count(xref)"/>
+						</xsl:call-template>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:when>
 			<xsl:when test="name()='tbls-citation'">
 				<xref>
@@ -265,11 +208,23 @@
 				</xref>
 			</xsl:when>
 			<xsl:when test="name()='reference-citation'">
-				<xref>
-					<xsl:attribute name="ref-type">bibr</xsl:attribute>
-					<xsl:attribute name="rid"><xsl:text>B1</xsl:text></xsl:attribute>
-					<xsl:apply-templates mode="format" select="."/>
-				</xref>
+				<xsl:variable name="text" select="normalize-space(.)"/>
+				<xsl:choose>
+					<xsl:when test="$text=''">
+						<xref>
+							<xsl:attribute name="ref-type" select="'bibr'"/>
+							<xsl:attribute name="rid"><xsl:text>B1</xsl:text></xsl:attribute>
+							<xsl:text>EMPTY BIBLIOGRAPHIC REFERENCE</xsl:text>
+						</xref>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:call-template name="resolve-reference">
+							<xsl:with-param name="text" select="$text"/>
+							<xsl:with-param name="number" select="1"/>
+							<xsl:with-param name="max_number" select="count(xref)"/>
+						</xsl:call-template>
+						</xsl:otherwise>
+				</xsl:choose>
 			</xsl:when>
 			<xsl:when test="name()='a'">
 				<ext-link>
@@ -278,13 +233,111 @@
 					<xsl:apply-templates mode="format" select="."/>
 				</ext-link>
 			</xsl:when>
+			<xsl:when test="@comment_id!=''"></xsl:when>
 			<xsl:when test="name()='br'">
 				<xsl:text>&lt;br/&gt;</xsl:text>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:copy-of select="."/>
+				<INVALID-TAG><xsl:copy-of select="."/></INVALID-TAG>
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+	
+	
+	<xsl:template name="resolve-reference">
+		<xsl:param name="text" select="''"/>
+		<xsl:param name="number" select="1"/>
+		<xsl:param name="max_number" select="1"/>
+		<xsl:if test="$text!=''">
+			<xsl:variable name="this_text" select="normalize-space(substring-before($text,','))"/>
+			<xsl:variable name="next_text" select="normalize-space(substring-after($text,','))"/>
+			<xsl:variable name="id">
+				<xsl:call-template name="get-reference-id">
+					<xsl:with-param name="rid" select="xref[$number]/@rid"/>
+				</xsl:call-template>
+			</xsl:variable>
+			<xsl:variable name="authors">
+				<xsl:choose>
+					<xsl:when test="$this_text!=''">
+						<xsl:value-of select="$this_text"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="normalize-space($text)"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<xref>
+				<xsl:attribute name="ref-type" select="'bibr'"/>
+				<xsl:attribute name="rid"><xsl:text>B</xsl:text><xsl:value-of select="$id"/></xsl:attribute>
+				<xsl:value-of select="$authors"/>
+			</xref>
+			<xsl:if test="$next_text!=''">
+				<xsl:text>, </xsl:text>
+			</xsl:if>
+			<xsl:call-template name="resolve-reference">
+				<xsl:with-param name="text" select="$next_text"/>
+				<xsl:with-param name="number" select="$number+1"/>
+				<xsl:with-param name="max_number" select="$max_number"/>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="get-reference-id">
+		<xsl:param name="rid" select="''"/>
+		<xsl:for-each select="//node()[@object_id='95']">
+			<xsl:if test="@instance_id=$rid">
+				<xsl:value-of select="position()"/>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+	
+	
+	
+	<xsl:template name="resolve-figures">
+		<xsl:param name="text" select="''"/>
+		<xsl:param name="number" select="1"/>
+		<xsl:param name="max_number" select="1"/>
+		<xsl:if test="$text!=''">
+			<xsl:variable name="this_text" select="normalize-space(substring-before($text,','))"/>
+			<xsl:variable name="next_text" select="normalize-space(substring-after($text,','))"/>
+			<xsl:variable name="id">
+				<xsl:call-template name="get-figure-id">
+					<xsl:with-param name="rid" select="xref[$number]/@rid"/>
+				</xsl:call-template>
+			</xsl:variable>
+			<xsl:variable name="fig">
+				<xsl:choose>
+					<xsl:when test="$this_text!=''">
+						<xsl:value-of select="$this_text"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="normalize-space($text)"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<xref>
+				<xsl:attribute name="ref-type" select="'fig'"/>
+				<xsl:attribute name="rid"><xsl:text>F</xsl:text><xsl:value-of select="$id"/></xsl:attribute>
+				<xsl:value-of select="$fig"/>
+			</xref>
+			<xsl:if test="$next_text!=''">
+				<xsl:text>, </xsl:text>
+			</xsl:if>
+			<xsl:call-template name="resolve-figures">
+				<xsl:with-param name="text" select="$next_text"/>
+				<xsl:with-param name="number" select="$number+1"/>
+				<xsl:with-param name="max_number" select="$max_number"/>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="get-figure-id">
+		<xsl:param name="rid" select="''"/>
+		<xsl:for-each select="//node()[@object_id='221']">
+			<xsl:if test="@instance_id=$rid">
+				<xsl:value-of select="position()"/>
+			</xsl:if>
+		</xsl:for-each>
 	</xsl:template>
 
 
@@ -316,10 +369,10 @@
 	</xsl:template>
 	<xsl:template mode="format-title-nodes" match="*">
 		<xsl:choose>
-			<xsl:when test="name()='em'">
+			<xsl:when test="name()='em' or name()='i'">
 				<italic><xsl:apply-templates mode="format-title" select="."/></italic>
 			</xsl:when>
-			<xsl:when test="name()='strong'">
+			<xsl:when test="name()='strong' or name()='b'">
 				<xsl:apply-templates mode="format-title" select="."/>
 			</xsl:when>
 			<xsl:when test="name()='u'">
@@ -367,6 +420,7 @@
 					<xsl:apply-templates mode="format-title" select="."/>
 				</ext-link>
 			</xsl:when>
+			<xsl:when test="@comment_id!=''"></xsl:when>
 			<xsl:when test="name()='br'">
 				<break/>
 			</xsl:when>
@@ -379,7 +433,7 @@
 		<xsl:for-each select="node()[normalize-space(.)!='' or count(.//*[name()!=''])!=0]">
 			<xsl:choose>
 				<xsl:when test="name()='p'">
-					<xsl:apply-templates mode="format" select="."/>
+					<xsl:apply-templates mode="td-format" select="."/>
 					<xsl:if test="position()!=last()">
 						<!-- <xsl:text>&lt;br/&gt;</xsl:text> -->
 						<break/>
@@ -389,12 +443,96 @@
 					<xsl:value-of select="."/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:apply-templates mode="format-nodes" select="."/>
+					<xsl:apply-templates mode="format-td-nodes" select="."/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:for-each>
 	</xsl:template>
-
+	<xsl:template mode="format-td-nodes" match="*">
+		<xsl:choose>
+			<xsl:when test="name()='em' or name()='i'">
+				<italic><xsl:apply-templates mode="td-format" select="."/></italic>
+			</xsl:when>
+			<xsl:when test="name()='strong'or name()='b'">
+				<bold><xsl:apply-templates mode="td-format" select="."/></bold>
+			</xsl:when>
+			<xsl:when test="name()='u'">
+				<underline><xsl:apply-templates mode="td-format" select="."/></underline>
+			</xsl:when>
+			<xsl:when test="name()='sup'">
+				<sup><xsl:apply-templates mode="td-format" select="."/></sup>
+			</xsl:when>
+			<xsl:when test="name()='sub'">
+				<sub><xsl:apply-templates mode="td-format" select="."/></sub>
+			</xsl:when>
+			<xsl:when test="name()='fig-citation'">
+				<xsl:variable name="text" select="normalize-space(.)"/>
+				<xsl:choose>
+					<xsl:when test="$text=''">
+						<xref>
+							<xsl:attribute name="ref-type" select="'fig'"/>
+							<xsl:attribute name="rid"><xsl:text>B1</xsl:text></xsl:attribute>
+							<xsl:text>EMPTY FIGURE REFERENCE</xsl:text>
+						</xref>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:call-template name="resolve-figures">
+							<xsl:with-param name="text" select="$text"/>
+							<xsl:with-param name="number" select="1"/>
+							<xsl:with-param name="max_number" select="count(xref)"/>
+						</xsl:call-template>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:when test="name()='tbls-citation'">
+				<xref>
+					<xsl:attribute name="ref-type">table</xsl:attribute>
+					<xsl:attribute name="rid"><xsl:text>T1</xsl:text></xsl:attribute>
+					<xsl:apply-templates mode="td-format" select="."/>
+				</xref>
+			</xsl:when>
+			<xsl:when test="name()='sup-files-citation'">
+				<xref>
+					<xsl:attribute name="ref-type">supplementary-material</xsl:attribute>
+					<xsl:attribute name="rid"><xsl:text>S1</xsl:text></xsl:attribute>
+					<xsl:apply-templates mode="td-format" select="."/>
+				</xref>
+			</xsl:when>
+			<xsl:when test="name()='reference-citation'">
+				<xsl:variable name="text" select="normalize-space(.)"/>
+				<xsl:choose>
+					<xsl:when test="$text=''">
+						<xref>
+							<xsl:attribute name="ref-type" select="'bibr'"/>
+							<xsl:attribute name="rid"><xsl:text>B1</xsl:text></xsl:attribute>
+							<xsl:text>EMPTY BIBLIOGRAPHIC REFERENCE</xsl:text>
+						</xref>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:call-template name="resolve-reference">
+							<xsl:with-param name="text" select="$text"/>
+							<xsl:with-param name="number" select="1"/>
+							<xsl:with-param name="max_number" select="count(xref)"/>
+						</xsl:call-template>
+						</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:when test="name()='a'">
+				<ext-link>
+					<xsl:attribute name="ext-link-type">uri</xsl:attribute>
+					<xsl:attribute name="xlink:href"><xsl:value-of select="@href"/></xsl:attribute>
+					<xsl:apply-templates mode="td-format" select="."/>
+				</ext-link>
+			</xsl:when>
+			<xsl:when test="@comment_id!=''"></xsl:when>
+			<xsl:when test="name()='br'">
+				<break/>
+			</xsl:when>
+			<xsl:otherwise>
+				<INVALID-TAG><xsl:copy-of select="."/></INVALID-TAG>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 <!-- 
 #
 #	Some non-trivial sections
@@ -462,7 +600,14 @@
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="../@display_name"/></title>
 				<xsl:for-each select="node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
-					<xsl:apply-templates mode="little-section" select="."/>
+					<xsl:choose>
+						<xsl:when test="@id='329'">
+							<xsl:apply-templates mode="little-section-uri" select="."/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:apply-templates mode="little-section" select="."/>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:for-each>
 				<xsl:apply-templates mode="subsection" select="."/>
 			</sec>
@@ -485,18 +630,25 @@
 		</xsl:if>
 	</xsl:template>
 	<xsl:template mode="taxa" match="*">
+		<xsl:variable name="sci_name" select="normalize-space(fields/node()[@id='451']/value)"/>
+		<xsl:variable name="com_name" select="fields/node()[@id='452']"/>
+		<xsl:variable name="rank" select="normalize-space(fields/node()[@id='453']/value)"/>
 		<tp:taxon-treatment>
 			<tp:nomenclature>
 				<tp:taxon-name>
 					<tp:taxon-name-part>
-						<xsl:attribute name="taxon-name-part-type"><xsl:value-of select="normalize-space(fields/rank/value)"/></xsl:attribute>
-						<xsl:value-of select="normalize-space(fields/specific_name/value)"/>
+						<xsl:attribute name="taxon-name-part-type"><xsl:value-of select="$rank"/></xsl:attribute>
+						<xsl:value-of select="$sci_name"/>
 					</tp:taxon-name-part>
 				</tp:taxon-name>
 				<tp:nomenclature-citation-list>
 					<tp:nomenclature-citation>
-						<tp:taxon-name><xsl:value-of select="normalize-space(fields/specific_name/value)"/></tp:taxon-name>
-						<comment><xsl:value-of select="normalize-space(fields/common_name/value)"/></comment>
+						<tp:taxon-name><xsl:value-of select="$sci_name"/></tp:taxon-name>
+						<comment>
+							<xsl:value-of select="$com_name/@field_name"/>
+							<xsl:text>: </xsl:text>
+							<xsl:value-of select="normalize-space($com_name/value)"/>
+						</comment>
 					</tp:nomenclature-citation>
 				</tp:nomenclature-citation-list>
 			</tp:nomenclature>
@@ -509,7 +661,14 @@
 				<xsl:attribute name="sec-type"><xsl:value-of select="../@display_name"/></xsl:attribute>
 				<title><xsl:value-of select="../@display_name"/></title>
 				<xsl:for-each select="node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
-					<xsl:apply-templates mode="little-section" select="."/>
+					<xsl:choose>
+						<xsl:when test="@id='329'">
+							<xsl:apply-templates mode="little-section-uri" select="."/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:apply-templates mode="little-section" select="."/>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:for-each>
 				<xsl:apply-templates mode="subsection" select="."/>
 			</sec>

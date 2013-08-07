@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs"  xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tp="http://www.plazi.org/taxpub">
-	<xsl:import href="section.xslt" />
 	<xsl:param name="jname" select="/document/document_info/journal_name"/>
 	<xsl:param name="front_classifications" select="/document/objects/article_metadata/classifications"/>
 	<xsl:param name="front_article_title" select="/document/objects/article_metadata/title_and_authors/fields/title/value"/>
@@ -19,15 +18,21 @@
 	</xsl:template>
 	
 	<xsl:template name="front-journal-meta">
+		<xsl:variable name="bdj" select="'Biodiversity Data Journal'"/>
+		<xsl:variable name="bdjabbrev" select="'BDJ'"/>
 		<journal-meta>
-			<journal-id journal-id-type="pmc"><xsl:value-of select="$jname"/></journal-id>
-			<journal-id journal-id-type="publisher-id"><xsl:value-of select="$jname"/></journal-id>
-			<journal-title-group>
-				<journal-title xml:lang="en"><xsl:value-of select="$jname"/></journal-title>
-				<abbrev-journal-title xml:lang="en"><xsl:value-of select="$jname"/></abbrev-journal-title>
-			</journal-title-group>
-			<issn pub-type="ppub">0000-0000</issn>
-			<issn pub-type="epub">0000-0000</issn>
+			<xsl:choose>
+				<xsl:when test="$jname=$bdj">
+					<journal-id journal-id-type="pmc"><xsl:value-of select="$bdj"/></journal-id>
+					<journal-id journal-id-type="publisher-id"><xsl:value-of select="$bdj"/></journal-id>
+					<journal-title-group>
+						<journal-title xml:lang="en"><xsl:value-of select="$bdj"/></journal-title>
+						<abbrev-journal-title xml:lang="en"><xsl:value-of select="$bdjabbrev"/></abbrev-journal-title>
+					</journal-title-group>
+					<issn pub-type="ppub">0000-0000</issn>
+					<issn pub-type="epub">0000-0000</issn>
+				</xsl:when>
+			</xsl:choose>
 			<publisher>
 				<publisher-name>Pensoft Publishers</publisher-name>
 			</publisher>
@@ -131,10 +136,10 @@
 							<p><xsl:value-of select="value"/></p>
 						</author-comment>
 					</xsl:for-each>
-					<xsl:for-each select="address[normalize-space(.)!='']">
+					<xsl:for-each select="node()[@object_id='5'][normalize-space(.)!='']">
 						<xsl:apply-templates mode="front-author-aff" select="fields" />
 					</xsl:for-each>
-					<xsl:for-each select="address[normalize-space(.)!='']">
+					<xsl:for-each select="node()[@object_id='5'][normalize-space(.)!='']">
 						<xsl:apply-templates mode="front-xref-aff" select="."/>
 					</xsl:for-each>
 				</contrib>
@@ -168,10 +173,10 @@
 								<p><xsl:value-of select="value"/></p>
 							</author-comment>
 						</xsl:for-each>
-						<xsl:for-each select="address[normalize-space(.)!='']">
+						<xsl:for-each select="node()[@object_id='5'][normalize-space(.)!='']">
 							<xsl:apply-templates mode="front-author-aff" select="fields" />
 						</xsl:for-each>
-						<xsl:for-each select="address[normalize-space(.)!='']">
+						<xsl:for-each select="node()[@object_id='5'][normalize-space(.)!='']">
 							<xsl:apply-templates mode="front-xref-aff" select="."/>
 						</xsl:for-each>
 					</contrib>
@@ -236,7 +241,7 @@
 	<xsl:template name="front-affiliations">
 		<xsl:variable name="addr" select="/document/objects/article_metadata"/>
 		<xsl:variable name="order"><xsl:call-template name="front-aff-order"/></xsl:variable>
-		<xsl:for-each select="$addr//address">
+		<xsl:for-each select="$addr//node()[@object_id='5']">
 			<xsl:if test="contains($order, string(position()))">
 				<xsl:variable name="num">
 					<xsl:call-template name="position">
@@ -299,7 +304,7 @@
 	<xsl:template name="front-aff-order">
 		<xsl:variable name="addr" select="/document/objects/article_metadata"/>
 		<xsl:variable name="order"><xsl:call-template name="front-get-aff-order"/></xsl:variable>
-		<xsl:for-each select="$addr//address">
+		<xsl:for-each select="$addr//node()[@object_id='5']">
 			<xsl:if test="contains($order, string(position()))">
 				<xsl:value-of select="position()"/>
 				<xsl:text>,</xsl:text>
@@ -308,7 +313,7 @@
 	</xsl:template>
 	<xsl:template name="front-get-aff-order">
 		<xsl:variable name="addr" select="/document/objects/article_metadata"/>
-		<xsl:for-each select="$addr//address">
+		<xsl:for-each select="$addr//node()[@object_id='5']">
 			<xsl:variable name="addrnum">
 				<xsl:apply-templates mode="front-get-aff-number" select="."/>
 			</xsl:variable>
@@ -321,7 +326,7 @@
 	</xsl:template>
 	<xsl:template mode="front-get-aff-number" match="*">
 		<xsl:variable name="inaddr" select="normalize-space(.)"/>
-		<xsl:for-each select="/document/objects/article_metadata//address">
+		<xsl:for-each select="/document/objects/article_metadata//node()[@object_id='5']">
 			<xsl:variable name="outaddr" select="normalize-space(.)"/>
 			<xsl:if test="$inaddr=$outaddr">
 				<xsl:value-of select="position()"/>
@@ -476,13 +481,13 @@
 	<xsl:template name="front-counts">
 		<counts>
 			<fig-count>
-				<xsl:attribute name="count"><xsl:value-of select="count(/document/figures/figure)"/></xsl:attribute>
+				<xsl:attribute name="count"><xsl:value-of select="count(//figures/figure)"/></xsl:attribute>
 			</fig-count>
 			<table-count>
-				<xsl:attribute name="count"><xsl:value-of select="count(/document/tables/table)"/></xsl:attribute>
+				<xsl:attribute name="count"><xsl:value-of select="count(//tables/table)"/></xsl:attribute>
 			</table-count>
 			<ref-count>
-				<xsl:attribute name="count"><xsl:value-of select="count(/document/objects/references/reference)"/></xsl:attribute>
+				<xsl:attribute name="count"><xsl:value-of select="count(//references/reference)"/></xsl:attribute>
 			</ref-count>
 		</counts>
 	</xsl:template>
