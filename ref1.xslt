@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs"  xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tp="http://www.plazi.org/taxpub">
-<!-- 	<xsl:import href="section.xslt" /> -->
-	
 	<xsl:template name="reference">
 		<xsl:for-each select="/document/objects/references/reference">
 			<ref>
@@ -173,7 +171,6 @@
 			</xsl:if>
 		</element-citation>
 	</xsl:template>
-
 
 	<xsl:template mode="ref-author-name" match="*">
 		<person-group person-group-type="author">

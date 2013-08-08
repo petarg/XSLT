@@ -263,7 +263,7 @@
 			<tp:taxon-status xlink:type="simple"><xsl:value-of select="$status"/></tp:taxon-status>
 		</xsl:if>
 	</xsl:template>
-	
+
 	<xsl:template name="treatment-materials-sections">
 		<xsl:param name="materials" select="''"/>
 		<xsl:param name="sections" select="''"/>
@@ -311,7 +311,7 @@
 			<xsl:apply-templates mode="subsection" select="."/>
 		</tp:treatment-sec>
 	</xsl:template>
-	
+
 	<xsl:template mode="materials" match="*">
 		<xsl:if test="count(material//*[normalize-space(value)!=''])!=0">
 			<tp:treatment-sec>
@@ -363,7 +363,4 @@
 			<xsl:if test="position()!=last()"><xsl:text>; </xsl:text></xsl:if>
 		</xsl:for-each>
 	</xsl:template>
-
-
-
 </xsl:stylesheet>

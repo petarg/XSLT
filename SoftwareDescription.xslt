@@ -19,8 +19,7 @@
 	<xsl:import href="back.xslt" />
 	<xsl:import href="floats.xslt" />
 
-	<xsl:output method="xml" encoding="UTF-8" indent="yes"
-		doctype-system="http://pmt.pensoft.eu/lib/publishing/tax-treatment-NS0.dtd" />
+	<xsl:output method="xml" encoding="UTF-8" indent="yes" doctype-system="http://pmt.pensoft.eu/lib/publishing/tax-treatment-NS0.dtd" />
 
 	<xsl:template match="/">
 		<article article-type="research-article" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tp="http://www.plazi.org/taxpub">

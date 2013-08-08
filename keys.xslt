@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs"  xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tp="http://www.plazi.org/taxpub">
-<!-- 	<xsl:import href="section.xslt" /> -->
-	
 	<xsl:template mode="keys" match="*">
 		<sec>
 			<xsl:attribute name="sec-type">Identification Keys</xsl:attribute>
@@ -9,16 +7,15 @@
 			<xsl:apply-templates mode="key" select="." />
 		</sec>
 	</xsl:template>
-
 	<xsl:template mode="key" match="*">
-			<xsl:for-each select="identification_key">
-				<xsl:variable name="title" select="fields/title/value"/>
-				<sec>
-					<xsl:attribute name="sec-type"><xsl:value-of select="normalize-space($title)"/></xsl:attribute>
-					<title><xsl:apply-templates mode="title" select="$title"/></title>
-					<table-wrap content-type="key" position="anchor" orientation="portrait">
-						<table>
-							<tbody>
+		<xsl:for-each select="identification_key">
+			<xsl:variable name="title" select="fields/title/value"/>
+			<sec>
+				<xsl:attribute name="sec-type"><xsl:value-of select="normalize-space($title)"/></xsl:attribute>
+				<title><xsl:apply-templates mode="title" select="$title"/></title>
+				<table-wrap content-type="key" position="anchor" orientation="portrait">
+					<table>
+						<tbody>
 							<xsl:for-each select="key_couplet">
 								<xsl:variable name="ttaxon" select="fields/thesis_taxon_name/value"/>
 								<xsl:variable name="tnext" select="fields/thesis_next_couplet/value"/>
@@ -75,10 +72,10 @@
 									</td>
 								</tr>
 							</xsl:for-each>
-							</tbody>
-						</table>
-					</table-wrap>
-				</sec>
-			</xsl:for-each>
+						</tbody>
+					</table>
+				</table-wrap>
+			</sec>
+		</xsl:for-each>
 	</xsl:template>
 </xsl:stylesheet>

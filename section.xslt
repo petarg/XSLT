@@ -242,8 +242,7 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	
-	
+
 	<xsl:template name="resolve-reference">
 		<xsl:param name="text" select="''"/>
 		<xsl:param name="number" select="1"/>
@@ -281,7 +280,7 @@
 			</xsl:call-template>
 		</xsl:if>
 	</xsl:template>
-	
+
 	<xsl:template name="get-reference-id">
 		<xsl:param name="rid" select="''"/>
 		<xsl:for-each select="//node()[@object_id='95']">
@@ -290,9 +289,7 @@
 			</xsl:if>
 		</xsl:for-each>
 	</xsl:template>
-	
-	
-	
+
 	<xsl:template name="resolve-figures">
 		<xsl:param name="text" select="''"/>
 		<xsl:param name="number" select="1"/>
@@ -426,7 +423,6 @@
 			</xsl:when>
 		</xsl:choose>
 	</xsl:template>
-
 
 <!-- FORMAT OF TABLE DATA -->
 	<xsl:template mode="td-format" match="*">
