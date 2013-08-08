@@ -128,28 +128,65 @@
 		</xsl:for-each>
 	</xsl:template>
 	<xsl:template mode="checklist-taxon-name-short" match="*">
-		<xsl:for-each select="genus[normalize-space(value)!='']"><xsl:value-of select="value"/></xsl:for-each>
-		<xsl:for-each select="subgenus[normalize-space(value)!='']">
-			<xsl:text> (</xsl:text>
-			<xsl:value-of select="value"/>
-			<xsl:text>)</xsl:text>
-		</xsl:for-each>
-		<xsl:for-each select="species[normalize-space(value)!='']">
-			<xsl:text> </xsl:text>
-			<xsl:value-of select="value"/>
-		</xsl:for-each>
-		<xsl:for-each select="subspecies[normalize-space(value)!='']">
-			<xsl:text> </xsl:text>
-			<xsl:value-of select="value"/>
-		</xsl:for-each>
-		<xsl:for-each select="variety[normalize-space(value)!='']">
-			<xsl:text> var. </xsl:text>
-			<xsl:value-of select="value"/>
-		</xsl:for-each>
-		<xsl:for-each select="form[normalize-space(value)!='']">
-			<xsl:text> f. </xsl:text>
-			<xsl:value-of select="value"/>
-		</xsl:for-each>
+		<xsl:variable name="genus" select="normalize-space(genus/value)"/>
+		<xsl:variable name="species" select = "normalize-space(species/value)"/>
+		<xsl:choose>
+			<xsl:when test="$genus!='' and $species!=''">
+				<xsl:apply-templates mode="checklist-taxon-name-part" select="genus"/>
+				<xsl:apply-templates mode="checklist-taxon-name-part" select="species"/>
+			</xsl:when>
+			<xsl:when test="$genus!=''">
+				<xsl:apply-templates mode="checklist-taxon-name-part" select="genus"/>
+			</xsl:when>
+			<xsl:when test="$species!=''">
+				<xsl:apply-templates mode="checklist-taxon-name-part" select="species"/>
+			</xsl:when>
+			<xsl:when test="normalize-space(tribe/value)!=''">
+				<xsl:apply-templates mode="checklist-taxon-name-part" select="tribe"/>
+			</xsl:when>
+			<xsl:when test="normalize-space(subfamily/value)!=''">
+				<xsl:apply-templates mode="checklist-taxon-name-part" select="subfamily"/>
+			</xsl:when>
+			<xsl:when test="normalize-space(family/value)!=''">
+				<xsl:apply-templates mode="checklist-taxon-name-part" select="family"/>
+			</xsl:when>
+			<xsl:when test="normalize-space(superfamily/value)!=''">
+				<xsl:apply-templates mode="checklist-taxon-name-part" select="superfamily"/>
+			</xsl:when>
+			<xsl:when test="normalize-space(infraorder/value)!=''">
+				<xsl:apply-templates mode="checklist-taxon-name-part" select="infraorder"/>
+			</xsl:when>
+			<xsl:when test="normalize-space(suborder/value)!=''">
+				<xsl:apply-templates mode="checklist-taxon-name-part" select="suborder"/>
+			</xsl:when>
+			<xsl:when test="normalize-space(order/value)!=''">
+				<xsl:apply-templates mode="checklist-taxon-name-part" select="order"/>
+			</xsl:when>
+			<xsl:when test="normalize-space(superorder/value)!=''">
+				<xsl:apply-templates mode="checklist-taxon-name-part" select="superorder"/>
+			</xsl:when>
+			<xsl:when test="normalize-space(subclass/value)!=''">
+				<xsl:apply-templates mode="checklist-taxon-name-part" select="subclass"/>
+			</xsl:when>
+			<xsl:when test="normalize-space(class/value)!=''">
+				<xsl:apply-templates mode="checklist-taxon-name-part" select="class"/>
+			</xsl:when>
+			<xsl:when test="normalize-space(superclass/value)!=''">
+				<xsl:apply-templates mode="checklist-taxon-name-part" select="superclass"/>
+			</xsl:when>
+			<xsl:when test="normalize-space(subphylum/value)!=''">
+				<xsl:apply-templates mode="checklist-taxon-name-part" select="subphylum"/>
+			</xsl:when>
+			<xsl:when test="normalize-space(phylum/value)!=''">
+				<xsl:apply-templates mode="checklist-taxon-name-part" select="phylum"/>
+			</xsl:when>
+			<xsl:when test="normalize-space(subkingdom/value)!=''">
+				<xsl:apply-templates mode="checklist-taxon-name-part" select="subkingdom"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates mode="checklist-taxon-name-part" select="kingdom"/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template mode="checklist-eco-interactions" match="*">
