@@ -180,7 +180,7 @@
 					<xsl:when test="$text=''">
 						<xref>
 							<xsl:attribute name="ref-type" select="'fig'"/>
-							<xsl:attribute name="rid"><xsl:text>B1</xsl:text></xsl:attribute>
+							<xsl:attribute name="rid"><xsl:text>F1</xsl:text></xsl:attribute>
 							<xsl:text>EMPTY FIGURE REFERENCE</xsl:text>
 						</xref>
 					</xsl:when>

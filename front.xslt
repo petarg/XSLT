@@ -425,11 +425,19 @@
 		</xsl:for-each>
 	</xsl:template>
 	<xsl:template mode="kwd" match="*">
-		<!-- <kwd><xsl:apply-templates mode="format" select="."/></kwd> -->
-		<xsl:for-each select="node()">
+		<xsl:variable name="kwdsf"><xsl:apply-templates mode="p" select="."/></xsl:variable>
+		<xsl:variable name="kwds"><xsl:apply-templates mode="xml-to-string" select="$kwdsf"/></xsl:variable>
+		<xsl:variable name="noded">
 			<xsl:call-template name="kwd">
-				<xsl:with-param name="string" select="normalize-space(.)"/>
+				<xsl:with-param name="string" select="normalize-space($kwds)"/>
 			</xsl:call-template>
+		</xsl:variable>
+		<xsl:for-each select="$noded/kwd">
+			<kwd>
+				<xsl:call-template name="text-to-xml">
+					<xsl:with-param name="text" select="normalize-space(.)"/>
+				</xsl:call-template>
+			</kwd>
 		</xsl:for-each>
 	</xsl:template>
 	<xsl:template name="kwd">
@@ -458,6 +466,55 @@
 				<xsl:if test="$kwd!=''">
 					<kwd><xsl:value-of select="$kwd"/></kwd>
 				</xsl:if>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template mode="xml-to-string" match="*">
+		<xsl:for-each select="node()">
+			<xsl:choose>
+				<xsl:when test="name()='p'">
+					<xsl:apply-templates mode="xml-to-string" select="."/>
+				</xsl:when>
+				<xsl:when test="name()=''">
+					<xsl:value-of select="."/>
+				</xsl:when>
+				<xsl:when test="name()='ul' or name()='ol'">
+					<!-- Skip this tags -->
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:text>{</xsl:text>
+					<xsl:value-of select="name()"/>
+					<xsl:text>}</xsl:text>
+					<xsl:apply-templates mode="xml-to-string" select="."/>
+					<xsl:text>{/</xsl:text>
+					<xsl:value-of select="name()"/>
+					<xsl:text>}</xsl:text>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:for-each>
+	</xsl:template>
+	<xsl:template name="text-to-xml">
+		<xsl:param name="text" select="''"/>
+		<xsl:choose>
+			<xsl:when test="contains($text,'}')=true() and contains($text,'{')=true()">
+				<xsl:variable name="first_tag" select="substring-before(substring-after($text,'{'),'}')"/>
+				<xsl:variable name="l"><xsl:text>{</xsl:text><xsl:value-of select="$first_tag"/><xsl:text>}</xsl:text></xsl:variable>
+				<xsl:variable name="r"><xsl:text>{/</xsl:text><xsl:value-of select="$first_tag"/><xsl:text>}</xsl:text></xsl:variable>
+				<xsl:variable name="before" select="substring-before($text,$l)"/>
+				<xsl:variable name="after" select="substring-after($text,$r)"/>
+				<xsl:variable name="in" select="substring-before(substring-after($text,$l),$r)"/>
+				<xsl:value-of select="$before"/>
+				<xsl:element name="{$first_tag}">
+					<xsl:call-template name="text-to-xml">
+						<xsl:with-param name="text" select="$in"/>
+					</xsl:call-template>
+				</xsl:element>
+				<xsl:call-template name="text-to-xml">
+					<xsl:with-param name="text" select="$after"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$text"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
