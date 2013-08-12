@@ -106,58 +106,58 @@
 				</xsl:for-each>
 				<xsl:for-each select="fields/node()[@id='490'][normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]"><!-- non-empty table_editor -->
 					<xsl:for-each select="value">
-						<xsl:for-each select="node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
-							<xsl:choose>
-								<xsl:when test="name()='table'">
-									<xsl:variable name="align" select="@align"/>
-									<xsl:for-each select="caption[normalize-space(.)!='']">
-										<long-desc><xsl:value-of select="normalize-space(.)"/></long-desc>
-									</xsl:for-each>
-									<table>
-										<xsl:if test="normalize-space(@border)"><xsl:attribute name="border" select="@border"/></xsl:if>
-										<xsl:if test="normalize-space(@cellpadding)"><xsl:attribute name="cellpadding" select="@cellpadding"/></xsl:if>
-										<xsl:if test="normalize-space(@cellspacing)"><xsl:attribute name="cellspacing" select="@cellspacing"/></xsl:if>
-										<xsl:if test="normalize-space(@style)"><xsl:attribute name="style" select="@style"/></xsl:if>
-										<xsl:if test="normalize-space(@summary)"><xsl:attribute name="summary" select="@summary"/></xsl:if>
-										<xsl:for-each select="thead[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
-											<thead>
-												<xsl:for-each select="tr[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
-													<tr>
-														<xsl:for-each select="th">
-															<th>
-																<xsl:attribute name="rowspan">1</xsl:attribute>
-																<xsl:attribute name="colspan">1</xsl:attribute>
-																<xsl:if test="$align!=''"><xsl:attribute name="align" select="$align"/></xsl:if>
-																<xsl:apply-templates mode="td-format" select="."/>
-															</th>
-														</xsl:for-each>
-													</tr>
+						<xsl:for-each select="table">
+							<xsl:variable name="align" select="@align"/>
+							<xsl:for-each select="caption[normalize-space(.)!='']">
+								<long-desc><xsl:value-of select="normalize-space(.)"/></long-desc>
+							</xsl:for-each>
+							<table>
+								<xsl:if test="normalize-space(@border)"><xsl:attribute name="border" select="@border"/></xsl:if>
+								<xsl:if test="normalize-space(@cellpadding)"><xsl:attribute name="cellpadding" select="@cellpadding"/></xsl:if>
+								<xsl:if test="normalize-space(@cellspacing)"><xsl:attribute name="cellspacing" select="@cellspacing"/></xsl:if>
+								<xsl:if test="normalize-space(@style)"><xsl:attribute name="style" select="@style"/></xsl:if>
+								<xsl:if test="normalize-space(@summary)"><xsl:attribute name="summary" select="@summary"/></xsl:if>
+								<xsl:for-each select="thead[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+									<thead>
+										<xsl:for-each select="tr[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+											<tr>
+												<xsl:for-each select="th">
+													<th>
+														<xsl:attribute name="rowspan">1</xsl:attribute>
+														<xsl:attribute name="colspan">1</xsl:attribute>
+														<xsl:if test="$align!=''"><xsl:attribute name="align" select="$align"/></xsl:if>
+														<xsl:apply-templates mode="td-format" select="."/>
+													</th>
 												</xsl:for-each>
-											</thead>
+											</tr>
 										</xsl:for-each>
-										<xsl:for-each select="tbody[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
-											<tbody>
-												<xsl:for-each select="tr[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
-													<tr>
-														<xsl:for-each select="td">
-															<td>
-																<xsl:attribute name="rowspan">1</xsl:attribute>
-																<xsl:attribute name="colspan">1</xsl:attribute>
-																<xsl:if test="$align!=''"><xsl:attribute name="align" select="$align"/></xsl:if>
-																<xsl:apply-templates mode="td-format" select="."/>
-															</td>
-														</xsl:for-each>
-													</tr>
+									</thead>
+								</xsl:for-each>
+								<xsl:for-each select="tbody[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+									<tbody>
+										<xsl:for-each select="tr[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+											<tr>
+												<xsl:for-each select="td">
+													<td>
+														<xsl:attribute name="rowspan">1</xsl:attribute>
+														<xsl:attribute name="colspan">1</xsl:attribute>
+														<xsl:if test="$align!=''"><xsl:attribute name="align" select="$align"/></xsl:if>
+														<xsl:apply-templates mode="td-format" select="."/>
+													</td>
 												</xsl:for-each>
-											</tbody>
+											</tr>
 										</xsl:for-each>
-									</table>
-								</xsl:when>
-								<xsl:when test="name()='p'">
-									<preformat><xsl:apply-templates mode="format" select="."/></preformat>
-								</xsl:when>
-							</xsl:choose>
+									</tbody>
+								</xsl:for-each>
+							</table>
 						</xsl:for-each>
+						<xsl:if test="count(node()[name()='p'][normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0])">
+							<table-wrap-foot>
+								<xsl:for-each select="node()[name()='p'][normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+									<p><xsl:apply-templates mode="format" select="."/></p>
+								</xsl:for-each>
+							</table-wrap-foot>
+						</xsl:if>
 					</xsl:for-each>
 				</xsl:for-each>
 			</table-wrap>

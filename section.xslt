@@ -111,6 +111,7 @@
 						<xsl:when test="name()='ol'">
 							<xsl:apply-templates mode="section-ordered-list" select="."/>
 						</xsl:when>
+						<xsl:when test="name()='br'"></xsl:when>
 						<xsl:otherwise>
 							<INVALID-TAG><xsl:copy-of select="."/></INVALID-TAG>
 						</xsl:otherwise>
