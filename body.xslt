@@ -63,8 +63,11 @@
 					<xsl:when test="@object_id='126'">
 						<xsl:apply-templates mode="data-resources" select="."/>
 					</xsl:when>
+					<xsl:when test="@object_id='165'">
+						<xsl:apply-templates mode="editorial-main-text" select="."/>
+					</xsl:when>
 					<!-- TRIVIAL SECTIONS -->
-					<xsl:when test="@object_id!='14' and @object_id!='21' and @object_id!='56' and @object_id!='57' and @object_id!='202' and @object_id!='237' and @object_id!='236'">
+					<xsl:when test="@object_id!='14' and @object_id!='152' and @object_id!='21' and @object_id!='56' and @object_id!='57' and @object_id!='202' and @object_id!='237' and @object_id!='236'">
 						<xsl:apply-templates mode="section" select="." >
 							<xsl:with-param name="title"><xsl:value-of select="normalize-space(@display_name)"/></xsl:with-param>
 						</xsl:apply-templates>

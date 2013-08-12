@@ -337,7 +337,6 @@
 		</xsl:for-each>
 	</xsl:template>
 
-
 <!-- TITLE RELATED TEMPLATES -->
 	<xsl:template mode="title" match="*">
 		<xsl:choose>
@@ -791,6 +790,24 @@
 			<xsl:apply-templates mode="data-p" select="$formation"/>
 			<xsl:apply-templates mode="data-p" select="$data_s"/>
 			<xsl:apply-templates mode="data-p" select="$data_e"/>
+		</sec>
+	</xsl:template>
+	
+	<xsl:template mode="editorial-main-text" match="*">
+		<xsl:variable name="title" select="fields/node()[@id='413']/value"/>
+		<xsl:variable name="main" select="fields/node()[@id='412']/value"/>
+		<sec>
+			<xsl:attribute name="sec-type" select="@display_name"/>
+			<xsl:choose>
+				<xsl:when test="normalize-space($title)=''">
+					<title><xsl:text>Main Text</xsl:text></title>
+				</xsl:when>
+				<xsl:otherwise>
+					<title><xsl:apply-templates mode="title" select="$title"/></title>
+				</xsl:otherwise>
+			</xsl:choose>
+			<xsl:apply-templates mode="p" select="$main"/>
+			<xsl:apply-templates mode="subsection" select="."/>
 		</sec>
 	</xsl:template>
 </xsl:stylesheet>
