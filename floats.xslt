@@ -23,105 +23,105 @@
 				</xsl:call-template>
 			</xsl:variable>
 			
-				<xsl:for-each select="node()">
-					<xsl:choose>
-						<xsl:when test="@object_id='222'"><!-- Image -->
-							<fig>
-								<xsl:attribute name="id"><xsl:text>F</xsl:text><xsl:value-of select="$num"/></xsl:attribute>
-								<xsl:attribute name="position">float</xsl:attribute>
-								<xsl:attribute name="orientation">portrait</xsl:attribute>
-								<label><xsl:value-of select="$type"/><xsl:text> </xsl:text><xsl:value-of select="$num"/><xsl:text>.</xsl:text></label>
-								<xsl:for-each select="fields/node()[@id='482']">
-									<caption><xsl:apply-templates mode="p" select="value"/></caption>
+			<xsl:for-each select="node()">
+				<xsl:choose>
+					<xsl:when test="@object_id='222'"><!-- Image -->
+						<fig>
+							<xsl:attribute name="id"><xsl:text>F</xsl:text><xsl:value-of select="$num"/></xsl:attribute>
+							<xsl:attribute name="position">float</xsl:attribute>
+							<xsl:attribute name="orientation">portrait</xsl:attribute>
+							<label><xsl:value-of select="$type"/><xsl:text> </xsl:text><xsl:value-of select="$num"/><xsl:text>.</xsl:text></label>
+							<xsl:for-each select="fields/node()[@id='482']">
+								<caption><xsl:apply-templates mode="p" select="value"/></caption>
+							</xsl:for-each>
+							<xsl:for-each select="fields/node()[@id='483']">
+								<graphic>
+									<xsl:attribute name="xlink:href"><xsl:value-of select="normalize-space(value)"/><xsl:text>.jpg</xsl:text></xsl:attribute>
+									<xsl:attribute name="position">float</xsl:attribute>
+									<xsl:attribute name="orientation">portrait</xsl:attribute>
+									<xsl:attribute name="xlink:type">simple</xsl:attribute>
+								</graphic>
+							</xsl:for-each>
+						</fig>
+					</xsl:when>
+					<xsl:when test="@object_id='223'"><!-- Video -->
+						<fig>
+							<xsl:attribute name="id"><xsl:text>F</xsl:text><xsl:value-of select="$num"/></xsl:attribute>
+							<xsl:attribute name="position">float</xsl:attribute>
+							<xsl:attribute name="orientation">portrait</xsl:attribute>
+							<label><xsl:value-of select="$type"/><xsl:text> </xsl:text><xsl:value-of select="$num"/><xsl:text>.</xsl:text></label>
+							<xsl:for-each select="fields/node()[@id='482']">
+								<caption><xsl:apply-templates mode="p" select="value"/></caption>
+							</xsl:for-each>
+							<xsl:for-each select="fields/node()[@id='486']">
+								<media>
+									<xsl:attribute name="xlink:href" select="normalize-space(value)"/>
+									<xsl:attribute name="position">float</xsl:attribute>
+									<xsl:attribute name="orientation">portrait</xsl:attribute>
+								</media>
+							</xsl:for-each>
+						</fig>
+					</xsl:when>
+					<xsl:when test="@object_id='224'"><!-- Plates -->
+						<fig-group>
+							<xsl:attribute name="id"><xsl:text>F</xsl:text><xsl:value-of select="$num"/></xsl:attribute>
+							<xsl:attribute name="position">float</xsl:attribute>
+							<xsl:attribute name="orientation">portrait</xsl:attribute>
+							<xsl:for-each select="fields/node()[@id='482']">
+								<caption><xsl:apply-templates mode="p" select="value"/></caption>
+							</xsl:for-each>
+							<xsl:for-each select="node()[@object_id='235']"><!-- Plate type wrapper -->
+								<xsl:for-each select="./*/node()"><!-- Plate part -->
+									<xsl:choose>
+										<xsl:when test="@object_id='225'"><!-- Plate part a -->
+											<xsl:apply-templates mode="plate-part" select=".">
+												<xsl:with-param name="fig_num" select="$num"/>
+												<xsl:with-param name="label" select="'a'"/>
+												<xsl:with-param name="type" select="$type"/>
+											</xsl:apply-templates>
+										</xsl:when>
+										<xsl:when test="@object_id='226'"><!-- Plate part b -->
+											<xsl:apply-templates mode="plate-part" select=".">
+												<xsl:with-param name="fig_num" select="$num"/>
+												<xsl:with-param name="label" select="'b'"/>
+												<xsl:with-param name="type" select="$type"/>
+											</xsl:apply-templates>
+										</xsl:when>
+										<xsl:when test="@object_id='227'"><!-- Plate part c -->
+											<xsl:apply-templates mode="plate-part" select=".">
+												<xsl:with-param name="fig_num" select="$num"/>
+												<xsl:with-param name="label" select="'c'"/>
+												<xsl:with-param name="type" select="$type"/>
+											</xsl:apply-templates>
+										</xsl:when>
+										<xsl:when test="@object_id='228'"><!-- Plate part d -->
+											<xsl:apply-templates mode="plate-part" select=".">
+												<xsl:with-param name="fig_num" select="$num"/>
+												<xsl:with-param name="label" select="'d'"/>
+												<xsl:with-param name="type" select="$type"/>
+											</xsl:apply-templates>
+										</xsl:when>
+										<xsl:when test="@object_id='229'"><!-- Plate part e -->
+											<xsl:apply-templates mode="plate-part" select=".">
+												<xsl:with-param name="fig_num" select="$num"/>
+												<xsl:with-param name="label" select="'e'"/>
+												<xsl:with-param name="type" select="$type"/>
+											</xsl:apply-templates>
+										</xsl:when>
+										<xsl:when test="@object_id='230'"><!-- Plate part f -->
+											<xsl:apply-templates mode="plate-part" select=".">
+												<xsl:with-param name="fig_num" select="$num"/>
+												<xsl:with-param name="label" select="'f'"/>
+												<xsl:with-param name="type" select="$type"/>
+											</xsl:apply-templates>
+										</xsl:when>
+									</xsl:choose>
 								</xsl:for-each>
-								<xsl:for-each select="fields/node()[@id='483']">
-									<graphic>
-										<xsl:attribute name="xlink:href"><xsl:value-of select="normalize-space(value)"/><xsl:text>.jpg</xsl:text></xsl:attribute>
-										<xsl:attribute name="position">float</xsl:attribute>
-										<xsl:attribute name="orientation">portrait</xsl:attribute>
-										<xsl:attribute name="xlink:type">simple</xsl:attribute>
-									</graphic>
-								</xsl:for-each>
-							</fig>
-						</xsl:when>
-						<xsl:when test="@object_id='223'"><!-- Video -->
-							<fig>
-								<xsl:attribute name="id"><xsl:text>F</xsl:text><xsl:value-of select="$num"/></xsl:attribute>
-								<xsl:attribute name="position">float</xsl:attribute>
-								<xsl:attribute name="orientation">portrait</xsl:attribute>
-								<label><xsl:value-of select="$type"/><xsl:text> </xsl:text><xsl:value-of select="$num"/><xsl:text>.</xsl:text></label>
-								<xsl:for-each select="fields/node()[@id='482']">
-									<caption><xsl:apply-templates mode="p" select="value"/></caption>
-								</xsl:for-each>
-								<xsl:for-each select="fields/node()[@id='486']">
-									<media>
-										<xsl:attribute name="xlink:href" select="normalize-space(value)"/>
-										<xsl:attribute name="position">float</xsl:attribute>
-										<xsl:attribute name="orientation">portrait</xsl:attribute>
-									</media>
-								</xsl:for-each>
-							</fig>
-						</xsl:when>
-						<xsl:when test="@object_id='224'"><!-- Plates -->
-							<fig-group>
-								<xsl:attribute name="id"><xsl:text>F</xsl:text><xsl:value-of select="$num"/></xsl:attribute>
-								<xsl:attribute name="position">float</xsl:attribute>
-								<xsl:attribute name="orientation">portrait</xsl:attribute>
-								<xsl:for-each select="fields/node()[@id='482']">
-									<caption><xsl:apply-templates mode="p" select="value"/></caption>
-								</xsl:for-each>
-								<xsl:for-each select="node()[@object_id='235']"><!-- Plate type wrapper -->
-									<xsl:for-each select="./*/node()"><!-- Plate part -->
-										<xsl:choose>
-											<xsl:when test="@object_id='225'"><!-- Plate part a -->
-												<xsl:apply-templates mode="plate-part" select=".">
-													<xsl:with-param name="fig_num" select="$num"/>
-													<xsl:with-param name="label" select="'a'"/>
-													<xsl:with-param name="type" select="$type"/>
-												</xsl:apply-templates>
-											</xsl:when>
-											<xsl:when test="@object_id='226'"><!-- Plate part b -->
-												<xsl:apply-templates mode="plate-part" select=".">
-													<xsl:with-param name="fig_num" select="$num"/>
-													<xsl:with-param name="label" select="'b'"/>
-													<xsl:with-param name="type" select="$type"/>
-												</xsl:apply-templates>
-											</xsl:when>
-											<xsl:when test="@object_id='227'"><!-- Plate part c -->
-												<xsl:apply-templates mode="plate-part" select=".">
-													<xsl:with-param name="fig_num" select="$num"/>
-													<xsl:with-param name="label" select="'c'"/>
-													<xsl:with-param name="type" select="$type"/>
-												</xsl:apply-templates>
-											</xsl:when>
-											<xsl:when test="@object_id='228'"><!-- Plate part d -->
-												<xsl:apply-templates mode="plate-part" select=".">
-													<xsl:with-param name="fig_num" select="$num"/>
-													<xsl:with-param name="label" select="'d'"/>
-													<xsl:with-param name="type" select="$type"/>
-												</xsl:apply-templates>
-											</xsl:when>
-											<xsl:when test="@object_id='229'"><!-- Plate part e -->
-												<xsl:apply-templates mode="plate-part" select=".">
-													<xsl:with-param name="fig_num" select="$num"/>
-													<xsl:with-param name="label" select="'e'"/>
-													<xsl:with-param name="type" select="$type"/>
-												</xsl:apply-templates>
-											</xsl:when>
-											<xsl:when test="@object_id='230'"><!-- Plate part f -->
-												<xsl:apply-templates mode="plate-part" select=".">
-													<xsl:with-param name="fig_num" select="$num"/>
-													<xsl:with-param name="label" select="'f'"/>
-													<xsl:with-param name="type" select="$type"/>
-												</xsl:apply-templates>
-											</xsl:when>
-										</xsl:choose>
-									</xsl:for-each>
-								</xsl:for-each>
-							</fig-group>
-						</xsl:when>
-					</xsl:choose>
-				</xsl:for-each>
+							</xsl:for-each>
+						</fig-group>
+					</xsl:when>
+				</xsl:choose>
+			</xsl:for-each>
 		</xsl:for-each>
 	</xsl:template>
 	<xsl:template name="figure-type">

@@ -20,18 +20,18 @@
 		<element-citation>
 			<xsl:attribute name="publication-type">book</xsl:attribute>
 			<xsl:apply-templates mode="ref-author-name" select="node()[@object_id='92']"/>
-			<xsl:apply-templates mode="ref-year" select="."/>
-			<xsl:apply-templates mode="ref-book-title" select="."/>
-			<xsl:apply-templates mode="ref-translated-title" select="."/>
-			<xsl:apply-templates mode="ref-edition" select="."/>
-			<xsl:apply-templates mode="ref-volume" select="."/>
-			<xsl:apply-templates mode="ref-publisher-name" select="."/>
-			<xsl:apply-templates mode="ref-publisher-loc" select="."/>
-			<xsl:apply-templates mode="ref-number-of-pages" select="."/>
-			<xsl:apply-templates mode="ref-lang" select="."/>
-			<xsl:apply-templates mode="ref-uri" select="."/>
-			<xsl:apply-templates mode="ref-isbn" select="."/>
-			<xsl:apply-templates mode="ref-doi" select="."/>
+			<xsl:call-template name="ref-year"/>
+			<xsl:call-template name="ref-book-title"/>
+			<xsl:call-template name="ref-translated-title"/>
+			<xsl:call-template name="ref-edition"/>
+			<xsl:call-template name="ref-volume"/>
+			<xsl:call-template name="ref-publisher-name"/>
+			<xsl:call-template name="ref-publisher-loc"/>
+			<xsl:call-template name="ref-number-of-pages"/>
+			<xsl:call-template name="ref-lang"/>
+			<xsl:call-template name="ref-uri"/>
+			<xsl:call-template name="ref-isbn"/>
+			<xsl:call-template name="ref-doi"/>
 		</element-citation>
 	</xsl:template>
 
@@ -39,19 +39,19 @@
 		<element-citation>
 			<xsl:attribute name="publication-type">chapter</xsl:attribute>
 			<xsl:apply-templates mode="ref-author-name" select="node()[@object_id='100']"/>
-			<xsl:apply-templates mode="ref-year" select="."/>
-			<chapter-title><xsl:apply-templates mode="format" select="fields/chapter_title/value"/></chapter-title>
+			<xsl:call-template name="ref-year"/>
+			<xsl:call-template name="ref-chapter-title"/>
 			<xsl:apply-templates mode="ref-editor-name" select="node()[@object_id='93']"/>
-			<xsl:apply-templates mode="ref-book-title" select="."/>
-			<xsl:apply-templates mode="ref-edition" select="."/>
-			<xsl:apply-templates mode="ref-volume" select="."/>
-			<xsl:apply-templates mode="ref-publisher-name" select="."/>
-			<xsl:apply-templates mode="ref-publisher-loc" select="."/>
-			<xsl:apply-templates mode="ref-number-of-pages" select="."/>
-			<xsl:apply-templates mode="ref-lang" select="."/>
-			<xsl:apply-templates mode="ref-uri" select="."/>
-			<xsl:apply-templates mode="ref-isbn" select="."/>
-			<xsl:apply-templates mode="ref-doi" select="."/>
+			<xsl:call-template name="ref-book-title"/>
+			<xsl:call-template name="ref-edition"/>
+			<xsl:call-template name="ref-volume"/>
+			<xsl:call-template name="ref-publisher-name"/>
+			<xsl:call-template name="ref-publisher-loc"/>
+			<xsl:call-template name="ref-number-of-pages"/>
+			<xsl:call-template name="ref-lang"/>
+			<xsl:call-template name="ref-uri"/>
+			<xsl:call-template name="ref-isbn"/>
+			<xsl:call-template name="ref-doi"/>
 		</element-citation>
 	</xsl:template>
 
@@ -59,24 +59,16 @@
 		<element-citation>
 			<xsl:attribute name="publication-type">article</xsl:attribute>
 			<xsl:apply-templates mode="ref-author-name" select="node()[@object_id='100']"/>
-			<xsl:apply-templates mode="ref-year" select="."/>
-			<xsl:apply-templates mode="ref-article-title" select="."/>
-			<xsl:if test="normalize-space(fields/journal/value)!=''">
-				<source><xsl:apply-templates mode="format" select="fields/journal/value"/></source>
-			</xsl:if>
-			<xsl:apply-templates mode="ref-volume" select="."/>
-			<xsl:if test="normalize-space(fields/issue/value)!=''">
-				<issue><xsl:value-of select="fields/issue/value"/></issue>
-			</xsl:if>
-			<xsl:if test="normalize-space(fields/first_page/value)!=''">
-				<fpage><xsl:value-of select="fields/first_page/value"/></fpage>
-			</xsl:if>
-			<xsl:if test="normalize-space(fields/last_page/value)!=''">
-				<lpage><xsl:value-of select="fields/last_page/value"/></lpage>
-			</xsl:if>
-			<xsl:apply-templates mode="ref-lang" select="."/>
-			<xsl:apply-templates mode="ref-uri" select="."/>
-			<xsl:apply-templates mode="ref-doi" select="."/>
+			<xsl:call-template name="ref-year"/>
+			<xsl:call-template name="ref-article-title"/>
+			<xsl:call-template name="ref-journal-name"/>
+			<xsl:call-template name="ref-volume"/>
+			<xsl:call-template name="ref-issue"/>
+			<xsl:call-template name="ref-fpage"/>
+			<xsl:call-template name="ref-lpage"/>
+			<xsl:call-template name="ref-lang"/>
+			<xsl:call-template name="ref-uri"/>
+			<xsl:call-template name="ref-doi"/>
 		</element-citation>
 	</xsl:template>
 
@@ -84,17 +76,17 @@
 		<element-citation>
 			<xsl:attribute name="publication-type">conference-paper</xsl:attribute>
 			<xsl:apply-templates mode="ref-author-name" select="node()[@object_id='100']"/>
-			<xsl:apply-templates mode="ref-year" select="."/>
+			<xsl:call-template name="ref-year"/>
 			<xsl:apply-templates mode="ref-editor-name" select="node()[@object_id='93']"/>
-			<xsl:apply-templates mode="ref-conf-paper-title" select="."/>
-			<xsl:apply-templates mode="ref-volume" select="."/>
-			<xsl:apply-templates mode="ref-conference" select="."/>
-			<xsl:apply-templates mode="ref-conf-optional" select="."/>
-			<xsl:apply-templates mode="ref-number-of-pages" select="."/>
-			<xsl:apply-templates mode="ref-lang" select="."/>
-			<xsl:apply-templates mode="ref-uri" select="."/>
-			<xsl:apply-templates mode="ref-isbn" select="."/>
-			<xsl:apply-templates mode="ref-doi" select="."/>
+			<xsl:call-template name="ref-conf-paper-title"/>
+			<xsl:call-template name="ref-volume"/>
+			<xsl:call-template name="ref-conference"/>
+			<xsl:call-template name="ref-conf-optional"/>
+			<xsl:call-template name="ref-number-of-pages"/>
+			<xsl:call-template name="ref-lang"/>
+			<xsl:call-template name="ref-uri"/>
+			<xsl:call-template name="ref-isbn"/>
+			<xsl:call-template name="ref-doi"/>
 		</element-citation>
 	</xsl:template>
 
@@ -102,16 +94,16 @@
 		<element-citation>
 			<xsl:attribute name="publication-type">conference-preoceeding</xsl:attribute>
 			<xsl:apply-templates mode="ref-author-name" select="node()[@object_id='92']"/>
-			<xsl:apply-templates mode="ref-year" select="."/>
-			<xsl:apply-templates mode="ref-book-title" select="."/>
-			<xsl:apply-templates mode="ref-volume" select="."/>
-			<xsl:apply-templates mode="ref-conference" select="."/>
-			<xsl:apply-templates mode="ref-conf-optional" select="."/>
-			<xsl:apply-templates mode="ref-number-of-pages" select="."/>
-			<xsl:apply-templates mode="ref-lang" select="."/>
-			<xsl:apply-templates mode="ref-uri" select="."/>
-			<xsl:apply-templates mode="ref-isbn" select="."/>
-			<xsl:apply-templates mode="ref-doi" select="."/>
+			<xsl:call-template name="ref-year"/>
+			<xsl:call-template name="ref-book-title"/>
+			<xsl:call-template name="ref-volume"/>
+			<xsl:call-template name="ref-conference"/>
+			<xsl:call-template name="ref-conf-optional"/>
+			<xsl:call-template name="ref-number-of-pages"/>
+			<xsl:call-template name="ref-lang"/>
+			<xsl:call-template name="ref-uri"/>
+			<xsl:call-template name="ref-isbn"/>
+			<xsl:call-template name="ref-doi"/>
 		</element-citation>
 	</xsl:template>
 
@@ -119,16 +111,16 @@
 		<element-citation>
 			<xsl:attribute name="publication-type">thesis</xsl:attribute>
 			<xsl:apply-templates mode="ref-author-name" select="node()[@object_id='101']"/>
-			<xsl:apply-templates mode="ref-year" select="."/>
-			<xsl:apply-templates mode="ref-book-title" select="."/>
-			<xsl:apply-templates mode="ref-translated-title" select="."/>
-			<xsl:apply-templates mode="ref-publisher-name" select="."/>
-			<xsl:apply-templates mode="ref-publisher-loc" select="."/>
-			<xsl:apply-templates mode="ref-number-of-pages" select="."/>
-			<xsl:apply-templates mode="ref-lang" select="."/>
-			<xsl:apply-templates mode="ref-uri" select="."/>
-			<xsl:apply-templates mode="ref-isbn" select="."/>
-			<xsl:apply-templates mode="ref-doi" select="."/>
+			<xsl:call-template name="ref-year"/>
+			<xsl:call-template name="ref-book-title"/>
+			<xsl:call-template name="ref-translated-title"/>
+			<xsl:call-template name="ref-publisher-name"/>
+			<xsl:call-template name="ref-publisher-loc"/>
+			<xsl:call-template name="ref-number-of-pages"/>
+			<xsl:call-template name="ref-lang"/>
+			<xsl:call-template name="ref-uri"/>
+			<xsl:call-template name="ref-isbn"/>
+			<xsl:call-template name="ref-doi"/>
 		</element-citation>
 	</xsl:template>
 
@@ -136,39 +128,21 @@
 		<element-citation>
 			<xsl:attribute name="publication-type">software</xsl:attribute>
 			<xsl:apply-templates mode="ref-author-name" select="node()[@object_id='100']"/>
-			<xsl:apply-templates mode="ref-year" select="."/>
-			<xsl:apply-templates mode="ref-title" select="."/>
-			<xsl:apply-templates mode="ref-publisher-name" select="."/>
-			<xsl:if test="normalize-space(fields/release_date/value)!=''">
-				<date-in-citation>
-					<xsl:attribute name="content-type">released</xsl:attribute>
-					<xsl:text>Released: </xsl:text>
-					<xsl:value-of select="fields/release_date/value"/>
-				</date-in-citation>
-			</xsl:if>
-			<xsl:apply-templates mode="ref-uri" select="."/>
-			<xsl:if test="normalize-space(fields/version/value)!=''">
-				<comment>
-					<xsl:value-of select="fields/version/@field_name"/><xsl:text>: </xsl:text>
-					<xsl:value-of select="fields/version/value"/>
-				</comment>
-			</xsl:if>
+			<xsl:call-template name="ref-year"/>
+			<xsl:call-template name="ref-title"/>
+			<xsl:call-template name="ref-publisher-name"/>
+			<xsl:call-template name="ref-release-date"/>
+			<xsl:call-template name="ref-uri"/>
+			<xsl:call-template name="ref-version"/>
 		</element-citation>
 	</xsl:template>
 
 	<xsl:template mode="ref-website-biblio" match="*">
 		<element-citation>
 			<xsl:attribute name="publication-type">website</xsl:attribute>
-			<xsl:apply-templates mode="ref-title" select="."/>
-			<xsl:apply-templates mode="ref-uri" select="."/>
-			<xsl:if test="normalize-space(fields/access_date/value)!=''">
-				<date-in-citation>
-					<xsl:attribute name="content-type">access-date</xsl:attribute>
-					<xsl:text>[Accessed: </xsl:text>
-					<xsl:value-of select="fields/access_date/value"/>
-					<xsl:text>]</xsl:text>
-				</date-in-citation>
-			</xsl:if>
+			<xsl:call-template name="ref-title"/>
+			<xsl:call-template name="ref-uri"/>
+			<xsl:call-template name="ref-access-date"/>
 		</element-citation>
 	</xsl:template>
 
@@ -202,7 +176,6 @@
 			</xsl:for-each>
 		</person-group>
 	</xsl:template>
-
 	<xsl:template mode="ref-editor-name" match="*">
 		<xsl:if test="normalize-space(./*[name()!='fields'])!=''">
 			<person-group person-group-type="editor">
@@ -231,25 +204,56 @@
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template mode="ref-year" match="*">
+	<xsl:template name="ref-year">
 		<xsl:for-each select="fields/year_of_publication[normalize-space(value)!='']">
 			<year><xsl:value-of select="value"/></year>
 		</xsl:for-each>
 	</xsl:template>
 
-	<xsl:template mode="ref-book-title" match="*">
+	<xsl:template name="ref-book-title">
 		<xsl:for-each select="fields/book_title[normalize-space(value)!='']">
 			<article-title><xsl:apply-templates mode="format" select="value"/></article-title>
 		</xsl:for-each>
 	</xsl:template>
-
-	<xsl:template mode="ref-article-title" match="*">
+	<xsl:template name="ref-article-title">
 		<xsl:for-each select="fields/article_title[normalize-space(value)!='']">
 			<article-title><xsl:apply-templates mode="format" select="value"/></article-title>
 		</xsl:for-each>
 	</xsl:template>
+	<xsl:template name="ref-title">
+		<xsl:for-each select="fields/title[normalize-space(value)!='']">
+			<article-title><xsl:apply-templates mode="format" select="value"/></article-title>
+		</xsl:for-each>
+	</xsl:template>
+	<xsl:template name="ref-translated-title">
+		<xsl:for-each select="fields/translated_title[normalize-space(value)!='']">
+			<trans-title><xsl:apply-templates mode="format" select="value"/></trans-title>
+		</xsl:for-each>
+	</xsl:template>
+	<xsl:template name="ref-chapter-title">
+		<xsl:for-each select="fields/chapter_title[normalize-space(value)!='']">
+			<chapter-title><xsl:apply-templates mode="format" select="value"/></chapter-title>
+		</xsl:for-each>
+	</xsl:template>
 	
-	<xsl:template mode="ref-conf-paper-title" match="*">
+	<xsl:template name="ref-journal-name">
+		<xsl:for-each select="fields/journal[normalize-space(value)!='']">
+			<source><xsl:apply-templates mode="format" select="value"/></source>
+		</xsl:for-each>
+	</xsl:template>
+
+	<xsl:template name="ref-conference">
+		<xsl:for-each select="fields/conference_name[normalize-space(value)!='']">
+			<conf-name><xsl:apply-templates mode="format" select="value"/></conf-name>
+		</xsl:for-each>
+		<xsl:for-each select="fields/conference_location[normalize-space(value)!='']">
+			<conf-loc><xsl:value-of select="value"/></conf-loc>
+		</xsl:for-each>
+		<xsl:for-each select="fields/conference_date[normalize-space(value)!='']">
+			<conf-date><xsl:apply-templates mode="format" select="value"/></conf-date>
+		</xsl:for-each>
+	</xsl:template>
+	<xsl:template name="ref-conf-paper-title">
 		<xsl:for-each select="fields/title[normalize-space(value)!='']">
 			<chapter-title><xsl:apply-templates mode="format" select="value"/></chapter-title>
 		</xsl:for-each>
@@ -257,7 +261,7 @@
 			<article-title><xsl:apply-templates mode="format" select="value"/></article-title>
 		</xsl:for-each>
 	</xsl:template>
-	<xsl:template mode="ref-conf-optional" match="*">
+	<xsl:template name="ref-conf-optional">
 		<xsl:for-each select="reference_conference_optional_fields/fields/node()[normalize-space(.)!='']">
 			<xsl:choose>
 				<xsl:when test="name()='publisher'">
@@ -276,61 +280,68 @@
 		</xsl:for-each>
 	</xsl:template>
 
-	<xsl:template mode="ref-title" match="*">
-		<xsl:for-each select="fields/title[normalize-space(value)!='']">
-			<article-title><xsl:apply-templates mode="format" select="value"/></article-title>
-		</xsl:for-each>
-	</xsl:template>
-
-	<xsl:template mode="ref-translated-title" match="*">
-		<xsl:for-each select="fields/translated_title[normalize-space(value)!='']">
-			<trans-title><xsl:apply-templates mode="format" select="value"/></trans-title>
-		</xsl:for-each>
-	</xsl:template>
-
-	<xsl:template mode="ref-edition" match="*">
+	<xsl:template name="ref-edition">
 		<xsl:for-each select="fields/edition[normalize-space(value)!='']">
 			<edition><xsl:value-of select="value"/></edition>
 		</xsl:for-each>
 	</xsl:template>
-
-	<xsl:template mode="ref-volume" match="*">
+	<xsl:template name="ref-volume">
 		<xsl:for-each select="fields/volume[normalize-space(value)!='']">
 			<volume><xsl:value-of select="value"/></volume>
 		</xsl:for-each>
 	</xsl:template>
-
-	<xsl:template mode="ref-number-of-pages" match="*">
+	<xsl:template name="ref-issue">
+		<xsl:for-each select="fields/issue[normalize-space(value)!='']">
+			<issue><xsl:value-of select="value"/></issue>
+		</xsl:for-each>
+	</xsl:template>
+	<xsl:template name="ref-fpage">
+		<xsl:for-each select="fields/first_page[normalize-space(value)!='']">
+			<fpage><xsl:value-of select="value"/></fpage>
+		</xsl:for-each>
+	</xsl:template>
+	<xsl:template name="ref-lpage">
+		<xsl:for-each select="fields/last_page[normalize-space(value)!='']">
+			<lpage><xsl:value-of select="value"/></lpage>
+		</xsl:for-each>
+	</xsl:template>
+	<xsl:template name="ref-number-of-pages">
 		<xsl:for-each select="fields/number_of_pages[normalize-space(value)!='']">
 			<size units="page"><xsl:value-of select="value"/> pp.</size>
 		</xsl:for-each>
 	</xsl:template>
 
-	<xsl:template mode="ref-publisher-name" match="*">
+	<xsl:template name="ref-publisher-name">
 		<xsl:for-each select="fields/publisher[normalize-space(value)!='']">
 			<publisher-name><xsl:apply-templates mode="format" select="value"/></publisher-name>
 		</xsl:for-each>
 	</xsl:template>
-
-	<xsl:template mode="ref-publisher-loc" match="*">
+	<xsl:template name="ref-publisher-loc">
 		<xsl:for-each select="fields/city[normalize-space(value)!='']">
 			<publisher-loc><xsl:value-of select="value"/></publisher-loc>
 		</xsl:for-each>
 	</xsl:template>
 
-	<xsl:template mode="ref-uri" match="*">
+	<xsl:template name="ref-lang">
+		<xsl:for-each select="fields/publication_language[normalize-space(value)!='']">
+			<comment>
+				<xsl:text>[In </xsl:text>
+				<xsl:value-of select="value"/>
+				<xsl:text>]</xsl:text>
+			</comment>
+		</xsl:for-each>
+	</xsl:template>
+	<xsl:template name="ref-uri">
 		<xsl:for-each select="fields/url[normalize-space(value)!='']">
 			<uri><xsl:value-of select="value"/></uri>
 		</xsl:for-each>
 	</xsl:template>
-
-	<xsl:template mode="ref-isbn" match="*">
+	<xsl:template name="ref-isbn">
 		<xsl:for-each select="fields/isbn[normalize-space(value)!='']">
 			<isbn><xsl:value-of select="value"/></isbn>
 		</xsl:for-each>
 	</xsl:template>
-
-	<xsl:template mode="ref-doi" match="*">
+	<xsl:template name="ref-doi">
 		<xsl:for-each select="fields/doi[normalize-space(value)!='']">
 			<pub-id>
 				<xsl:attribute name="pub-id-type">doi</xsl:attribute>
@@ -338,25 +349,31 @@
 			</pub-id>
 		</xsl:for-each>
 	</xsl:template>
-
-	<xsl:template mode="ref-conference" match="*">
-		<xsl:for-each select="fields/conference_name[normalize-space(value)!='']">
-			<conf-name><xsl:apply-templates mode="format" select="value"/></conf-name>
-		</xsl:for-each>
-		<xsl:for-each select="fields/conference_location[normalize-space(value)!='']">
-			<conf-loc><xsl:value-of select="value"/></conf-loc>
-		</xsl:for-each>
-		<xsl:for-each select="fields/conference_date[normalize-space(value)!='']">
-			<conf-date><xsl:apply-templates mode="format" select="value"/></conf-date>
-		</xsl:for-each>
-	</xsl:template>
-
-	<xsl:template mode="ref-lang" match="*">
-		<xsl:for-each select="fields/publication_language[normalize-space(value)!='']">
-			<comment>
-				<xsl:text>[In </xsl:text>
+	<xsl:template name="ref-access-date">
+		<xsl:for-each select="fields/access_date[normalize-space(value)!='']">
+			<date-in-citation>
+				<xsl:attribute name="content-type">access-date</xsl:attribute>
+				<xsl:text>[accessed </xsl:text>
 				<xsl:value-of select="value"/>
 				<xsl:text>]</xsl:text>
+			</date-in-citation>
+		</xsl:for-each>
+	</xsl:template>
+	<xsl:template name="ref-release-date">
+		<xsl:for-each select="fields/release_date[normalize-space(value)!='']">
+			<date-in-citation>
+				<xsl:attribute name="content-type">released</xsl:attribute>
+				<xsl:text>Released </xsl:text>
+				<xsl:value-of select="value"/>
+			</date-in-citation>
+		</xsl:for-each>
+	</xsl:template>
+	<xsl:template name="ref-version">
+		<xsl:for-each select="fields/version[normalize-space(value)!='']">
+			<comment>
+				<xsl:value-of select="@field_name"/>
+				<xsl:text>: </xsl:text>
+				<xsl:value-of select="value"/>
 			</comment>
 		</xsl:for-each>
 	</xsl:template>
