@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs"  xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tp="http://www.plazi.org/taxpub">
 
-	<xsl:template name="raise-error">
+<!-- 	<xsl:template name="raise-error">
 		<xsl:param name="content"/>
 		<ERROR><xsl:value-of select="$content"/></ERROR>
-	</xsl:template>
+	</xsl:template> -->
 
 	<xsl:template mode="section" match="*">
 		<xsl:param name="title"/>
@@ -96,7 +96,7 @@
 		</xsl:for-each>
 	</xsl:template>
 
-	<xsl:template mode="p" match="*">
+<!-- 	<xsl:template mode="p" match="*">
 		<xsl:choose>
 			<xsl:when test="normalize-space(.)='' and count(.//node()[@citation_id!=''])=0"></xsl:when>
 			<xsl:when test="count(node()[(name()='p') or (name()='ul') or (name()='ol')])!=0">
@@ -122,9 +122,9 @@
 				<p><xsl:apply-templates mode="format" select="."/></p>
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>
+	</xsl:template> -->
 
-	<xsl:template mode="section-ordered-list" match="*">
+<!-- 	<xsl:template mode="section-ordered-list" match="*">
 		<list>
 			<xsl:attribute name="list-type">order</xsl:attribute>
 			<xsl:for-each select="li">
@@ -143,23 +143,26 @@
 				</list-item>
 			</xsl:for-each>
 		</list>
-	</xsl:template>
+	</xsl:template> -->
 
-	<xsl:template mode="format" match="*">
+<!-- 	<xsl:template mode="format" match="*">
 		<xsl:for-each select="node()">
 			<xsl:choose>
 				<xsl:when test="name()=''">
 					<xsl:value-of select="."/>
 				</xsl:when>
-<!-- 				<xsl:when test="name()='p' or name()='ol' or name()='ul'"></xsl:when> -->
+				<xsl:when test="name()='p' or name()='ol' or name()='ul'"></xsl:when>
 				<xsl:otherwise>
 					<xsl:apply-templates mode="format-nodes" select="."/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:for-each>
-	</xsl:template>
-	<xsl:template mode="format-nodes" match="*">
+	</xsl:template> -->
+<!-- 	<xsl:template mode="format-nodes" match="*">
 		<xsl:choose>
+			<xsl:when test="name()='span'">
+				<xsl:apply-templates mode="format" select="."/>
+			</xsl:when>
 			<xsl:when test="name()='em' or name()='i'">
 				<italic><xsl:apply-templates mode="format" select="."/></italic>
 			</xsl:when>
@@ -180,7 +183,7 @@
 				<xsl:choose>
 					<xsl:when test="$text=''">
 						<xref>
-							<xsl:attribute name="ref-type" select="'fig'"/>
+							<xsl:attribute name="ref-type"><xsl:value-of select="'fig'"/></xsl:attribute>
 							<xsl:attribute name="rid"><xsl:text>F1</xsl:text></xsl:attribute>
 							<xsl:text>EMPTY FIGURE REFERENCE</xsl:text>
 						</xref>
@@ -213,7 +216,7 @@
 				<xsl:choose>
 					<xsl:when test="$text=''">
 						<xref>
-							<xsl:attribute name="ref-type" select="'bibr'"/>
+							<xsl:attribute name="ref-type"><xsl:value-of select="'bibr'"/></xsl:attribute>
 							<xsl:attribute name="rid"><xsl:text>B1</xsl:text></xsl:attribute>
 							<xsl:text>EMPTY BIBLIOGRAPHIC REFERENCE</xsl:text>
 						</xref>
@@ -234,17 +237,45 @@
 					<xsl:apply-templates mode="format" select="."/>
 				</ext-link>
 			</xsl:when>
-			<xsl:when test="@comment_id!=''"></xsl:when>
 			<xsl:when test="name()='br'">
 				<xsl:text>&lt;br/&gt;</xsl:text>
+			</xsl:when>
+			<xsl:when test="name()='tn'">
+				<xsl:apply-templates mode="parse-taxon-names" select="."/>
 			</xsl:when>
 			<xsl:otherwise>
 				<INVALID-TAG><xsl:copy-of select="."/></INVALID-TAG>
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>
+	</xsl:template> -->
+	
+<!-- 	<xsl:template mode="parse-taxon-names" match="*">
+		<tp:taxon-name>
+			<xsl:for-each select="node()">
+				<xsl:choose>
+					<xsl:when test="name()=''">
+						<xsl:value-of select="."/>
+					</xsl:when>
+					<xsl:when test="name()='tn-part'">
+						<tp:taxon-name-part>
+							<xsl:attribute name="taxon-name-part-type"><xsl:value-of select="@type"/></xsl:attribute>
+							<xsl:value-of select="."/>
+						</tp:taxon-name-part>
+					</xsl:when>
+					<xsl:otherwise>
+						<INVALID-TAG><xsl:copy-of select="."/></INVALID-TAG>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:for-each>
+		</tp:taxon-name>
+	</xsl:template> -->
+	
+	
+	
+	
+	
 
-	<xsl:template name="resolve-reference">
+<!-- 	<xsl:template name="resolve-reference">
 		<xsl:param name="text" select="''"/>
 		<xsl:param name="number" select="1"/>
 		<xsl:param name="max_number" select="1"/>
@@ -267,7 +298,7 @@
 				</xsl:choose>
 			</xsl:variable>
 			<xref>
-				<xsl:attribute name="ref-type" select="'bibr'"/>
+				<xsl:attribute name="ref-type"><xsl:value-of select="'bibr'"/></xsl:attribute>
 				<xsl:attribute name="rid"><xsl:text>B</xsl:text><xsl:value-of select="$id"/></xsl:attribute>
 				<xsl:value-of select="$authors"/>
 			</xref>
@@ -280,18 +311,18 @@
 				<xsl:with-param name="max_number" select="$max_number"/>
 			</xsl:call-template>
 		</xsl:if>
-	</xsl:template>
+	</xsl:template> -->
 
-	<xsl:template name="get-reference-id">
+<!-- 	<xsl:template name="get-reference-id">
 		<xsl:param name="rid" select="''"/>
 		<xsl:for-each select="//node()[@object_id='95']">
 			<xsl:if test="@instance_id=$rid">
 				<xsl:value-of select="position()"/>
 			</xsl:if>
 		</xsl:for-each>
-	</xsl:template>
+	</xsl:template> -->
 
-	<xsl:template name="resolve-figures">
+<!-- 	<xsl:template name="resolve-figures">
 		<xsl:param name="text" select="''"/>
 		<xsl:param name="number" select="1"/>
 		<xsl:param name="max_number" select="1"/>
@@ -314,7 +345,7 @@
 				</xsl:choose>
 			</xsl:variable>
 			<xref>
-				<xsl:attribute name="ref-type" select="'fig'"/>
+				<xsl:attribute name="ref-type"><xsl:value-of select="'fig'"/></xsl:attribute>
 				<xsl:attribute name="rid"><xsl:text>F</xsl:text><xsl:value-of select="$id"/></xsl:attribute>
 				<xsl:value-of select="$fig"/>
 			</xref>
@@ -327,19 +358,19 @@
 				<xsl:with-param name="max_number" select="$max_number"/>
 			</xsl:call-template>
 		</xsl:if>
-	</xsl:template>
+	</xsl:template> -->
 	
-	<xsl:template name="get-figure-id">
+<!-- 	<xsl:template name="get-figure-id">
 		<xsl:param name="rid" select="''"/>
 		<xsl:for-each select="//node()[@object_id='221']">
 			<xsl:if test="@instance_id=$rid">
 				<xsl:value-of select="position()"/>
 			</xsl:if>
 		</xsl:for-each>
-	</xsl:template>
+	</xsl:template> -->
 
 <!-- TITLE RELATED TEMPLATES -->
-	<xsl:template mode="title" match="*">
+<!-- 	<xsl:template mode="title" match="*">
 		<xsl:choose>
 			<xsl:when test="count(*[name()='p'])!=0">
 				<xsl:for-each select="p[normalize-space(.)!='']">
@@ -381,7 +412,7 @@
 			<xsl:when test="name()='sub'">
 				<sub><xsl:apply-templates mode="format-title" select="."/></sub>
 			</xsl:when>
-			<!-- TODO: references in title? -->
+			TODO: references in title?
 			<xsl:when test="name()='fig-citation'">
 				<xref>
 					<xsl:attribute name="ref-type">fig</xsl:attribute>
@@ -417,21 +448,23 @@
 					<xsl:apply-templates mode="format-title" select="."/>
 				</ext-link>
 			</xsl:when>
-			<xsl:when test="@comment_id!=''"></xsl:when>
+			<xsl:when test="name()='tn'">
+				<xsl:apply-templates mode="parse-taxon-names" select="."/>
+			</xsl:when>
 			<xsl:when test="name()='br'">
 				<break/>
 			</xsl:when>
 		</xsl:choose>
-	</xsl:template>
+	</xsl:template> -->
 
 <!-- FORMAT OF TABLE DATA -->
-	<xsl:template mode="td-format" match="*">
+<!-- 	<xsl:template mode="td-format" match="*">
 		<xsl:for-each select="node()[normalize-space(.)!='' or count(.//*[name()!=''])!=0]">
 			<xsl:choose>
 				<xsl:when test="name()='p'">
 					<xsl:apply-templates mode="td-format" select="."/>
 					<xsl:if test="position()!=last()">
-						<!-- <xsl:text>&lt;br/&gt;</xsl:text> -->
+						<xsl:text>&lt;br/&gt;</xsl:text>
 						<break/>
 					</xsl:if>
 				</xsl:when>
@@ -466,7 +499,7 @@
 				<xsl:choose>
 					<xsl:when test="$text=''">
 						<xref>
-							<xsl:attribute name="ref-type" select="'fig'"/>
+							<xsl:attribute name="ref-type"><xsl:value-of select="'fig'"/></xsl:attribute>
 							<xsl:attribute name="rid"><xsl:text>B1</xsl:text></xsl:attribute>
 							<xsl:text>EMPTY FIGURE REFERENCE</xsl:text>
 						</xref>
@@ -499,7 +532,7 @@
 				<xsl:choose>
 					<xsl:when test="$text=''">
 						<xref>
-							<xsl:attribute name="ref-type" select="'bibr'"/>
+							<xsl:attribute name="ref-type"><xsl:value-of select="'bibr'"/></xsl:attribute>
 							<xsl:attribute name="rid"><xsl:text>B1</xsl:text></xsl:attribute>
 							<xsl:text>EMPTY BIBLIOGRAPHIC REFERENCE</xsl:text>
 						</xref>
@@ -520,7 +553,9 @@
 					<xsl:apply-templates mode="td-format" select="."/>
 				</ext-link>
 			</xsl:when>
-			<xsl:when test="@comment_id!=''"></xsl:when>
+			<xsl:when test="name()='tn'">
+				<xsl:apply-templates mode="parse-taxon-names" select="."/>
+			</xsl:when>
 			<xsl:when test="name()='br'">
 				<break/>
 			</xsl:when>
@@ -528,7 +563,7 @@
 				<INVALID-TAG><xsl:copy-of select="."/></INVALID-TAG>
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>
+	</xsl:template> -->
 <!-- 
 #
 #	Some non-trivial sections
@@ -798,7 +833,7 @@
 		<xsl:variable name="title" select="fields/node()[@id='413']/value"/>
 		<xsl:variable name="main" select="fields/node()[@id='412']/value"/>
 		<sec>
-			<xsl:attribute name="sec-type" select="@display_name"/>
+			<xsl:attribute name="sec-type"><xsl:value-of select="@display_name"/></xsl:attribute>
 			<xsl:choose>
 				<xsl:when test="normalize-space($title)=''">
 					<title><xsl:text>Main Text</xsl:text></title>

@@ -16,7 +16,7 @@
 
 	<xsl:template mode="systematics" match="*">
 		<sec>
-			<xsl:attribute name="sec-type" select="@display_name"/>
+			<xsl:attribute name="sec-type"><xsl:value-of select="@display_name"/></xsl:attribute>
 			<title><xsl:value-of select="@display_name"/></title>
 			<xsl:for-each select="node()[@object_id='41'][normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]"><!-- Treatments -->
 				<xsl:variable name="status-animalia">

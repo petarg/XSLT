@@ -35,6 +35,7 @@
 			</xsl:choose>
 			<publisher>
 				<publisher-name>Pensoft Publishers</publisher-name>
+				<publisher-loc>Sofia, Bulgaria</publisher-loc>
 			</publisher>
 		</journal-meta>
 	</xsl:template>
@@ -425,8 +426,9 @@
 		</xsl:for-each>
 	</xsl:template>
 	<xsl:template mode="kwd" match="*">
-		<xsl:variable name="kwdsf"><xsl:apply-templates mode="p" select="."/></xsl:variable>
-		<xsl:variable name="kwds"><xsl:apply-templates mode="xml-to-string" select="$kwdsf"/></xsl:variable>
+		 <!-- <xsl:variable name="kwdsf"><xsl:apply-templates mode="p" select="."/></xsl:variable> -->
+		<xsl:variable name="kwdsf" select="normalize-space(.)"/>
+		<!-- <xsl:variable name="kwds"><xsl:apply-templates mode="xml-to-string" select="$kwdsf"/></xsl:variable>
 		<xsl:variable name="noded">
 			<xsl:call-template name="kwd">
 				<xsl:with-param name="string" select="normalize-space($kwds)"/>
@@ -438,7 +440,8 @@
 					<xsl:with-param name="text" select="normalize-space(.)"/>
 				</xsl:call-template>
 			</kwd>
-		</xsl:for-each>
+		</xsl:for-each> -->
+		<kwd><xsl:value-of select="$kwdsf"/></kwd>
 	</xsl:template>
 	<xsl:template name="kwd">
 		<xsl:param name="string" select="''"/>

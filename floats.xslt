@@ -16,13 +16,8 @@
 	-->
 	<xsl:template name="figures">
 		<xsl:for-each select="$figures/figure">
-			<xsl:variable name="num" select="fields/figure_number/value"/>
-			<xsl:variable name="type">
-				<xsl:call-template name="figure-type">
-					<xsl:with-param name="type" select="fields/figure_type/value"/>
-				</xsl:call-template>
-			</xsl:variable>
-			
+			<xsl:variable name="num" select="@nlm_id"/>
+			<xsl:variable name="type" select="'Figure'"/>
 			<xsl:for-each select="node()">
 				<xsl:choose>
 					<xsl:when test="@object_id='222'"><!-- Image -->
@@ -55,7 +50,7 @@
 							</xsl:for-each>
 							<xsl:for-each select="fields/node()[@id='486']">
 								<media>
-									<xsl:attribute name="xlink:href" select="normalize-space(value)"/>
+									<xsl:attribute name="xlink:href"><xsl:value-of select="normalize-space(value)"/></xsl:attribute>
 									<xsl:attribute name="position">float</xsl:attribute>
 									<xsl:attribute name="orientation">portrait</xsl:attribute>
 								</media>
@@ -124,15 +119,6 @@
 			</xsl:for-each>
 		</xsl:for-each>
 	</xsl:template>
-	<xsl:template name="figure-type">
-		<xsl:param name="type" select="''"/>
-		<xsl:choose>
-			<xsl:when test="$type='Video'"><xsl:text>Figure</xsl:text></xsl:when>
-			<xsl:when test="$type='Image'"><xsl:text>Figure</xsl:text></xsl:when>
-			<xsl:when test="$type='Plate'"><xsl:text>Figure</xsl:text></xsl:when>
-			<xsl:otherwise><xsl:text>Unknown Figure Type</xsl:text></xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
 	<xsl:template mode="plate-part" match="*">
 		<xsl:param name="fig_num" select="'1'"/>
 		<xsl:param name="label" select="''"/>
@@ -154,7 +140,7 @@
 				<caption><xsl:apply-templates mode="p" select="$caption"/></caption>
 			</xsl:if>
 			<graphic>
-				<xsl:attribute name="xlink:href" select="$url"/>
+				<xsl:attribute name="xlink:href"><xsl:value-of select="$url"/></xsl:attribute>
 				<xsl:attribute name="position">float</xsl:attribute>
 				<xsl:attribute name="orientation">portrait</xsl:attribute>
 				<xsl:attribute name="xlink:type">simple</xsl:attribute>
@@ -166,7 +152,7 @@
 	-->
 	<xsl:template name="tables">
 		<xsl:for-each select="$tables/table">
-			<xsl:variable name="num"><xsl:value-of select="fields/node()[@id='489']"/></xsl:variable>
+			<xsl:variable name="num" select="@nlm_id"/>
 			<table-wrap>
 				<xsl:attribute name="id"><xsl:text>T</xsl:text><xsl:value-of select="$num"/></xsl:attribute>
 				<xsl:attribute name="position">float</xsl:attribute>
@@ -183,11 +169,11 @@
 								<long-desc><xsl:value-of select="normalize-space(.)"/></long-desc>
 							</xsl:for-each>
 							<table>
-								<xsl:if test="normalize-space(@border)"><xsl:attribute name="border" select="@border"/></xsl:if>
-								<xsl:if test="normalize-space(@cellpadding)"><xsl:attribute name="cellpadding" select="@cellpadding"/></xsl:if>
-								<xsl:if test="normalize-space(@cellspacing)"><xsl:attribute name="cellspacing" select="@cellspacing"/></xsl:if>
-								<xsl:if test="normalize-space(@style)"><xsl:attribute name="style" select="@style"/></xsl:if>
-								<xsl:if test="normalize-space(@summary)"><xsl:attribute name="summary" select="@summary"/></xsl:if>
+								<xsl:if test="normalize-space(@border)"><xsl:attribute name="border"><xsl:value-of select="@border"/></xsl:attribute></xsl:if>
+								<xsl:if test="normalize-space(@cellpadding)"><xsl:attribute name="cellpadding"><xsl:value-of select="@cellpadding"/></xsl:attribute></xsl:if>
+								<xsl:if test="normalize-space(@cellspacing)"><xsl:attribute name="cellspacing"><xsl:value-of select="@cellspacing"/></xsl:attribute></xsl:if>
+								<xsl:if test="normalize-space(@style)"><xsl:attribute name="style"><xsl:value-of select="@style"/></xsl:attribute></xsl:if>
+								<xsl:if test="normalize-space(@summary)"><xsl:attribute name="summary"><xsl:value-of select="@summary"/></xsl:attribute></xsl:if>
 								<xsl:for-each select="thead[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
 									<thead>
 										<xsl:for-each select="tr[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
@@ -196,7 +182,7 @@
 													<th>
 														<xsl:attribute name="rowspan">1</xsl:attribute>
 														<xsl:attribute name="colspan">1</xsl:attribute>
-														<xsl:if test="$align!=''"><xsl:attribute name="align" select="$align"/></xsl:if>
+														<xsl:if test="$align!=''"><xsl:attribute name="align"><xsl:value-of select="$align"/></xsl:attribute></xsl:if>
 														<xsl:apply-templates mode="td-format" select="."/>
 													</th>
 												</xsl:for-each>
@@ -212,7 +198,7 @@
 													<td>
 														<xsl:attribute name="rowspan">1</xsl:attribute>
 														<xsl:attribute name="colspan">1</xsl:attribute>
-														<xsl:if test="$align!=''"><xsl:attribute name="align" select="$align"/></xsl:if>
+														<xsl:if test="$align!=''"><xsl:attribute name="align"><xsl:value-of select="$align"/></xsl:attribute></xsl:if>
 														<xsl:apply-templates mode="td-format" select="."/>
 													</td>
 												</xsl:for-each>
