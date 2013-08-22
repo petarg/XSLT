@@ -315,7 +315,7 @@
 	<xsl:template mode="materials" match="*">
 		<xsl:if test="count(material//*[normalize-space(value)!=''])!=0">
 			<tp:treatment-sec>
-				<xsl:attribute name="sec-type">Materials</xsl:attribute>
+				<xsl:attribute name="sec-type">materials</xsl:attribute>
 				<title>Materials</title>
 				<list>
 					<xsl:attribute name="list-type">alpha-lower</xsl:attribute>

@@ -3,7 +3,7 @@
 	<xsl:template name="reference">
 		<xsl:for-each select="/document/objects/references/reference">
 			<ref>
-				<xsl:attribute name="id">B<xsl:number/></xsl:attribute>
+				<xsl:attribute name="id"><xsl:text>B</xsl:text><xsl:value-of select="@instance_id"/></xsl:attribute>
 				<xsl:apply-templates mode="ref-book-biblio" select="biblio_reference_wrapper/book_biblio_reference"/>
 				<xsl:apply-templates mode="ref-book-chapter-biblio" select="biblio_reference_wrapper/book_chapter_biblio_reference"/>
 				<xsl:apply-templates mode="ref-conference-paper" select="biblio_reference_wrapper/conference_paper"/>

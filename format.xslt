@@ -308,23 +308,23 @@
 	
 	
 	<xsl:template mode="reference-citation" match="*">
-		<xsl:variable name="text" select="normalize-space(.)"/>
-		<xsl:choose>
-			<xsl:when test="$text=''">
-				<xref>
-					<xsl:attribute name="ref-type"><xsl:value-of select="'bibr'"/></xsl:attribute>
-					<xsl:attribute name="rid"><xsl:text>B1</xsl:text></xsl:attribute>
-					<xsl:text>EMPTY BIBLIOGRAPHIC REFERENCE</xsl:text>
-				</xref>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:call-template name="resolve-reference">
-					<xsl:with-param name="text" select="$text"/>
-					<xsl:with-param name="number" select="1"/>
-					<xsl:with-param name="max_number" select="count(xref)"/>
-				</xsl:call-template>
+		<xsl:for-each select="node()">
+			<xsl:choose>
+				<xsl:when test="name()=''">
+					<xsl:value-of select="."/>
+				</xsl:when>
+				<xsl:when test="name()='xref'">
+					<xref>
+						<xsl:attribute name="ref-type">bibr</xsl:attribute>
+						<xsl:attribute name="rid"><xsl:text>B</xsl:text><xsl:value-of select="@rid"/></xsl:attribute>
+						<xsl:value-of select="."/>
+					</xref>
+				</xsl:when>
+				<xsl:otherwise>
+					<INVALID-TAG><xsl:copy-of select="."/></INVALID-TAG>
 				</xsl:otherwise>
-		</xsl:choose>
+			</xsl:choose>
+		</xsl:for-each>
 	</xsl:template>
 	
 	<xsl:template mode="sup-files-citation" match="*">
@@ -336,30 +336,42 @@
 	</xsl:template>
 	
 	<xsl:template mode="tbls-citation" match="*">
-		<xref>
-			<xsl:attribute name="ref-type">table</xsl:attribute>
-			<xsl:attribute name="rid"><xsl:text>T1</xsl:text></xsl:attribute>
-			<xsl:apply-templates mode="format" select="."/>
-		</xref>
+		<xsl:for-each select="node()">
+			<xsl:choose>
+				<xsl:when test="name()=''">
+					<xsl:value-of select="."/>
+				</xsl:when>
+				<xsl:when test="name()='xref'">
+					<xref>
+						<xsl:attribute name="ref-type">table</xsl:attribute>
+						<xsl:attribute name="rid"><xsl:text>T</xsl:text><xsl:value-of select="@rid"/></xsl:attribute>
+						<xsl:value-of select="."/>
+					</xref>
+				</xsl:when>
+				<xsl:otherwise>
+					<INVALID-TAG><xsl:copy-of select="."/></INVALID-TAG>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:for-each>
 	</xsl:template>
 	
 	<xsl:template mode="fig-citation" match="*">
-		<xsl:variable name="text" select="normalize-space(.)"/>
-		<xsl:choose>
-			<xsl:when test="$text=''">
-				<xref>
-					<xsl:attribute name="ref-type"><xsl:value-of select="'fig'"/></xsl:attribute>
-					<xsl:attribute name="rid"><xsl:text>F1</xsl:text></xsl:attribute>
-					<xsl:text>EMPTY FIGURE REFERENCE</xsl:text>
-				</xref>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:call-template name="resolve-figures">
-					<xsl:with-param name="text" select="$text"/>
-					<xsl:with-param name="number" select="1"/>
-					<xsl:with-param name="max_number" select="count(xref)"/>
-				</xsl:call-template>
-			</xsl:otherwise>
-		</xsl:choose>
+		<xsl:for-each select="node()">
+			<xsl:choose>
+				<xsl:when test="name()=''">
+					<xsl:value-of select="."/>
+				</xsl:when>
+				<xsl:when test="name()='xref'">
+					<xref>
+						<xsl:attribute name="ref-type">fig</xsl:attribute>
+						<xsl:attribute name="rid"><xsl:text>F</xsl:text><xsl:value-of select="@rid"/></xsl:attribute>
+						<xsl:value-of select="."/>
+					</xref>
+				</xsl:when>
+				<xsl:otherwise>
+					<INVALID-TAG><xsl:copy-of select="."/></INVALID-TAG>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:for-each>
 	</xsl:template>
 </xsl:stylesheet>

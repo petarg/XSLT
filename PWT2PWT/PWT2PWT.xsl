@@ -14,14 +14,14 @@
 		</document>
 	</xsl:template>
 	
-	<xsl:template match="@*|node()[name()!='span' and name()!='div' and name()!='em' and name()!='i' and name()!='b' and name()!='strong' and name()!='u' and name()!='a' and name()!='tn' and name()!='tn-part' and name()!='references' and name()!='figures' and name()!='tables' and name()!='supplementary_files']">
+	<xsl:template match="@*|node()[name()!='span' and name()!='div' and name()!='comment-start' and name()!='comment-end' and name()!='em' and name()!='i' and name()!='b' and name()!='strong' and name()!='u' and name()!='a' and name()!='tn' and name()!='tn-part' and name()!='references' and name()!='figures' and name()!='tables' and name()!='supplementary_files']">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" />
 			<xsl:apply-templates />
 		</xsl:copy>
 	</xsl:template>
 
-	<xsl:template match="span | div">
+	<xsl:template match="span | div | comment-start | comment-end">
 		<xsl:apply-templates />
 	</xsl:template>
 	<xsl:template match="a">

@@ -61,7 +61,7 @@
 				<xsl:text>Microsoft Word Document</xsl:text>
 			</xsl:when>
 			<xsl:when test="$ext='pdf'">
-				<xsl:text>Adobe PDF File</xsl:text>
+				<xsl:text>Acrobat Adobe Document</xsl:text>
 			</xsl:when>
 			<xsl:when test="($ext='zip') or ($ext='rar') or ($ext='tar') or ($ext='bz2') or ($ext='gz') or ($ext='tgz')">
 				<xsl:text>Archive file</xsl:text>

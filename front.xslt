@@ -44,7 +44,7 @@
 		<article-meta>
 			<article-id pub-id-type="publisher-id"><xsl:value-of select="$jname"/></article-id>
 			<article-id pub-id-type="doi">10.3897/xxx.000.0000</article-id>
-			<article-id pub-id-type="other">xxx.xxx.xxx.xxx</article-id>
+			<article-id pub-id-type="other"><xsl:value-of select="/document/@id"/></article-id>
 			<article-id pub-id-type="pmid">00000000</article-id>
 			<xsl:call-template name="front-article-categories"/>
 			<xsl:call-template name="front-title-group"/>
@@ -418,30 +418,17 @@
 			<kwd-group>
 				<label>Keywords</label>
 				<xsl:for-each select="value">
-					<xsl:for-each select="p[normalize-space(.)!='']">
-						<xsl:apply-templates mode="kwd" select="."/>
-					</xsl:for-each>
+					<xsl:variable name="kwds"><xsl:apply-templates mode="xml-to-string" select="."/></xsl:variable>
+					<xsl:call-template name="text-to-xml">
+						<xsl:with-param name="text">
+							<xsl:call-template name="kwd">
+								<xsl:with-param name="string" select="normalize-space($kwds)"/>
+							</xsl:call-template>
+						</xsl:with-param>
+					</xsl:call-template>
 				</xsl:for-each>
 			</kwd-group>
 		</xsl:for-each>
-	</xsl:template>
-	<xsl:template mode="kwd" match="*">
-		 <!-- <xsl:variable name="kwdsf"><xsl:apply-templates mode="p" select="."/></xsl:variable> -->
-		<xsl:variable name="kwdsf" select="normalize-space(.)"/>
-		<!-- <xsl:variable name="kwds"><xsl:apply-templates mode="xml-to-string" select="$kwdsf"/></xsl:variable>
-		<xsl:variable name="noded">
-			<xsl:call-template name="kwd">
-				<xsl:with-param name="string" select="normalize-space($kwds)"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:for-each select="$noded/kwd">
-			<kwd>
-				<xsl:call-template name="text-to-xml">
-					<xsl:with-param name="text" select="normalize-space(.)"/>
-				</xsl:call-template>
-			</kwd>
-		</xsl:for-each> -->
-		<kwd><xsl:value-of select="$kwdsf"/></kwd>
 	</xsl:template>
 	<xsl:template name="kwd">
 		<xsl:param name="string" select="''"/>
@@ -449,7 +436,9 @@
 			<xsl:when test="contains($string, ',')">
 				<xsl:variable name="kwd" select="normalize-space(substring-before($string, ','))"/>
 				<xsl:if test="$kwd!=''">
-					<kwd><xsl:value-of select="$kwd"/></kwd>
+					<xsl:text>{kwd}</xsl:text>
+					<xsl:value-of select="$kwd"/>
+					<xsl:text>{/kwd}</xsl:text>
 				</xsl:if>
 				<xsl:call-template name="kwd">
 					<xsl:with-param name="string" select="substring-after($string, ',')"/>
@@ -458,7 +447,9 @@
 			<xsl:when test="contains($string, ';')">
 				<xsl:variable name="kwd" select="normalize-space(substring-before($string, ';'))"/>
 				<xsl:if test="$kwd!=''">
-					<kwd><xsl:value-of select="$kwd"/></kwd>
+					<xsl:text>{kwd}</xsl:text>
+					<xsl:value-of select="$kwd"/>
+					<xsl:text>{/kwd}</xsl:text>
 				</xsl:if>
 				<xsl:call-template name="kwd">
 					<xsl:with-param name="string" select="substring-after($string, ';')"/>
@@ -467,7 +458,9 @@
 			<xsl:otherwise>
 				<xsl:variable name="kwd" select="normalize-space($string)"/>
 				<xsl:if test="$kwd!=''">
-					<kwd><xsl:value-of select="$kwd"/></kwd>
+					<xsl:text>{kwd}</xsl:text>
+					<xsl:value-of select="$kwd"/>
+					<xsl:text>{/kwd}</xsl:text>
 				</xsl:if>
 			</xsl:otherwise>
 		</xsl:choose>
