@@ -347,7 +347,15 @@
                       <p><xsl:value-of select="$type_status"/></p>
                     </xsl:if>
                     <xsl:for-each select="node()[name()!='' and name()!='fields']">
-                      <p><xsl:apply-templates mode="materials_mode" select="."/></p>
+                      <list>
+                        <xsl:attribute name="list-type">simple</xsl:attribute>
+                        <xsl:for-each select="node()[normalize-space()!='']">
+                          <list-item>
+                            <label><xsl:value-of select="@display_name"/></label>
+                            <p><xsl:apply-templates mode="materials_mode" select="."/></p>
+                          </list-item>
+                        </xsl:for-each>
+                      </list>
                     </xsl:for-each>
                   </list-item>
                 </xsl:for-each>

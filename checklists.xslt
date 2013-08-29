@@ -7,9 +7,15 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:tp="http://www.plazi.org/taxpub">
   <xsl:template mode="checklists" match="*">
-    <xsl:for-each select="checklist[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
-      <xsl:apply-templates mode="checklist" select="."/>
-    </xsl:for-each>
+    <xsl:if test="count(checklist[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0])!=0">
+      <sec>
+        <xsl:attribute name="sec-type"><xsl:value-of select="@display_name"/></xsl:attribute>
+        <title><xsl:value-of select="@display_name"/></title>
+        <xsl:for-each select="checklist[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+          <xsl:apply-templates mode="checklist" select="."/>
+        </xsl:for-each>
+      </sec>
+    </xsl:if>
   </xsl:template>
   <xsl:template mode="checklist" match="*">
     <sec>
@@ -78,9 +84,7 @@
   </xsl:template>
   <xsl:template name="checklist-taxons">
     <xsl:for-each select="checklist_taxon[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
-      <xsl:call-template name="checklist-parse-taxons">
-        <xsl:with-param name="rank_id" select="'1'"/>
-      </xsl:call-template>
+      <xsl:call-template name="checklist-parse-taxons"/>
     </xsl:for-each>
   </xsl:template>
 
@@ -90,6 +94,7 @@
     <xsl:variable name="treatment_id" select="fields/node()[name()=$rank]/@id"/>
     <xsl:variable name="taxon" select="fields/node()[@id=$treatment_id]"/>
     <tp:taxon-treatment>
+      <xsl:call-template name="checklist-treatment-meta"/>
       <tp:nomenclature>
         <tp:taxon-name>
           <tp:taxon-name-part>
@@ -103,57 +108,40 @@
         <xsl:call-template name="get-authority"/>
         <xsl:if test="normalize-space($nomenclature)!='' or count($nomenclature/*/*[name()!=''])!=0">
           <tp:nomenclature-citation-list>
-            <xsl:for-each select="$nomenclature/node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
-              <tp:nomenclature-citation>
-                <tp:taxon-name>
-                  <tp:taxon-name-part>
-                    <xsl:attribute name="taxon-name-part-type">
-                      <xsl:value-of select="$taxon/@latin"/>
-                    </xsl:attribute>
-                    <xsl:value-of select="$taxon/value"/>
-                  </tp:taxon-name-part>
-                </tp:taxon-name>
-                <comment>
-                  <xsl:apply-templates mode="format" select="."/>
-                </comment>
-              </tp:nomenclature-citation>
-            </xsl:for-each>
-          </tp:nomenclature-citation-list>
-        </xsl:if>
-      </tp:nomenclature>
-      <xsl:call-template name="checklist-treatment-sections"/>
-    </tp:taxon-treatment>
-  </xsl:template>
-  <xsl:template name="checklist-genus-treatment">
-    <xsl:variable name="top" select="."/>
-    <xsl:variable name="nomenclature" select="node()[@object_id='210']/fields//value"/>
-    <xsl:variable name="rank" select="normalize-space(fields/node()[@id='414']/value)"/>
-    <xsl:variable name="treatment_id" select="fields/node()[name()=$rank]/@id"/>
-    <tp:taxon-treatment>
-      <tp:nomenclature>
-        <tp:taxon-name>
-          <tp:taxon-name-part>
-            <xsl:attribute name="taxon-name-part-type">genus</xsl:attribute>
-            <xsl:value-of select="fields/genus/value"/>
-          </tp:taxon-name-part>
-          <xsl:apply-templates mode="taxon-object-id" select="."/>
-        </tp:taxon-name>
-        <xsl:call-template name="get-authority"/>
-        <xsl:if test="normalize-space($nomenclature)!='' or count($nomenclature/*/*[name()!=''])!=0">
-          <tp:nomenclature-citation-list>
-            <xsl:for-each select="$nomenclature/node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
-              <tp:nomenclature-citation>
-                <tp:taxon-name>
-                  <tp:taxon-name-part>
-                    <xsl:attribute name="taxon-name-part-type">genus</xsl:attribute>
-                    <xsl:value-of select="fields/genus/value"/>
-                  </tp:taxon-name-part>
-                </tp:taxon-name>
-                <comment>
-                  <xsl:apply-templates mode="format" select="."/>
-                </comment>
-              </tp:nomenclature-citation>
-            </xsl:for-each>
+            <xsl:choose>
+              <xsl:when test="count($nomenclature/p)!=0">
+                <xsl:for-each select="$nomenclature/p[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+                  <tp:nomenclature-citation>
+                    <tp:taxon-name>
+                      <tp:taxon-name-part>
+                        <xsl:attribute name="taxon-name-part-type">
+                          <xsl:value-of select="$taxon/@latin"/>
+                        </xsl:attribute>
+                        <xsl:value-of select="$taxon/value"/>
+                      </tp:taxon-name-part>
+                    </tp:taxon-name>
+                    <comment>
+                      <xsl:apply-templates mode="format" select="."/>
+                    </comment>
+                  </tp:nomenclature-citation>
+                </xsl:for-each>
+              </xsl:when>
+              <xsl:otherwise>
+                <tp:nomenclature-citation>
+                  <tp:taxon-name>
+                    <tp:taxon-name-part>
+                      <xsl:attribute name="taxon-name-part-type">
+                        <xsl:value-of select="$taxon/@latin"/>
+                      </xsl:attribute>
+                      <xsl:value-of select="$taxon/value"/>
+                    </tp:taxon-name-part>
+                  </tp:taxon-name>
+                  <comment>
+                    <xsl:apply-templates mode="format" select="$nomenclature"/>
+                  </comment>
+                </tp:nomenclature-citation>
+              </xsl:otherwise>
+            </xsl:choose>
           </tp:nomenclature-citation-list>
         </xsl:if>
       </tp:nomenclature>
@@ -166,6 +154,7 @@
     <xsl:variable name="rank" select="normalize-space(fields/node()[@id='414']/value)"/>
     <xsl:variable name="treatment_id" select="fields/node()[name()=$rank]/@id"/>
     <tp:taxon-treatment>
+      <xsl:call-template name="checklist-treatment-meta"/>
       <tp:nomenclature>
         <xsl:apply-templates mode="get-subgenus-tagged" select="$top">
           <xsl:with-param name="put_object_id" select="true()"/>
@@ -173,16 +162,30 @@
         <xsl:call-template name="get-authority"/>
         <xsl:if test="normalize-space($nomenclature)!='' or count($nomenclature/*/*[name()!=''])!=0">
           <tp:nomenclature-citation-list>
-            <xsl:for-each select="$nomenclature/node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
-              <tp:nomenclature-citation>
-                <xsl:apply-templates mode="get-subgenus-tagged" select="$top">
-                  <xsl:with-param name="put_object_id" select="false()"/>
-                </xsl:apply-templates>
-                <comment>
-                  <xsl:apply-templates mode="format" select="."/>
-                </comment>
-              </tp:nomenclature-citation>
-            </xsl:for-each>
+            <xsl:choose>
+              <xsl:when test="count($nomenclature/p)!=0">
+                <xsl:for-each select="$nomenclature/p[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+                  <tp:nomenclature-citation>
+                    <xsl:apply-templates mode="get-subgenus-tagged" select="$top">
+                      <xsl:with-param name="put_object_id" select="false()"/>
+                    </xsl:apply-templates>
+                    <comment>
+                      <xsl:apply-templates mode="format" select="."/>
+                    </comment>
+                  </tp:nomenclature-citation>
+                </xsl:for-each>
+              </xsl:when>
+              <xsl:otherwise>
+                <tp:nomenclature-citation>
+                  <xsl:apply-templates mode="get-subgenus-tagged" select="$top">
+                    <xsl:with-param name="put_object_id" select="false()"/>
+                  </xsl:apply-templates>
+                  <comment>
+                    <xsl:apply-templates mode="format" select="$nomenclature"/>
+                  </comment>
+                </tp:nomenclature-citation>
+              </xsl:otherwise>
+            </xsl:choose>
           </tp:nomenclature-citation-list>
         </xsl:if>
       </tp:nomenclature>
@@ -195,6 +198,7 @@
     <xsl:variable name="rank" select="normalize-space(fields/node()[@id='414']/value)"/>
     <xsl:variable name="treatment_id" select="fields/node()[name()=$rank]/@id"/>
     <tp:taxon-treatment>
+      <xsl:call-template name="checklist-treatment-meta"/>
       <tp:nomenclature>
         <xsl:apply-templates mode="get-species-tagged" select="$top">
           <xsl:with-param name="put_object_id" select="true()"/>
@@ -202,16 +206,30 @@
         <xsl:call-template name="get-authority"/>
         <xsl:if test="normalize-space($nomenclature)!='' or count($nomenclature/*/*[name()!=''])!=0">
           <tp:nomenclature-citation-list>
-            <xsl:for-each select="$nomenclature/node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
-              <tp:nomenclature-citation>
-                <xsl:apply-templates mode="get-species-tagged" select="$top">
-                  <xsl:with-param name="put_object_id" select="false()"/>
-                </xsl:apply-templates>
-                <comment>
-                  <xsl:apply-templates mode="format" select="."/>
-                </comment>
-              </tp:nomenclature-citation>
-            </xsl:for-each>
+            <xsl:choose>
+              <xsl:when test="count($nomenclature/p)!=0">
+                <xsl:for-each select="$nomenclature/node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+                  <tp:nomenclature-citation>
+                    <xsl:apply-templates mode="get-species-tagged" select="$top">
+                      <xsl:with-param name="put_object_id" select="false()"/>
+                    </xsl:apply-templates>
+                    <comment>
+                      <xsl:apply-templates mode="format" select="."/>
+                    </comment>
+                  </tp:nomenclature-citation>
+                </xsl:for-each>
+              </xsl:when>
+              <xsl:otherwise>
+                <tp:nomenclature-citation>
+                  <xsl:apply-templates mode="get-species-tagged" select="$top">
+                    <xsl:with-param name="put_object_id" select="false()"/>
+                  </xsl:apply-templates>
+                  <comment>
+                    <xsl:apply-templates mode="format" select="$nomenclature"/>
+                  </comment>
+                </tp:nomenclature-citation>
+              </xsl:otherwise>
+            </xsl:choose>
           </tp:nomenclature-citation-list>
         </xsl:if>
       </tp:nomenclature>
@@ -219,16 +237,29 @@
     </tp:taxon-treatment>
   </xsl:template>
 
+  <xsl:template name="checklist-treatment-meta">
+    <tp:treatment-meta>
+      <kwd-group>
+        <xsl:for-each select="fields/node()[@rank_id!=''][normalize-space(.)!='']">
+          <kwd>
+            <xsl:value-of select="@field_name"/>
+            <xsl:text>: </xsl:text>
+            <xsl:value-of select="normalize-space(.)"/>
+          </kwd>
+        </xsl:for-each>
+      </kwd-group>
+    </tp:treatment-meta>
+  </xsl:template>
   <xsl:template mode="get-higher-tagged" match="*">
     <xsl:param name="put_object_id" select="true()"/>
     <xsl:param name="taxon_rank" select="'family'"/>
-    <xsl:param name="taxon" select="fields/family/value"/>
+    <xsl:param name="taxon" select="fields/family"/>
     <tp:taxon-name>
       <tp:taxon-name-part>
         <xsl:attribute name="taxon-name-part-type">
-          <xsl:value-of select="$taxon_rank"/>
+          <xsl:value-of select="$taxon/@latin"/>
         </xsl:attribute>
-        <xsl:value-of select="$taxon"/>
+        <xsl:value-of select="$taxon/value"/>
       </tp:taxon-name-part>
       <xsl:if test="$put_object_id">
         <xsl:apply-templates mode="taxon-object-id" select="."/>
@@ -348,7 +379,7 @@
       <tp:taxon-name>
         <tp:taxon-name-part>
           <xsl:attribute name="taxon-name-part-type">
-            <xsl:value-of select="name($taxon)"/>
+            <xsl:value-of select="$taxon/@latin"/>
           </xsl:attribute>
           <xsl:value-of select="$taxon/value"/>
         </tp:taxon-name-part>
@@ -356,6 +387,28 @@
     </title>
   </xsl:template>
   <xsl:template name="checklist-parse-taxons">
+    <xsl:variable name="rank" select="normalize-space(fields/rank/value)"/>
+    <xsl:variable name="rank_id" select="fields/node()[name()=$rank]/@rank_id"/>
+    <xsl:variable name="taxon" select="fields/node()[@rank_id=$rank_id]"/>
+    <xsl:choose>
+      <xsl:when test="($rank_id &lt; 18) and ($rank_id &gt; 0)"><!-- Higher taxon or genus -->
+        <xsl:call-template name="checklist-higher-treatment"/>
+      </xsl:when>
+      <xsl:when test="$rank_id=18"><!-- Subgenus -->
+        <xsl:call-template name="checklist-subgenus-treatment"/>
+      </xsl:when>
+      <xsl:when test="$rank_id &lt; 23 and $rank_id &gt; 18"><!-- Lower taxa -->
+        <xsl:call-template name="checklist-species-treatment"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <INVALID-TAG>
+          <xsl:text>Invalid rank_id </xsl:text>
+          <xsl:value-of select="$rank_id"/>
+        </INVALID-TAG>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  <xsl:template name="checklist-parse-taxons-RECURSIVE_SEC_STRUCTURE">
     <xsl:param name="rank_id" select="'1'"/>
     <xsl:variable name="taxon" select="fields/node()[@rank_id=$rank_id]"/>
     <xsl:variable name="rank" select="normalize-space(fields/rank/value)"/>
@@ -366,7 +419,7 @@
             <xsl:call-template name="checklist-higher-treatment"/>
           </xsl:when>
           <xsl:when test="normalize-space($taxon/value)=''">
-            <xsl:call-template name="checklist-parse-taxons">
+            <xsl:call-template name="checklist-parse-taxons-RECURSIVE_SEC_STRUCTURE">
               <xsl:with-param name="rank_id" select="$rank_id+1"/>
             </xsl:call-template>
           </xsl:when>
@@ -375,7 +428,7 @@
               <xsl:call-template name="checklist-taxon-sec-title">
                 <xsl:with-param name="taxon" select="$taxon"/>
               </xsl:call-template>
-              <xsl:call-template name="checklist-parse-taxons">
+              <xsl:call-template name="checklist-parse-taxons-RECURSIVE_SEC_STRUCTURE">
                 <xsl:with-param name="rank_id" select="$rank_id+1"/>
               </xsl:call-template>
             </sec>
@@ -388,7 +441,7 @@
             <xsl:call-template name="checklist-subgenus-treatment"/>
           </xsl:when>
           <xsl:when test="normalize-space($taxon/value)=''">
-            <xsl:call-template name="checklist-parse-taxons">
+            <xsl:call-template name="checklist-parse-taxons-RECURSIVE_SEC_STRUCTURE">
               <xsl:with-param name="rank_id" select="$rank_id+1"/>
             </xsl:call-template>
           </xsl:when>
@@ -397,7 +450,7 @@
               <xsl:call-template name="checklist-taxon-sec-title">
                 <xsl:with-param name="taxon" select="$taxon"/>
               </xsl:call-template>
-              <xsl:call-template name="checklist-parse-taxons">
+              <xsl:call-template name="checklist-parse-taxons-RECURSIVE_SEC_STRUCTURE">
                 <xsl:with-param name="rank_id" select="$rank_id+1"/>
               </xsl:call-template>
             </sec>

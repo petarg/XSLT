@@ -9,14 +9,14 @@
   <xsl:param name="front_abstract" select="/document/objects/article_metadata/abstract_and_keywords/fields/abstract"/>
   <xsl:param name="front_keywords" select="/document/objects/article_metadata/abstract_and_keywords/fields/keywords"/>
   <xsl:param name="front_funding" select="/document/objects/article_metadata/funding_agencies"/>
-  
+
   <xsl:template name="front">
     <front>
       <xsl:call-template name="front-journal-meta"/>
       <xsl:call-template name="front-article-meta"/>
     </front>
   </xsl:template>
-  
+
   <xsl:template name="front-journal-meta">
     <xsl:variable name="bdj" select="'Biodiversity Data Journal'"/>
     <xsl:variable name="bdjabbrev" select="'BDJ'"/>
@@ -37,8 +37,8 @@
               <xsl:value-of select="$bdjabbrev"/>
             </abbrev-journal-title>
           </journal-title-group>
-          <issn pub-type="ppub">0000-0000</issn>
-          <issn pub-type="epub">0000-0000</issn>
+          <issn pub-type="ppub">1314-2836</issn>
+          <issn pub-type="epub">1314-2828</issn>
         </xsl:when>
       </xsl:choose>
       <publisher>
@@ -52,7 +52,6 @@
       <article-id pub-id-type="publisher-id"><xsl:value-of select="$jname"/></article-id>
       <article-id pub-id-type="doi">10.3897/xxx.000.0000</article-id>
       <article-id pub-id-type="other"><xsl:value-of select="/document/@id"/></article-id>
-      <article-id pub-id-type="pmid">00000000</article-id>
       <xsl:call-template name="front-article-categories"/>
       <xsl:call-template name="front-title-group"/>
       <xsl:call-template name="front-authors"/>
@@ -142,15 +141,15 @@
               <xsl:value-of select="normalize-space(value)"/>
             </email>
           </xsl:for-each>
-          <xsl:for-each select="fields/rights">
-            <author-comment>
-              <title><xsl:value-of select="@field_name"/></title>
-              <p><xsl:value-of select="value"/></p>
-            </author-comment>
-          </xsl:for-each>
-          <!-- <xsl:for-each select="node()[@object_id='5'][normalize-space(.)!='']">
+<!--           <xsl:for-each select="fields/rights"> -->
+<!--             <author-comment> -->
+<!--               <title><xsl:value-of select="@field_name"/></title> -->
+<!--               <p><xsl:value-of select="value"/></p> -->
+<!--             </author-comment> -->
+<!--           </xsl:for-each> -->
+          <xsl:for-each select="node()[@object_id='5'][normalize-space(.)!='']">
             <xsl:apply-templates mode="front-author-aff" select="fields" />
-          </xsl:for-each> -->
+          </xsl:for-each>
           <xsl:for-each select="node()[@object_id='5'][normalize-space(.)!='']">
             <xsl:apply-templates mode="front-xref-aff" select="."/>
           </xsl:for-each>
@@ -178,15 +177,15 @@
                 <role><xsl:value-of select="."/></role>
               </xsl:for-each>
             </xsl:for-each>
-            <xsl:for-each select="fields/rights">
-              <author-comment>
-                <title><xsl:value-of select="@field_name"/></title>
-                <p><xsl:value-of select="value"/></p>
-              </author-comment>
-            </xsl:for-each>
-            <!-- <xsl:for-each select="node()[@object_id='5'][normalize-space(.)!='']">
+<!--             <xsl:for-each select="fields/rights"> -->
+<!--               <author-comment> -->
+<!--                 <title><xsl:value-of select="@field_name"/></title> -->
+<!--                 <p><xsl:value-of select="value"/></p> -->
+<!--               </author-comment> -->
+<!--             </xsl:for-each> -->
+            <xsl:for-each select="node()[@object_id='5'][normalize-space(.)!='']">
               <xsl:apply-templates mode="front-author-aff" select="fields" />
-            </xsl:for-each> -->
+            </xsl:for-each>
             <xsl:for-each select="node()[@object_id='5'][normalize-space(.)!='']">
               <xsl:apply-templates mode="front-xref-aff" select="."/>
             </xsl:for-each>
