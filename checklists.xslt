@@ -9,8 +9,12 @@
   <xsl:template mode="checklists" match="*">
     <xsl:if test="count(checklist[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0])!=0">
       <sec>
-        <xsl:attribute name="sec-type"><xsl:value-of select="@display_name"/></xsl:attribute>
-        <title><xsl:value-of select="@display_name"/></title>
+        <xsl:attribute name="sec-type">
+          <xsl:value-of select="@display_name"/>
+        </xsl:attribute>
+        <title>
+          <xsl:value-of select="@display_name"/>
+        </title>
         <xsl:for-each select="checklist[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
           <xsl:apply-templates mode="checklist" select="."/>
         </xsl:for-each>
@@ -20,25 +24,26 @@
   <xsl:template mode="checklist" match="*">
     <sec>
       <xsl:attribute name="sec-type">
-        <xsl:value-of select="@display_name"/>
+        <xsl:choose>
+          <xsl:when test="contains(@display_name, '...')">
+            <xsl:value-of select="substring-before(@display_name, '...')"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="@display_name"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:attribute>
       <sec-meta>
         <xsl:for-each select="fields[normalize-space(.)!='']">
           <kwd-group>
             <xsl:for-each select="node()[(normalize-space(value)!='') and (@id!='476')]">
-              <xsl:variable name="value" select="normalize-space(value)"/>
-              <xsl:choose>
-                <xsl:when test="@field_name=''">
-                  <kwd><xsl:value-of select="$value"/></kwd>
-                </xsl:when>
-                <xsl:otherwise>
-                  <kwd>
-                    <xsl:value-of select="@field_name"/>
-                    <xsl:text>: </xsl:text>
-                    <xsl:value-of select="$value"/>
-                  </kwd>
-                </xsl:otherwise>
-              </xsl:choose>
+              <kwd>
+                <xsl:if test="@field_name!=''">
+                  <xsl:value-of select="@field_name"/>
+                  <xsl:text>: </xsl:text>
+                </xsl:if>
+                <xsl:value-of select="normalize-space(value)"/>
+              </kwd>
             </xsl:for-each>
           </kwd-group>
         </xsl:for-each>
@@ -56,7 +61,9 @@
         <xsl:attribute name="sec-type">
           <xsl:value-of select="@display_name"/>
         </xsl:attribute>
-        <title><xsl:value-of select="@display_name"/></title>
+        <title>
+          <xsl:value-of select="@display_name"/>
+        </title>
         <xsl:for-each select="fields/*[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
           <xsl:apply-templates mode="little-section" select="."/>
         </xsl:for-each>
@@ -242,9 +249,14 @@
       <kwd-group>
         <xsl:for-each select="fields/node()[@rank_id!=''][normalize-space(.)!='']">
           <kwd>
-            <xsl:value-of select="@field_name"/>
-            <xsl:text>: </xsl:text>
-            <xsl:value-of select="normalize-space(.)"/>
+            <tp:taxon-name>
+              <tp:taxon-name-part>
+                <xsl:attribute name="taxon-name-part-type">
+                   <xsl:value-of select="@latin"/>
+                 </xsl:attribute>
+                 <xsl:value-of select="normalize-space(value)"/>
+              </tp:taxon-name-part>
+            </tp:taxon-name>
           </kwd>
         </xsl:for-each>
       </kwd-group>

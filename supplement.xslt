@@ -9,41 +9,65 @@
   <xsl:param name="sfiles" select="//node()[@object_id='56']"/>
   <xsl:template name="supplement">
     <app-group>
-      <title><xsl:value-of select="$sfiles/@display_name"/></title>
+      <title>
+        <xsl:value-of select="$sfiles/@display_name"/>
+      </title>
       <xsl:for-each select="$sfiles/node()[@object_id='55']"><!-- supplementary_file -->
-        <xsl:variable name="file"><xsl:value-of select="normalize-space(fields/node()[@id='222']/value)"/><xsl:text>.txt</xsl:text></xsl:variable>
+        <xsl:variable name="file">
+          <xsl:value-of select="normalize-space(fields/node()[@id='222']/value)"/>
+          <xsl:text>.txt</xsl:text>
+        </xsl:variable>
         <xsl:variable name="type" select="fields/node()[@id='216']/value"/>
         <xsl:variable name="ext" select="substring-after($file, '.')"/>
         <app>
-          <title><xsl:apply-templates mode="title" select="fields/node()[@id='214']/value"/></title>
+          <title>
+            <xsl:apply-templates mode="title" select="fields/node()[@id='214']/value"/>
+          </title>
           <supplementary-material>
-            <xsl:attribute name="id"><xsl:text>S</xsl:text><xsl:value-of select="position()"/></xsl:attribute>
+            <xsl:attribute name="id">
+              <xsl:text>S</xsl:text>
+              <xsl:value-of select="@instance_id"/>
+            </xsl:attribute>
             <xsl:attribute name="orientation">portrait</xsl:attribute>
             <xsl:attribute name="position">float</xsl:attribute>
             <xsl:attribute name="xlink:type">simple</xsl:attribute>
             <xsl:variable name="caption" select="fields/node()[@id='217']/value/p[1]"/>
             <xsl:if test="normalize-space($caption)!='' or count($caption/*[name()!=''])!=0">
-              <caption><p><xsl:apply-templates mode="format" select="$caption"/></p></caption>
+              <caption>
+                <p><xsl:apply-templates mode="format" select="$caption"/></p>
+              </caption>
             </xsl:if>
             <media>
-              <xsl:attribute name="xlink:href"><xsl:value-of select="$file"/></xsl:attribute>
+              <xsl:attribute name="xlink:href">
+                <xsl:value-of select="$file"/>
+              </xsl:attribute>
               <xsl:attribute name="mimetype">
                 <xsl:call-template name="mime-type">
-                  <xsl:with-param name="ext"><xsl:value-of select="$ext"/></xsl:with-param>
+                  <xsl:with-param name="ext">
+                    <xsl:value-of select="$ext"/>
+                  </xsl:with-param>
                 </xsl:call-template>
               </xsl:attribute>
-              <xsl:attribute name="mime-subtype"><xsl:value-of select="$ext"/></xsl:attribute>
+              <xsl:attribute name="mime-subtype">
+                <xsl:value-of select="$ext"/>
+              </xsl:attribute>
               <xsl:attribute name="position">float</xsl:attribute>
               <xsl:attribute name="orientation">portrait</xsl:attribute>
               <xsl:attribute name="xlink:type">simple</xsl:attribute>
             </media>
             <p>
-              <bold><xsl:value-of select="fields/node()[@id='215']/@field_name"/><xsl:text>:</xsl:text></bold>
+              <bold>
+                <xsl:value-of select="fields/node()[@id='215']/@field_name"/>
+                <xsl:text>:</xsl:text>
+              </bold>
               <xsl:text> </xsl:text>
               <xsl:value-of select="fields/node()[@id='215']/value"/>
             </p>
             <p>
-              <bold><xsl:value-of select="fields/node()[@id='216']/@field_name"/><xsl:text>:</xsl:text></bold>
+              <bold>
+                <xsl:value-of select="fields/node()[@id='216']/@field_name"/>
+                <xsl:text>:</xsl:text>
+              </bold>
               <xsl:text> </xsl:text>
               <xsl:value-of select="$type"/>
             </p>
@@ -55,7 +79,7 @@
       </xsl:for-each>
     </app-group>
   </xsl:template>
-  
+
   <xsl:template name="mime-type">
     <xsl:param name="ext" select="''"/>
     <xsl:choose>

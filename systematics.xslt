@@ -324,43 +324,34 @@
         <list>
           <xsl:attribute name="list-type">alpha-lower</xsl:attribute>
           <xsl:for-each select="material">
-            <list-item>
-              <list>
-                <xsl:attribute name="list-type">simple</xsl:attribute>
-                <xsl:for-each select="priority_darwincore">
-                  <xsl:variable name="type_status" select="normalize-space(fields/type_status/value)"/>
-                  <list-item>
-                    <label><xsl:value-of select="@display_name"/></label>
-                    <xsl:if test="$type_status!=''">
-                      <p><xsl:value-of select="$type_status"/></p>
-                    </xsl:if>
-                    <xsl:for-each select="node()[name()!='' and name()!='fields']">
-                      <p><xsl:apply-templates mode="materials_mode" select="."/></p>
-                    </xsl:for-each>
-                  </list-item>
-                </xsl:for-each>
-                <xsl:for-each select="extended_darwincore">
-                  <xsl:variable name="type_status" select="normalize-space(fields/type_status/value)"/>
-                  <list-item>
-                    <label><xsl:value-of select="@display_name"/></label>
-                    <xsl:if test="$type_status!=''">
-                      <p><xsl:value-of select="$type_status"/></p>
-                    </xsl:if>
-                    <xsl:for-each select="node()[name()!='' and name()!='fields']">
-                      <list>
-                        <xsl:attribute name="list-type">simple</xsl:attribute>
-                        <xsl:for-each select="node()[normalize-space()!='']">
-                          <list-item>
-                            <label><xsl:value-of select="@display_name"/></label>
-                            <p><xsl:apply-templates mode="materials_mode" select="."/></p>
-                          </list-item>
-                        </xsl:for-each>
-                      </list>
-                    </xsl:for-each>
-                  </list-item>
-                </xsl:for-each>
-              </list>
-            </list-item>
+             <xsl:for-each select="priority_darwincore">
+               <list-item>
+                 <xsl:call-template name="materials_label"/>
+                 <xsl:for-each select="node()[name()!='' and name()!='fields']">
+                   <p><xsl:apply-templates mode="materials_mode" select="."/></p>
+                 </xsl:for-each>
+               </list-item>
+             </xsl:for-each>
+             <xsl:for-each select="extended_darwincore">
+               <list-item>
+                 <xsl:call-template name="materials_label"/>
+                 <xsl:for-each select="node()[name()!='' and name()!='fields']">
+                   <p>
+                     <xsl:for-each select="node()[normalize-space()!='']">
+                       <bold>
+                         <xsl:value-of select="@display_name"/>
+                         <xsl:text>:</xsl:text>
+                       </bold>
+                       <xsl:text> </xsl:text>
+                       <xsl:apply-templates mode="materials_mode" select="."/>
+                       <xsl:if test="position()!=last()">
+                         <xsl:text>; </xsl:text>
+                       </xsl:if>
+                     </xsl:for-each>
+                   </p>
+                 </xsl:for-each>
+               </list-item>
+             </xsl:for-each>
           </xsl:for-each>
         </list>
       </tp:treatment-sec>
@@ -371,8 +362,34 @@
     <xsl:for-each select=".//fields/node()[(@field_name!='') and (normalize-space(.)!='')]">
       <xsl:value-of select="@field_name"/>
       <xsl:text>: </xsl:text>
-      <xsl:value-of select="value"/>
-      <xsl:if test="position()!=last()"><xsl:text>; </xsl:text></xsl:if>
+      <named-content>
+        <xsl:attribute name="content-type">
+          <xsl:text>dwc:</xsl:text>
+          <xsl:value-of select="@field_name"/>
+        </xsl:attribute>
+        <xsl:apply-templates mode="material_mode_content" select="value/node()"/>
+      </named-content>
+      <xsl:if test="position()!=last()">
+        <xsl:text>; </xsl:text>
+      </xsl:if>
     </xsl:for-each>
+  </xsl:template>
+  <xsl:template mode="material_mode_content" match="tp:taxon-name">
+    <xsl:copy-of select="."/>
+  </xsl:template>
+  <xsl:template mode="material_mode_content" match="@*|node()">
+    <xsl:value-of select="normalize-space(.)"/>
+  </xsl:template>
+  <xsl:template name="materials_label">
+    <xsl:variable name="type_status" select="normalize-space(fields/type_status/value)"/>
+    <label>
+       <xsl:value-of select="@display_name"/>
+       <xsl:if test="$type_status!=''">
+         <xsl:text>. </xsl:text>
+         <xsl:value-of select="fields/type_status/@field_name"/>
+         <xsl:text>: </xsl:text>
+         <xsl:value-of select="$type_status"/>
+       </xsl:if>
+     </label>
   </xsl:template>
 </xsl:stylesheet>

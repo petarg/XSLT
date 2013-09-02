@@ -29,7 +29,8 @@
           <xsl:when test="@object_id='222'"><!-- Image -->
             <fig>
               <xsl:attribute name="id">
-                <xsl:text>F</xsl:text><xsl:value-of select="$id"/>
+                <xsl:text>F</xsl:text>
+                <xsl:value-of select="$id"/>
               </xsl:attribute>
               <xsl:attribute name="position">float</xsl:attribute>
               <xsl:attribute name="orientation">portrait</xsl:attribute>
@@ -319,46 +320,67 @@
           <xsl:value-of select="@summary"/>
         </xsl:attribute>
       </xsl:if>
-      <xsl:for-each select="thead[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
-        <thead>
-          <xsl:for-each select="tr[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
-            <tr>
-              <xsl:for-each select="th">
-                <th>
-                  <xsl:attribute name="rowspan">1</xsl:attribute>
-                  <xsl:attribute name="colspan">1</xsl:attribute>
-                  <xsl:if test="$align!=''">
-                    <xsl:attribute name="align">
-                      <xsl:value-of select="$align"/>
-                    </xsl:attribute>
-                  </xsl:if>
-                  <xsl:apply-templates mode="td-format" select="."/>
-                </th>
-              </xsl:for-each>
-            </tr>
-          </xsl:for-each>
-        </thead>
-      </xsl:for-each>
-      <xsl:for-each select="tbody[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
-        <tbody>
-          <xsl:for-each select="tr[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
-            <tr>
-              <xsl:for-each select="td">
-                <td>
-                  <xsl:attribute name="rowspan">1</xsl:attribute>
-                  <xsl:attribute name="colspan">1</xsl:attribute>
-                  <xsl:if test="$align!=''">
-                    <xsl:attribute name="align">
-                      <xsl:value-of select="$align"/>
-                    </xsl:attribute>
-                  </xsl:if>
-                  <xsl:apply-templates mode="td-format" select="."/>
-                </td>
-              </xsl:for-each>
-            </tr>
-          </xsl:for-each>
-        </tbody>
-      </xsl:for-each>
+      <xsl:apply-templates mode="tables-table-elements" select="node()">
+        <xsl:with-param name="align" select="$align"/>
+      </xsl:apply-templates>
+<!--       <xsl:for-each select="thead[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]"> -->
+<!--         <thead> -->
+          
+<!--         </thead> -->
+<!--       </xsl:for-each> -->
+<!--       <xsl:for-each select="tbody[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]"> -->
+<!--         <tbody> -->
+<!--           <xsl:apply-templates mode="tables-table-elements" select="node()"> -->
+<!--             <xsl:with-param name="align" select="$align"/> -->
+<!--           </xsl:apply-templates> -->
+<!--         </tbody> -->
+<!--       </xsl:for-each> -->
     </table>
+  </xsl:template>
+  <xsl:template mode="tables-table-elements" match="@*|node()"/>
+  <xsl:template mode="tables-table-elements" match="thead | tbody">
+    <xsl:param name="align"/>
+    <xsl:if test="normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0">
+      <xsl:element name="{name()}">
+        <xsl:apply-templates mode="tables-table-elements" select="node()">
+          <xsl:with-param name="align" select="$align"/>
+        </xsl:apply-templates>
+      </xsl:element>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template mode="tables-table-elements" match="thead/tr | tbody/tr | tfoot/tr">
+    <xsl:param name="align"/>
+    <xsl:if test="normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0">
+      <tr>
+        <xsl:apply-templates mode="tables-table-elements" select="node()">
+          <xsl:with-param name="align" select="$align"/>
+        </xsl:apply-templates>
+      </tr>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template mode="tables-table-elements" match="tr">
+    <xsl:param name="align"/>
+    <xsl:if test="normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0">
+      <tbody>
+        <tr>
+          <xsl:apply-templates mode="tables-table-elements" select="node()">
+            <xsl:with-param name="align" select="$align"/>
+          </xsl:apply-templates>
+        </tr>
+      </tbody>
+    </xsl:if>
+  </xsl:template>
+  <xsl:template mode="tables-table-elements" match="th | td">
+    <xsl:param name="align"/>
+    <xsl:element name="{name()}">
+      <xsl:attribute name="rowspan">1</xsl:attribute>
+      <xsl:attribute name="colspan">1</xsl:attribute>
+      <xsl:if test="$align!=''">
+        <xsl:attribute name="align">
+          <xsl:value-of select="$align"/>
+        </xsl:attribute>
+      </xsl:if>
+      <xsl:apply-templates mode="td-format" select="."/>
+    </xsl:element>
   </xsl:template>
 </xsl:stylesheet>

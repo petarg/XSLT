@@ -6,9 +6,7 @@
   xmlns:xlink="http://www.w3.org/1999/xlink"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:tp="http://www.plazi.org/taxpub">
-
   <xsl:output method="xml" encoding="UTF-8" />
-
   <xsl:template match="/document">
     <document>
       <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>

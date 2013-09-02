@@ -426,7 +426,7 @@
       </abstract>
     </xsl:for-each>
   </xsl:template>
-  
+
   <xsl:template name="front-keywords">
     <xsl:for-each select="$front_keywords[normalize-space(value)!='']">
       <kwd-group>
@@ -496,6 +496,13 @@
         <xsl:otherwise>
           <xsl:text>{</xsl:text>
           <xsl:value-of select="name()"/>
+          <xsl:for-each select="@*">
+            <xsl:text>(((</xsl:text>
+            <xsl:value-of select="name(.)"/>
+            <xsl:text>#</xsl:text>
+            <xsl:value-of select="normalize-space(.)"/>
+            <xsl:text>)))</xsl:text>
+          </xsl:for-each>
           <xsl:text>}</xsl:text>
           <xsl:apply-templates mode="xml-to-string" select="."/>
           <xsl:text>{/</xsl:text>
@@ -510,13 +517,38 @@
     <xsl:choose>
       <xsl:when test="contains($text,'}')=true() and contains($text,'{')=true()">
         <xsl:variable name="first_tag" select="substring-before(substring-after($text,'{'),'}')"/>
-        <xsl:variable name="l"><xsl:text>{</xsl:text><xsl:value-of select="$first_tag"/><xsl:text>}</xsl:text></xsl:variable>
-        <xsl:variable name="r"><xsl:text>{/</xsl:text><xsl:value-of select="$first_tag"/><xsl:text>}</xsl:text></xsl:variable>
+        <xsl:variable name="tag_name">
+          <xsl:choose>
+            <xsl:when test="contains($first_tag,'(((')">
+              <xsl:value-of select="substring-before($first_tag, '(((')"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$first_tag"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+        <xsl:variable name="l">
+          <xsl:text>{</xsl:text>
+          <xsl:value-of select="$first_tag"/>
+          <xsl:text>}</xsl:text>
+        </xsl:variable>
+        <xsl:variable name="r">
+          <xsl:text>{/</xsl:text>
+          <xsl:value-of select="$tag_name"/>
+          <xsl:text>}</xsl:text>
+        </xsl:variable>
+        <xsl:variable name="attr_name" select="substring-after(substring-before($first_tag,'#'),'(((')"/>
+        <xsl:variable name="attr_value" select="substring-after(substring-before($first_tag,')))'),'#')"/>
         <xsl:variable name="before" select="substring-before($text,$l)"/>
         <xsl:variable name="after" select="substring-after($text,$r)"/>
         <xsl:variable name="in" select="substring-before(substring-after($text,$l),$r)"/>
         <xsl:value-of select="$before"/>
-        <xsl:element name="{$first_tag}">
+        <xsl:element name="{$tag_name}">
+          <xsl:if test="$attr_name!=''">
+            <xsl:attribute name="{$attr_name}">
+              <xsl:value-of select="$attr_value"/>
+            </xsl:attribute>
+          </xsl:if>
           <xsl:call-template name="text-to-xml">
             <xsl:with-param name="text" select="$in"/>
           </xsl:call-template>
