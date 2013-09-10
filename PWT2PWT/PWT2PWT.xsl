@@ -343,7 +343,8 @@
           <xsl:when test="name()='tn-part'">
             <tp:taxon-name-part>
               <xsl:attribute name="taxon-name-part-type">
-                <xsl:value-of select="@type"/>
+<!--                 <xsl:value-of select="@type"/> -->
+                <xsl:call-template name="convert-tn-types"/>
               </xsl:attribute>
               <xsl:choose>
                 <xsl:when test="@full-name!=''">
@@ -363,6 +364,79 @@
         </xsl:choose>
       </xsl:for-each>
     </tp:taxon-name>
+  </xsl:template>
+  <xsl:template name="convert-tn-types">
+    <xsl:choose>
+      <xsl:when test="@type='kingdom'">
+        <xsl:text>regnum</xsl:text>
+      </xsl:when>
+      <xsl:when test="@type='subkingdom'">
+        <xsl:text>subregnum</xsl:text>
+      </xsl:when>
+      <xsl:when test="@type='phylum'">
+        <xsl:text>phylum</xsl:text>
+      </xsl:when>
+      <xsl:when test="@type='subphylum'">
+        <xsl:text>subphylum</xsl:text>
+      </xsl:when>
+      <xsl:when test="@type='superclass'">
+        <xsl:text>superclassis</xsl:text>
+      </xsl:when>
+      <xsl:when test="@type='class'">
+        <xsl:text>classis</xsl:text>
+      </xsl:when>
+      <xsl:when test="@type='subclass'">
+        <xsl:text>subclassis</xsl:text>
+      </xsl:when>
+      <xsl:when test="@type='superorder'">
+        <xsl:text>superordo</xsl:text>
+      </xsl:when>
+      <xsl:when test="@type='order'">
+        <xsl:text>ordo</xsl:text>
+      </xsl:when>
+      <xsl:when test="@type='suborder'">
+        <xsl:text>subordo</xsl:text>
+      </xsl:when>
+      <xsl:when test="@type='infraorder'">
+        <xsl:text>infraorder</xsl:text>
+      </xsl:when>
+      <xsl:when test="@type='superfamily'">
+        <xsl:text>superfamilia</xsl:text>
+      </xsl:when>
+      <xsl:when test="@type='family'">
+        <xsl:text>familia</xsl:text>
+      </xsl:when>
+      <xsl:when test="@type='subfamily'">
+        <xsl:text>subfamilia</xsl:text>
+      </xsl:when>
+      <xsl:when test="@type='tribe'">
+        <xsl:text>tribus</xsl:text>
+      </xsl:when>
+      <xsl:when test="@type='subtribe'">
+        <xsl:text>subtribus</xsl:text>
+      </xsl:when>
+      <xsl:when test="@type='genus'">
+        <xsl:text>genus</xsl:text>
+      </xsl:when>
+      <xsl:when test="@type='subgenus'">
+        <xsl:text>subgenus</xsl:text>
+      </xsl:when>
+      <xsl:when test="@type='species'">
+        <xsl:text>species</xsl:text>
+      </xsl:when>
+      <xsl:when test="@type='subspecies'">
+        <xsl:text>subspecies</xsl:text>
+      </xsl:when>
+      <xsl:when test="@type='variety'">
+        <xsl:text>varietas</xsl:text>
+      </xsl:when>
+      <xsl:when test="@type='form'">
+        <xsl:text>forma</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="@type"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <xsl:template match="references">
     <references>

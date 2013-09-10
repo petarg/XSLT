@@ -11,10 +11,10 @@
     <xsl:param name="title"/>
     <xsl:choose>
       <xsl:when test="normalize-space(fields/title/value)!=''">
-        <xsl:if test="count(fields/node()[name()!='' and name()!='title'][normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0])!=0">
+        <xsl:if test="count(fields/node()[name()!='' and name()!='title'][normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0])!=0 or count(subsection)!=0">
           <sec>
             <xsl:attribute name="sec-type">
-              <xsl:value-of select="$title"/>
+               <xsl:value-of select="$title"/>
             </xsl:attribute>
             <title>
               <xsl:apply-templates mode="title" select="fields/title/value"/>

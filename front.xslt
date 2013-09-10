@@ -141,15 +141,9 @@
               <xsl:value-of select="normalize-space(value)"/>
             </email>
           </xsl:for-each>
-<!--           <xsl:for-each select="fields/rights"> -->
-<!--             <author-comment> -->
-<!--               <title><xsl:value-of select="@field_name"/></title> -->
-<!--               <p><xsl:value-of select="value"/></p> -->
-<!--             </author-comment> -->
+<!--           <xsl:for-each select="node()[@object_id='5'][normalize-space(.)!='']"> -->
+<!--             <xsl:apply-templates mode="front-author-aff" select="fields" /> -->
 <!--           </xsl:for-each> -->
-          <xsl:for-each select="node()[@object_id='5'][normalize-space(.)!='']">
-            <xsl:apply-templates mode="front-author-aff" select="fields" />
-          </xsl:for-each>
           <xsl:for-each select="node()[@object_id='5'][normalize-space(.)!='']">
             <xsl:apply-templates mode="front-xref-aff" select="."/>
           </xsl:for-each>
@@ -177,15 +171,9 @@
                 <role><xsl:value-of select="."/></role>
               </xsl:for-each>
             </xsl:for-each>
-<!--             <xsl:for-each select="fields/rights"> -->
-<!--               <author-comment> -->
-<!--                 <title><xsl:value-of select="@field_name"/></title> -->
-<!--                 <p><xsl:value-of select="value"/></p> -->
-<!--               </author-comment> -->
+<!--             <xsl:for-each select="node()[@object_id='5'][normalize-space(.)!='']"> -->
+<!--               <xsl:apply-templates mode="front-author-aff" select="fields" /> -->
 <!--             </xsl:for-each> -->
-            <xsl:for-each select="node()[@object_id='5'][normalize-space(.)!='']">
-              <xsl:apply-templates mode="front-author-aff" select="fields" />
-            </xsl:for-each>
             <xsl:for-each select="node()[@object_id='5'][normalize-space(.)!='']">
               <xsl:apply-templates mode="front-xref-aff" select="."/>
             </xsl:for-each>

@@ -325,7 +325,7 @@
   <xsl:template name="ref-lang">
     <xsl:for-each select="fields/publication_language[normalize-space(value)!='']">
       <comment>
-        <xsl:text>[In </xsl:text>
+        <xsl:text>[in </xsl:text>
         <xsl:value-of select="value"/>
         <xsl:text>]</xsl:text>
       </comment>

@@ -24,30 +24,25 @@
   <xsl:template mode="checklist" match="*">
     <sec>
       <xsl:attribute name="sec-type">
-        <xsl:choose>
-          <xsl:when test="contains(@display_name, '...')">
-            <xsl:value-of select="substring-before(@display_name, '...')"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="@display_name"/>
-          </xsl:otherwise>
-        </xsl:choose>
+        <xsl:value-of select="normalize-space(fields/node()[@id='413']/value)"/>
       </xsl:attribute>
-      <sec-meta>
-        <xsl:for-each select="fields[normalize-space(.)!='']">
-          <kwd-group>
-            <xsl:for-each select="node()[(normalize-space(value)!='') and (@id!='476')]">
-              <kwd>
-                <xsl:if test="@field_name!=''">
-                  <xsl:value-of select="@field_name"/>
-                  <xsl:text>: </xsl:text>
-                </xsl:if>
-                <xsl:value-of select="normalize-space(value)"/>
-              </kwd>
-            </xsl:for-each>
-          </kwd-group>
-        </xsl:for-each>
-      </sec-meta>
+      <xsl:if test="count(fields/node()[(normalize-space(value)!='') and (@id!='476') and (@id!='413')])!=0">
+        <sec-meta>
+          <xsl:for-each select="fields[normalize-space(.)!='']">
+            <kwd-group>
+              <xsl:for-each select="node()[(normalize-space(value)!='') and (@id!='476') and (@id!='413')]">
+                <kwd>
+                  <xsl:if test="@field_name!=''">
+                    <xsl:value-of select="@field_name"/>
+                    <xsl:text>: </xsl:text>
+                  </xsl:if>
+                  <xsl:value-of select="normalize-space(value)"/>
+                </kwd>
+              </xsl:for-each>
+            </kwd-group>
+          </xsl:for-each>
+        </sec-meta>
+      </xsl:if>
       <title>
         <xsl:apply-templates mode="title" select="fields/node()[@id='413']/value"/>
       </title>

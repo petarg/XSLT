@@ -264,7 +264,7 @@
     </tp:taxon-name>
     <xsl:apply-templates mode="taxon-authority" select="$taxon_name"/>
     <xsl:if test="$status!=''">
-      <tp:taxon-status xlink:type="simple"><xsl:value-of select="$status"/></tp:taxon-status>
+      <tp:taxon-status><xsl:value-of select="$status"/></tp:taxon-status>
     </xsl:if>
   </xsl:template>
 
@@ -324,14 +324,6 @@
         <list>
           <xsl:attribute name="list-type">alpha-lower</xsl:attribute>
           <xsl:for-each select="material">
-             <xsl:for-each select="priority_darwincore">
-               <list-item>
-                 <xsl:call-template name="materials_label"/>
-                 <xsl:for-each select="node()[name()!='' and name()!='fields']">
-                   <p><xsl:apply-templates mode="materials_mode" select="."/></p>
-                 </xsl:for-each>
-               </list-item>
-             </xsl:for-each>
              <xsl:for-each select="extended_darwincore">
                <list-item>
                  <xsl:call-template name="materials_label"/>
@@ -357,7 +349,6 @@
       </tp:treatment-sec>
     </xsl:if>
   </xsl:template>
-
   <xsl:template mode="materials_mode" match="*">
     <xsl:for-each select=".//fields/node()[(@field_name!='') and (normalize-space(.)!='')]">
       <xsl:value-of select="@field_name"/>
@@ -367,7 +358,8 @@
           <xsl:text>dwc:</xsl:text>
           <xsl:value-of select="@field_name"/>
         </xsl:attribute>
-        <xsl:apply-templates mode="material_mode_content" select="value/node()"/>
+        <xsl:attribute name="xlink:type">simple</xsl:attribute>
+        <xsl:apply-templates mode="format" select="value"/>
       </named-content>
       <xsl:if test="position()!=last()">
         <xsl:text>; </xsl:text>
@@ -377,19 +369,26 @@
   <xsl:template mode="material_mode_content" match="tp:taxon-name">
     <xsl:copy-of select="."/>
   </xsl:template>
+  <xsl:template mode="material_mode_content" match="a">
+    <ext-link>
+      <xsl:attribute name="ext-link-type">uri</xsl:attribute>
+      <xsl:attribute name="xlink:href">
+        <xsl:value-of select="href"/>
+      </xsl:attribute>
+      <xsl:value-of select="normalize-space(.)"/>
+    </ext-link>
+  </xsl:template>
   <xsl:template mode="material_mode_content" match="@*|node()">
     <xsl:value-of select="normalize-space(.)"/>
   </xsl:template>
   <xsl:template name="materials_label">
     <xsl:variable name="type_status" select="normalize-space(fields/type_status/value)"/>
+    <xsl:if test="$type_status!=''">
     <label>
-       <xsl:value-of select="@display_name"/>
-       <xsl:if test="$type_status!=''">
-         <xsl:text>. </xsl:text>
-         <xsl:value-of select="fields/type_status/@field_name"/>
-         <xsl:text>: </xsl:text>
-         <xsl:value-of select="$type_status"/>
-       </xsl:if>
+      <xsl:value-of select="fields/type_status/@field_name"/>
+      <xsl:text>: </xsl:text>
+      <xsl:value-of select="$type_status"/>
      </label>
+     </xsl:if>
   </xsl:template>
 </xsl:stylesheet>

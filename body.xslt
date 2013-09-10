@@ -10,6 +10,7 @@
     <xsl:variable name="body" select="/document/objects"/>
     <body>
       <xsl:for-each select="$body/node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+<!--       <xsl:for-each select="$body/node()"> -->
         <xsl:choose>
           <!-- NON-TRIVIAL SECTIONS -->
           <xsl:when test="@object_id='54'"><!-- Systematics -->
