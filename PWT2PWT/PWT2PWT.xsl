@@ -373,6 +373,9 @@
       <xsl:when test="@type='subkingdom'">
         <xsl:text>subregnum</xsl:text>
       </xsl:when>
+      <xsl:when test="@type='division'">
+        <xsl:text>divisio</xsl:text>
+      </xsl:when>
       <xsl:when test="@type='phylum'">
         <xsl:text>phylum</xsl:text>
       </xsl:when>

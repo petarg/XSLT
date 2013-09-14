@@ -48,6 +48,7 @@
               <xsl:for-each select="fields/node()[@id='483']">
                 <graphic>
                   <xsl:attribute name="xlink:href">
+                    <xsl:text>big_</xsl:text>
                     <xsl:value-of select="normalize-space(value)"/>
                     <xsl:text>.jpg</xsl:text>
                   </xsl:attribute>
@@ -323,18 +324,6 @@
       <xsl:apply-templates mode="tables-table-elements" select="node()">
         <xsl:with-param name="align" select="$align"/>
       </xsl:apply-templates>
-<!--       <xsl:for-each select="thead[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]"> -->
-<!--         <thead> -->
-          
-<!--         </thead> -->
-<!--       </xsl:for-each> -->
-<!--       <xsl:for-each select="tbody[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]"> -->
-<!--         <tbody> -->
-<!--           <xsl:apply-templates mode="tables-table-elements" select="node()"> -->
-<!--             <xsl:with-param name="align" select="$align"/> -->
-<!--           </xsl:apply-templates> -->
-<!--         </tbody> -->
-<!--       </xsl:for-each> -->
     </table>
   </xsl:template>
   <xsl:template mode="tables-table-elements" match="@*|node()"/>
@@ -373,13 +362,36 @@
   <xsl:template mode="tables-table-elements" match="th | td">
     <xsl:param name="align"/>
     <xsl:element name="{name()}">
-      <xsl:attribute name="rowspan">1</xsl:attribute>
-      <xsl:attribute name="colspan">1</xsl:attribute>
+      <xsl:attribute name="rowspan">
+        <xsl:choose>
+          <xsl:when test="normalize-space(@rowspan)=''">
+            <xsl:text>1</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="@rowspan"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:attribute>
+      <xsl:attribute name="colspan">
+        <xsl:choose>
+          <xsl:when test="normalize-space(@colspan)=''">
+            <xsl:text>1</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="@colspan"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:attribute>
       <xsl:if test="$align!=''">
         <xsl:attribute name="align">
           <xsl:value-of select="$align"/>
         </xsl:attribute>
       </xsl:if>
+<!--       <xsl:if test="normalize-space(@style)!=''"> -->
+<!--         <xsl:attribute name="style"> -->
+<!--           <xsl:value-of select="@style"/> -->
+<!--         </xsl:attribute> -->
+<!--       </xsl:if> -->
       <xsl:apply-templates mode="td-format" select="."/>
     </xsl:element>
   </xsl:template>

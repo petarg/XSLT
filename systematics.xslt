@@ -241,10 +241,18 @@
             <xsl:for-each select="node()[normalize-space(value)!='']">
               <xsl:choose>
                 <xsl:when test="normalize-space(@field_name)=''">
-                  <kwd><xsl:value-of select="value"/></kwd>
+                  <kwd>
+                    <!-- <xsl:value-of select="value"/> -->
+                    <xsl:apply-templates mode="format" select="value"/>
+                  </kwd>
                 </xsl:when>
                 <xsl:otherwise>
-                  <kwd><xsl:value-of select="@field_name"/><xsl:text>: </xsl:text><xsl:value-of select="value"/></kwd>
+                  <kwd>
+                    <xsl:value-of select="@field_name"/>
+                    <xsl:text>: </xsl:text>
+                    <!-- <xsl:value-of select="value"/> -->
+                    <xsl:apply-templates mode="format" select="value"/>
+                  </kwd>
                 </xsl:otherwise>
               </xsl:choose>
             </xsl:for-each>

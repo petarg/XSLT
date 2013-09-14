@@ -32,7 +32,7 @@
             <xsl:attribute name="position">float</xsl:attribute>
             <xsl:attribute name="xlink:type">simple</xsl:attribute>
             <xsl:variable name="caption" select="fields/node()[@id='217']/value/p[1]"/>
-            <xsl:if test="normalize-space($caption)!='' or count($caption/*[name()!=''])!=0">
+            <xsl:if test="normalize-space(fields/node()[@id='215'])!='' or normalize-space(fields/node()[@id='216'])!='' or normalize-space(fields/node()[@id='217'])!=''">
               <caption>
                 <p>
                   <bold>
@@ -51,7 +51,13 @@
                   <xsl:value-of select="$type"/>
                 </p>
                 <xsl:apply-templates mode="p" select="fields/node()[@id='217']/value"/>
-                <p><bold><xsl:text>File name:</xsl:text></bold><xsl:text> </xsl:text><xsl:value-of select="$file"/></p>
+                <p>
+                  <bold>
+                    <xsl:value-of select="fields/node()[@id='222']/@field_name"/>
+                    <xsl:text>:</xsl:text>
+                  </bold>
+                  <xsl:text> </xsl:text>
+                  <xsl:value-of select="$file"/></p>
               </caption>
             </xsl:if>
             <media>

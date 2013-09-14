@@ -16,6 +16,7 @@
   <xsl:template mode="key" match="*">
     <xsl:for-each select="identification_key">
       <xsl:variable name="title" select="fields/title/value"/>
+      <xsl:variable name="key_notes" select="fields/key_notes/value"/>
       <sec>
         <xsl:attribute name="sec-type">
           <xsl:value-of select="normalize-space($title)"/>
@@ -84,6 +85,11 @@
               </xsl:for-each>
             </tbody>
           </table>
+          <xsl:if test="normalize-space($key_notes)!=''">
+            <table-wrap-foot>
+              <xsl:apply-templates mode="p" select="$key_notes"/>
+            </table-wrap-foot>
+          </xsl:if>
         </table-wrap>
       </sec>
     </xsl:for-each>

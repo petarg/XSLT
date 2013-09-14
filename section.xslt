@@ -9,12 +9,22 @@
 
   <xsl:template mode="section" match="*">
     <xsl:param name="title"/>
+    <xsl:variable name="utitle">
+      <xsl:choose>
+        <xsl:when test="$title='Materials and methods'">
+          <xsl:text>materials|methods</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$title"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <xsl:choose>
       <xsl:when test="normalize-space(fields/title/value)!=''">
         <xsl:if test="count(fields/node()[name()!='' and name()!='title'][normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0])!=0 or count(subsection)!=0">
           <sec>
             <xsl:attribute name="sec-type">
-               <xsl:value-of select="$title"/>
+               <xsl:value-of select="$utitle"/>
             </xsl:attribute>
             <title>
               <xsl:apply-templates mode="title" select="fields/title/value"/>
@@ -27,7 +37,7 @@
       <xsl:otherwise>
         <sec>
           <xsl:attribute name="sec-type">
-            <xsl:value-of select="$title"/>
+            <xsl:value-of select="$utitle"/>
           </xsl:attribute>
           <title>
             <xsl:value-of select="$title"/>
@@ -243,9 +253,55 @@
         <xsl:for-each select="fields/node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
           <xsl:apply-templates mode="little-section" select="."/>
         </xsl:for-each>
-        <xsl:for-each select="taxa[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
-          <xsl:apply-templates mode="taxa" select="."/>
-        </xsl:for-each>
+        <table-wrap id="taxonomic_coverage">
+          <xsl:attribute name="position">anchor</xsl:attribute>
+          <xsl:attribute name="orientation">portrait</xsl:attribute>
+          <table>
+            <thead>
+              <tr>
+                <th>
+                  <xsl:attribute name="rowspan">1</xsl:attribute>
+                  <xsl:attribute name="colspan">1</xsl:attribute>
+                  <xsl:text>Scientific Name</xsl:text>
+                </th>
+                <th>
+                  <xsl:attribute name="rowspan">1</xsl:attribute>
+                  <xsl:attribute name="colspan">1</xsl:attribute>
+                  <xsl:text>Common Name</xsl:text>
+                </th>
+                <th>
+                  <xsl:attribute name="rowspan">1</xsl:attribute>
+                  <xsl:attribute name="colspan">1</xsl:attribute>
+                  <xsl:text>Rank</xsl:text>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <xsl:for-each select="taxa[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+                <tr>
+                  <td>
+                    <xsl:attribute name="rowspan">1</xsl:attribute>
+                    <xsl:attribute name="colspan">1</xsl:attribute>
+                    <xsl:apply-templates mode="format" select="fields/node()[@id='451']/value"/>
+                  </td>
+                  <td>
+                    <xsl:attribute name="rowspan">1</xsl:attribute>
+                    <xsl:attribute name="colspan">1</xsl:attribute>
+                    <xsl:apply-templates mode="format" select="fields/node()[@id='452']/value"/>
+                  </td>
+                  <td>
+                    <xsl:attribute name="rowspan">1</xsl:attribute>
+                    <xsl:attribute name="colspan">1</xsl:attribute>
+                    <xsl:apply-templates mode="format" select="fields/node()[@id='453']/value"/>
+                  </td>
+                </tr>
+              </xsl:for-each>
+            </tbody>
+          </table>
+        </table-wrap>
+<!--         <xsl:for-each select="taxa[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]"> -->
+<!--           <xsl:apply-templates mode="taxa" select="."/> -->
+<!--         </xsl:for-each> -->
         <xsl:apply-templates mode="subsection" select="."/>
       </sec>
     </xsl:if>
@@ -258,13 +314,22 @@
       <tp:nomenclature>
         <tp:taxon-name>
           <tp:taxon-name-part>
-            <xsl:attribute name="taxon-name-part-type"><xsl:value-of select="$rank"/></xsl:attribute>
+            <xsl:attribute name="taxon-name-part-type">
+              <xsl:value-of select="$rank"/>
+            </xsl:attribute>
             <xsl:value-of select="$sci_name"/>
           </tp:taxon-name-part>
         </tp:taxon-name>
         <tp:nomenclature-citation-list>
           <tp:nomenclature-citation>
-            <tp:taxon-name><xsl:value-of select="$sci_name"/></tp:taxon-name>
+            <tp:taxon-name>
+              <tp:taxon-name-part>
+                <xsl:attribute name="taxon-name-part-type">
+                  <xsl:value-of select="$rank"/>
+                </xsl:attribute>
+                <xsl:value-of select="$sci_name"/>
+              </tp:taxon-name-part>
+            </tp:taxon-name>
             <comment>
               <xsl:value-of select="$com_name/@field_name"/>
               <xsl:text>: </xsl:text>
