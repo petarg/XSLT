@@ -10,7 +10,9 @@
 
   <xsl:template name="raise-error">
     <xsl:param name="content"/>
-    <ERROR><xsl:value-of select="$content"/></ERROR>
+    <ERROR>
+      <xsl:value-of select="$content"/>
+    </ERROR>
   </xsl:template>
 
   <xsl:template mode="p" match="*">
@@ -22,7 +24,9 @@
         </xsl:for-each>
       </xsl:when>
       <xsl:otherwise>
-        <p><xsl:apply-templates mode="format" select="."/></p>
+        <p>
+          <xsl:apply-templates mode="format" select="."/>
+        </p>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -32,7 +36,9 @@
     <xsl:choose>
       <xsl:when test="name()=''"/>
       <xsl:otherwise>
-      <INVALID-TAG><xsl:copy-of select="."/></INVALID-TAG>
+        <INVALID-TAG>
+          <xsl:copy-of select="."/>
+        </INVALID-TAG>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -40,7 +46,9 @@
     <xsl:copy-of select="."/>
   </xsl:template>
   <xsl:template mode="p-format" match="p">
-    <p><xsl:apply-templates mode="format" select="."/></p>
+    <p>
+      <xsl:apply-templates mode="format" select="."/>
+    </p>
   </xsl:template>
   <xsl:template mode="p-format" match="ol">
     <list>
@@ -56,7 +64,9 @@
   </xsl:template>
   <xsl:template mode="p-format" match="li">
     <list-item>
-      <p><xsl:apply-templates mode="format" select="."/></p>
+      <p>
+        <xsl:apply-templates mode="format" select="."/>
+      </p>
     </list-item>
   </xsl:template>
 
@@ -71,32 +81,19 @@
             <xsl:apply-templates mode="format" select="."/>
           </xsl:element>
         </xsl:when>
-        <xsl:when test="name()='ext-link' or name()='tp:taxon-name'">
+        <xsl:when test="name()='ext-link' or name()='tp:taxon-name' or name()='named-content'">
           <xsl:copy-of select="."/>
         </xsl:when>
         <xsl:when test="name()='br'">
           <xsl:text>&lt;br/&gt;</xsl:text>
         </xsl:when>
-        <xsl:when test="name()='fig-citation'">
-          <xsl:apply-templates mode="fig-citation" select="."/>
-        </xsl:when>
-        <xsl:when test="name()='tbls-citation'">
-          <xsl:apply-templates mode="tbls-citation" select="."/>
-        </xsl:when>
-        <xsl:when test="name()='sup-files-citation'">
-          <xsl:apply-templates mode="sup-files-citation" select="."/>
-        </xsl:when>
-        <xsl:when test="name()='reference-citation'">
-          <xsl:apply-templates mode="reference-citation" select="."/>
-        </xsl:when>
-        <xsl:when test="name()='locality-coordinates'">
-          <named-content>
-            <xsl:attribute name="content-type">dwc:verbatimCoordinates</xsl:attribute>
-            <xsl:value-of select="normalize-space(.)"/>
-          </named-content>
+        <xsl:when test="name()='xref' and normalize-space(@ref-type)!=''">
+          <xsl:copy-of select="."/>
         </xsl:when>
         <xsl:otherwise>
-          <INVALID-TAG><xsl:copy-of select="."/></INVALID-TAG>
+          <INVALID-TAG>
+            <xsl:copy-of select="."/>
+          </INVALID-TAG>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:for-each>
@@ -115,6 +112,7 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+
   <xsl:template mode="format-title" match="*">
     <xsl:for-each select="node()">
       <xsl:choose>
@@ -129,32 +127,19 @@
         <xsl:when test="name()='bold'">
           <xsl:apply-templates mode="format-title" select="."/>
         </xsl:when>
-        <xsl:when test="name()='ext-link' or name()='tp:taxon-name'">
+        <xsl:when test="name()='ext-link' or name()='tp:taxon-name' or name()='named-content'">
           <xsl:copy-of select="."/>
         </xsl:when>
         <xsl:when test="name()='br'">
           <break/>
         </xsl:when>
-        <xsl:when test="name()='fig-citation'">
-          <xsl:apply-templates mode="fig-citation" select="."/>
-        </xsl:when>
-        <xsl:when test="name()='tbls-citation'">
-          <xsl:apply-templates mode="tbls-citation" select="."/>
-        </xsl:when>
-        <xsl:when test="name()='sup-files-citation'">
-          <xsl:apply-templates mode="sup-files-citation" select="."/>
-        </xsl:when>
-        <xsl:when test="name()='reference-citation'">
-          <xsl:apply-templates mode="reference-citation" select="."/>
-        </xsl:when>
-        <xsl:when test="name()='locality-coordinates'">
-          <named-content>
-            <xsl:attribute name="content-type">dwc:verbatimCoordinates</xsl:attribute>
-            <xsl:value-of select="normalize-space(.)"/>
-          </named-content>
+        <xsl:when test="name()='xref' and normalize-space(@ref-type)!=''">
+          <xsl:copy-of select="."/>
         </xsl:when>
         <xsl:otherwise>
-          <INVALID-TAG><xsl:copy-of select="."/></INVALID-TAG>
+          <INVALID-TAG>
+            <xsl:copy-of select="."/>
+          </INVALID-TAG>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:for-each>
@@ -177,121 +162,19 @@
             <xsl:apply-templates mode="td-format" select="."/>
           </xsl:element>
         </xsl:when>
-        <xsl:when test="name()='ext-link' or name()='tp:taxon-name'">
+        <xsl:when test="name()='ext-link' or name()='tp:taxon-name' or name()='named-content'">
           <xsl:copy-of select="."/>
         </xsl:when>
         <xsl:when test="name()='br'">
           <break/>
         </xsl:when>
-        <xsl:when test="name()='fig-citation'">
-          <xsl:apply-templates mode="fig-citation" select="."/>
-        </xsl:when>
-        <xsl:when test="name()='tbls-citation'">
-          <xsl:apply-templates mode="tbls-citation" select="."/>
-        </xsl:when>
-        <xsl:when test="name()='sup-files-citation'">
-          <xsl:apply-templates mode="sup-files-citation" select="."/>
-        </xsl:when>
-        <xsl:when test="name()='reference-citation'">
-          <xsl:apply-templates mode="reference-citation" select="."/>
-        </xsl:when>
-        <xsl:when test="name()='locality-coordinates'">
-          <named-content>
-            <xsl:attribute name="content-type">dwc:verbatimCoordinates</xsl:attribute>
-            <xsl:value-of select="normalize-space(.)"/>
-          </named-content>
+        <xsl:when test="name()='xref' and normalize-space(@ref-type)!=''">
+          <xsl:copy-of select="."/>
         </xsl:when>
         <xsl:otherwise>
-          <INVALID-TAG><xsl:copy-of select="."/></INVALID-TAG>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:for-each>
-  </xsl:template>
-
-  <xsl:template mode="reference-citation" match="*">
-    <xsl:for-each select="node()">
-      <xsl:choose>
-        <xsl:when test="name()=''">
-          <xsl:value-of select="."/>
-        </xsl:when>
-        <xsl:when test="name()='xref'">
-          <xref>
-            <xsl:attribute name="ref-type">bibr</xsl:attribute>
-            <xsl:attribute name="rid">
-              <xsl:text>B</xsl:text>
-              <xsl:value-of select="@rid"/>
-            </xsl:attribute>
-            <xsl:value-of select="."/>
-          </xref>
-        </xsl:when>
-        <xsl:otherwise>
-          <INVALID-TAG><xsl:copy-of select="."/></INVALID-TAG>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:for-each>
-  </xsl:template>
-  <xsl:template mode="sup-files-citation" match="*">
-    <xsl:for-each select="node()">
-      <xsl:choose>
-        <xsl:when test="name()=''">
-          <xsl:value-of select="."/>
-        </xsl:when>
-        <xsl:when test="name()='xref'">
-          <xref>
-            <xsl:attribute name="ref-type">supplementary-material</xsl:attribute>
-            <xsl:attribute name="rid">
-              <xsl:text>S</xsl:text>
-              <xsl:value-of select="@rid"/>
-            </xsl:attribute>
-            <xsl:value-of select="."/>
-          </xref>
-        </xsl:when>
-        <xsl:otherwise>
-          <INVALID-TAG><xsl:copy-of select="."/></INVALID-TAG>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:for-each>
-  </xsl:template>
-  <xsl:template mode="tbls-citation" match="*">
-    <xsl:for-each select="node()">
-      <xsl:choose>
-        <xsl:when test="name()=''">
-          <xsl:value-of select="."/>
-        </xsl:when>
-        <xsl:when test="name()='xref'">
-          <xref>
-            <xsl:attribute name="ref-type">table</xsl:attribute>
-            <xsl:attribute name="rid">
-              <xsl:text>T</xsl:text>
-              <xsl:value-of select="@rid"/>
-            </xsl:attribute>
-            <xsl:value-of select="."/>
-          </xref>
-        </xsl:when>
-        <xsl:otherwise>
-          <INVALID-TAG><xsl:copy-of select="."/></INVALID-TAG>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:for-each>
-  </xsl:template>
-  <xsl:template mode="fig-citation" match="*">
-    <xsl:for-each select="node()">
-      <xsl:choose>
-        <xsl:when test="name()=''">
-          <xsl:value-of select="."/>
-        </xsl:when>
-        <xsl:when test="name()='xref'">
-          <xref>
-            <xsl:attribute name="ref-type">fig</xsl:attribute>
-            <xsl:attribute name="rid">
-              <xsl:text>F</xsl:text>
-              <xsl:value-of select="@rid"/>
-            </xsl:attribute>
-            <xsl:value-of select="."/>
-          </xref>
-        </xsl:when>
-        <xsl:otherwise>
-          <INVALID-TAG><xsl:copy-of select="."/></INVALID-TAG>
+          <INVALID-TAG>
+            <xsl:copy-of select="."/>
+          </INVALID-TAG>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:for-each>

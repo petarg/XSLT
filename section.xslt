@@ -253,52 +253,54 @@
         <xsl:for-each select="fields/node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
           <xsl:apply-templates mode="little-section" select="."/>
         </xsl:for-each>
-        <table-wrap id="taxonomic_coverage">
-          <xsl:attribute name="position">anchor</xsl:attribute>
-          <xsl:attribute name="orientation">portrait</xsl:attribute>
-          <table>
-            <thead>
-              <tr>
-                <th>
-                  <xsl:attribute name="rowspan">1</xsl:attribute>
-                  <xsl:attribute name="colspan">1</xsl:attribute>
-                  <xsl:text>Scientific Name</xsl:text>
-                </th>
-                <th>
-                  <xsl:attribute name="rowspan">1</xsl:attribute>
-                  <xsl:attribute name="colspan">1</xsl:attribute>
-                  <xsl:text>Common Name</xsl:text>
-                </th>
-                <th>
-                  <xsl:attribute name="rowspan">1</xsl:attribute>
-                  <xsl:attribute name="colspan">1</xsl:attribute>
-                  <xsl:text>Rank</xsl:text>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <xsl:for-each select="taxa[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+        <xsl:if test="count(taxa)!=0">
+          <table-wrap id="taxonomic_coverage">
+            <xsl:attribute name="position">anchor</xsl:attribute>
+            <xsl:attribute name="orientation">portrait</xsl:attribute>
+            <table>
+              <thead>
                 <tr>
-                  <td>
+                  <th>
                     <xsl:attribute name="rowspan">1</xsl:attribute>
                     <xsl:attribute name="colspan">1</xsl:attribute>
-                    <xsl:apply-templates mode="format" select="fields/node()[@id='451']/value"/>
-                  </td>
-                  <td>
+                    <xsl:text>Scientific Name</xsl:text>
+                  </th>
+                  <th>
                     <xsl:attribute name="rowspan">1</xsl:attribute>
                     <xsl:attribute name="colspan">1</xsl:attribute>
-                    <xsl:apply-templates mode="format" select="fields/node()[@id='452']/value"/>
-                  </td>
-                  <td>
+                    <xsl:text>Common Name</xsl:text>
+                  </th>
+                  <th>
                     <xsl:attribute name="rowspan">1</xsl:attribute>
                     <xsl:attribute name="colspan">1</xsl:attribute>
-                    <xsl:apply-templates mode="format" select="fields/node()[@id='453']/value"/>
-                  </td>
+                    <xsl:text>Rank</xsl:text>
+                  </th>
                 </tr>
-              </xsl:for-each>
-            </tbody>
-          </table>
-        </table-wrap>
+              </thead>
+              <tbody>
+                <xsl:for-each select="taxa[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+                  <tr>
+                    <td>
+                      <xsl:attribute name="rowspan">1</xsl:attribute>
+                      <xsl:attribute name="colspan">1</xsl:attribute>
+                      <xsl:apply-templates mode="format" select="fields/node()[@id='451']/value"/>
+                    </td>
+                    <td>
+                      <xsl:attribute name="rowspan">1</xsl:attribute>
+                      <xsl:attribute name="colspan">1</xsl:attribute>
+                      <xsl:apply-templates mode="format" select="fields/node()[@id='452']/value"/>
+                    </td>
+                    <td>
+                      <xsl:attribute name="rowspan">1</xsl:attribute>
+                      <xsl:attribute name="colspan">1</xsl:attribute>
+                      <xsl:apply-templates mode="format" select="fields/node()[@id='453']/value"/>
+                    </td>
+                  </tr>
+                </xsl:for-each>
+              </tbody>
+            </table>
+          </table-wrap>
+        </xsl:if>
 <!--         <xsl:for-each select="taxa[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]"> -->
 <!--           <xsl:apply-templates mode="taxa" select="."/> -->
 <!--         </xsl:for-each> -->

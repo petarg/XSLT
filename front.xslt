@@ -81,7 +81,6 @@
         </date>
       </history>
       <xsl:call-template name="front-permissions"/>
-      <self-uri content-type="lsid" xlink:type="simple">urn:lsid:zoobank.org:pub:</self-uri>
       <xsl:call-template name="front-abstract"/>
       <xsl:call-template name="front-keywords"/>
       <xsl:call-template name="front-funding"/>
