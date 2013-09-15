@@ -101,7 +101,7 @@
       <td>
         <xsl:attribute name="rowspan">1</xsl:attribute>
         <xsl:attribute name="colspan">1</xsl:attribute>
-        <xsl:apply-templates mode="format" select="fields/node()[@id='402']/value"/>
+        <xsl:apply-templates mode="format" select="fields/node()[@id='401']/value"/>
       </td>
       <td>
         <xsl:attribute name="rowspan">1</xsl:attribute>
