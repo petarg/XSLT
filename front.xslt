@@ -67,16 +67,16 @@
         <year>2013</year>
       </pub-date>
       <issue>1</issue>
-      <elocation-id>1</elocation-id>
+      <elocation-id>e</elocation-id>
       <history>
         <date date-type="received">
-          <day>1</day>
-          <month>1</month>
+          <day>00</day>
+          <month>9</month>
           <year>2013</year>
         </date>
         <date date-type="accepted">
-          <day>1</day>
-          <month>1</month>
+          <day>00</day>
+          <month>9</month>
           <year>2013</year>
         </date>
       </history>
@@ -139,9 +139,6 @@
               <xsl:value-of select="normalize-space(value)"/>
             </email>
           </xsl:for-each>
-<!--           <xsl:for-each select="node()[@object_id='5'][normalize-space(.)!='']"> -->
-<!--             <xsl:apply-templates mode="front-author-aff" select="fields" /> -->
-<!--           </xsl:for-each> -->
           <xsl:for-each select="node()[@object_id='5'][normalize-space(.)!='']">
             <xsl:apply-templates mode="front-xref-aff" select="."/>
           </xsl:for-each>
@@ -169,9 +166,6 @@
                 <role><xsl:value-of select="."/></role>
               </xsl:for-each>
             </xsl:for-each>
-<!--             <xsl:for-each select="node()[@object_id='5'][normalize-space(.)!='']"> -->
-<!--               <xsl:apply-templates mode="front-author-aff" select="fields" /> -->
-<!--             </xsl:for-each> -->
             <xsl:for-each select="node()[@object_id='5'][normalize-space(.)!='']">
               <xsl:apply-templates mode="front-xref-aff" select="."/>
             </xsl:for-each>
