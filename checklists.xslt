@@ -7,7 +7,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:tp="http://www.plazi.org/taxpub">
   <xsl:template mode="checklists" match="*">
-    <xsl:if test="count(checklist[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0])!=0">
+    <xsl:if test="count(checklist[normalize-space(.)!=''])!=0">
       <sec>
         <xsl:attribute name="sec-type">
           <xsl:value-of select="@display_name"/>
@@ -15,7 +15,7 @@
         <title>
           <xsl:value-of select="@display_name"/>
         </title>
-        <xsl:for-each select="checklist[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+        <xsl:for-each select="checklist[normalize-space(.)!='']">
           <xsl:apply-templates mode="checklist" select="."/>
         </xsl:for-each>
       </sec>
@@ -59,7 +59,7 @@
         <title>
           <xsl:value-of select="@display_name"/>
         </title>
-        <xsl:for-each select="fields/*[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+        <xsl:for-each select="fields/node()[normalize-space(.)!='']">
           <xsl:apply-templates mode="little-section" select="."/>
         </xsl:for-each>
       </tp:treatment-sec>
@@ -68,7 +68,7 @@
   <xsl:template name="checklist-treatment-sections">
     <xsl:apply-templates mode="materials" select="materials"/>
     <xsl:apply-templates mode="checklist-eco-interactions" select="."/>
-    <xsl:for-each select="node()[(@object_id='208') or (@object_id='207') or (@object_id='206')][normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+    <xsl:for-each select="node()[(@object_id='208') or (@object_id='207') or (@object_id='206')][normalize-space(.)!='']">
       <xsl:apply-templates mode="treatment-section" select="."/>
     </xsl:for-each>
   </xsl:template>
@@ -77,7 +77,7 @@
       <sec>
         <xsl:attribute name="sec-type">Locality</xsl:attribute>
         <title><xsl:value-of select="normalize-space(@display_name)"/></title>
-        <xsl:for-each select="fields/node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+        <xsl:for-each select="fields/node()[normalize-space(.)!='']">
           <xsl:apply-templates mode="little-section" select="."/>
         </xsl:for-each>
         <xsl:apply-templates mode="checklist-taxons" select="."/>
@@ -85,7 +85,7 @@
     </xsl:for-each>
   </xsl:template>
   <xsl:template name="checklist-taxons">
-    <xsl:for-each select="checklist_taxon[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+    <xsl:for-each select="checklist_taxon[normalize-space(.)!='']">
       <xsl:call-template name="checklist-parse-taxons"/>
     </xsl:for-each>
   </xsl:template>
@@ -112,7 +112,7 @@
           <tp:nomenclature-citation-list>
             <xsl:choose>
               <xsl:when test="count($nomenclature/p)!=0">
-                <xsl:for-each select="$nomenclature/p[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+                <xsl:for-each select="$nomenclature/p[normalize-space(.)!='']">
                   <tp:nomenclature-citation>
                     <tp:taxon-name>
                       <tp:taxon-name-part>
@@ -166,7 +166,7 @@
           <tp:nomenclature-citation-list>
             <xsl:choose>
               <xsl:when test="count($nomenclature/p)!=0">
-                <xsl:for-each select="$nomenclature/p[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+                <xsl:for-each select="$nomenclature/p[normalize-space(.)!='']">
                   <tp:nomenclature-citation>
                     <xsl:apply-templates mode="get-subgenus-tagged" select="$top">
                       <xsl:with-param name="put_object_id" select="false()"/>
@@ -210,7 +210,7 @@
           <tp:nomenclature-citation-list>
             <xsl:choose>
               <xsl:when test="count($nomenclature/p)!=0">
-                <xsl:for-each select="$nomenclature/node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+                <xsl:for-each select="$nomenclature/node()[normalize-space(.)!='']">
                   <tp:nomenclature-citation>
                     <xsl:apply-templates mode="get-species-tagged" select="$top">
                       <xsl:with-param name="put_object_id" select="false()"/>

@@ -169,6 +169,7 @@
     <xsl:param name="id" select="'1'"/>
     <xsl:variable name="caption" select="fields/node()[@id='487']/value"/>
     <xsl:variable name="url">
+      <xsl:text>big_</xsl:text>
       <xsl:value-of select="fields/image_id/value"/>
       <xsl:text>.jpg</xsl:text>
     </xsl:variable>
@@ -237,7 +238,7 @@
           <xsl:apply-templates mode="p" select="value"/>
         </caption>
       </xsl:for-each>
-      <xsl:for-each select="fields/node()[@id='490'][normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]"><!-- non-empty table_editor -->
+      <xsl:for-each select="fields/node()[@id='490'][normalize-space(.)!='']"><!-- non-empty table_editor -->
         <xsl:for-each select="value"><!-- Here we can have p* and table* -->
           <xsl:for-each select="table">
             <table-wrap>
@@ -248,9 +249,9 @@
                 <xsl:apply-templates mode="p" select="caption"/>
               </caption>
               <xsl:call-template name="tables-table"/>
-              <xsl:if test="count(../node()[name()='p'][normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0])">
+              <xsl:if test="count(../node()[name()='p'][normalize-space(.)!=''])">
                 <table-wrap-foot>
-                  <xsl:for-each select="../node()[name()='p'][normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+                  <xsl:for-each select="../node()[name()='p'][normalize-space(.)!='']">
                     <p><xsl:apply-templates mode="format" select="."/></p>
                   </xsl:for-each>
                 </table-wrap-foot>
@@ -277,14 +278,14 @@
           <xsl:apply-templates mode="p" select="value"/>
         </caption>
       </xsl:for-each>
-      <xsl:for-each select="fields/node()[@id='490'][normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]"><!-- non-empty table_editor -->
+      <xsl:for-each select="fields/node()[@id='490'][normalize-space(.)!='']"><!-- non-empty table_editor -->
         <xsl:for-each select="value">
           <xsl:for-each select="table">
             <xsl:call-template name="tables-table"/>
           </xsl:for-each>
-          <xsl:if test="count(node()[name()='p'][normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0])">
+          <xsl:if test="count(node()[name()='p'][normalize-space(.)!=''])">
             <table-wrap-foot>
-              <xsl:for-each select="node()[name()='p'][normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+              <xsl:for-each select="node()[name()='p'][normalize-space(.)!='']">
                 <p><xsl:apply-templates mode="format" select="."/></p>
               </xsl:for-each>
             </table-wrap-foot>
@@ -329,7 +330,7 @@
   <xsl:template mode="tables-table-elements" match="@*|node()"/>
   <xsl:template mode="tables-table-elements" match="thead | tbody">
     <xsl:param name="align"/>
-    <xsl:if test="normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0">
+    <xsl:if test="normalize-space(.)!=''">
       <xsl:element name="{name()}">
         <xsl:apply-templates mode="tables-table-elements" select="node()">
           <xsl:with-param name="align" select="$align"/>
@@ -339,7 +340,7 @@
   </xsl:template>
   <xsl:template mode="tables-table-elements" match="thead/tr | tbody/tr | tfoot/tr">
     <xsl:param name="align"/>
-    <xsl:if test="normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0">
+    <xsl:if test="normalize-space(.)!=''">
       <tr>
         <xsl:apply-templates mode="tables-table-elements" select="node()">
           <xsl:with-param name="align" select="$align"/>
@@ -349,7 +350,7 @@
   </xsl:template>
   <xsl:template mode="tables-table-elements" match="tr">
     <xsl:param name="align"/>
-    <xsl:if test="normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0">
+    <xsl:if test="normalize-space(.)!=''">
       <tbody>
         <tr>
           <xsl:apply-templates mode="tables-table-elements" select="node()">
@@ -387,11 +388,11 @@
           <xsl:value-of select="$align"/>
         </xsl:attribute>
       </xsl:if>
-<!--       <xsl:if test="normalize-space(@style)!=''"> -->
-<!--         <xsl:attribute name="style"> -->
-<!--           <xsl:value-of select="@style"/> -->
-<!--         </xsl:attribute> -->
-<!--       </xsl:if> -->
+      <xsl:if test="normalize-space(@style)!=''">
+        <xsl:attribute name="style">
+          <xsl:value-of select="@style"/>
+        </xsl:attribute>
+      </xsl:if>
       <xsl:apply-templates mode="td-format" select="."/>
     </xsl:element>
   </xsl:template>

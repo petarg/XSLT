@@ -9,7 +9,7 @@
   <xsl:template name="body">
     <xsl:variable name="body" select="/document/objects"/>
     <body>
-      <xsl:for-each select="$body/node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+      <xsl:for-each select="$body/node()[normalize-space(.)!='']">
 <!--       <xsl:for-each select="$body/node()"> -->
         <xsl:choose>
           <!-- NON-TRIVIAL SECTIONS -->

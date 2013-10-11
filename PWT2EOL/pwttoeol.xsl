@@ -12,6 +12,7 @@
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
 	<xsl:output method="xml" encoding="UTF-8" indent="yes"/>
+
 	<xsl:template match="/">
 		<response>
 			<xsl:for-each select="/document/objects/systematics/treatment">

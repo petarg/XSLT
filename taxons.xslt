@@ -100,7 +100,7 @@
     <xsl:if test="(normalize-space(node()[@object_id='186'])!='') or (normalize-space(node()[@object_id='195'])!='') or (normalize-space(node()[@object_id='200'])!='') or (normalize-space(node()[@object_id='210'])!='') or (normalize-space(node()[@object_id='215'])!='') or (normalize-space(node()[@object_id='217'])!='')">
       <tp:nomenclature-citation-list>
         <!-- First put nomenclature (210) -->
-        <xsl:for-each select="node()[@object_id='210']//p[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+        <xsl:for-each select="node()[@object_id='210']//p[normalize-space(.)!='']">
           <tp:nomenclature-citation>
             <tp:taxon-name>
               <xsl:apply-templates mode="lower-taxon-name-parts" select="$genus_group/fields"/>
@@ -112,7 +112,7 @@
           </tp:nomenclature-citation>
         </xsl:for-each>
         <!-- Next put synonyms (200) -->
-        <xsl:for-each select="node()[@object_id='200']//p[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+        <xsl:for-each select="node()[@object_id='200']//p[normalize-space(.)!='']">
           <tp:nomenclature-citation>
             <tp:taxon-name>
               <xsl:apply-templates mode="lower-taxon-name-parts" select="$species_group/fields"/>

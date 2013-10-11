@@ -399,7 +399,7 @@
   </xsl:template>
   
   <xsl:template name="front-abstract">
-    <xsl:for-each select="$front_abstract[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+    <xsl:for-each select="$front_abstract[normalize-space(.)!='']">
       <abstract>
         <label>Abstract</label>
         <xsl:apply-templates mode="p" select="value"/>

@@ -29,7 +29,7 @@
 			<xsl:apply-templates />
 		</u>
 	</xsl:template>
-	<xsl:template match="a">
+<!-- 	<xsl:template match="a">
 		<a>
 			<xsl:if test="normalize-space(@target)=''">
 				<xsl:attribute name="target">_blank</xsl:attribute>
@@ -37,7 +37,7 @@
 			<xsl:apply-templates mode="unstyle" select="@*"/>
 			<xsl:apply-templates />
 		</a>
-	</xsl:template>
+	</xsl:template> -->
 	<xsl:template match="span">
 		<xsl:apply-templates />
 	</xsl:template>

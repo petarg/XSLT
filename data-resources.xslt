@@ -7,7 +7,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:tp="http://www.plazi.org/taxpub">
   <xsl:template mode="data-resources" match="*">
-    <xsl:if test="normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0">
+    <xsl:if test="normalize-space(.)!=''">
       <sec>
         <xsl:attribute name="sec-type">
           <xsl:value-of select="@display_name"/>
@@ -27,7 +27,7 @@
             <xsl:apply-templates mode="data-p" select="$number_of_data_sets"/>
           </caption>
           <!-- Data sets -->
-          <xsl:for-each select="node()[@object_id='141'][normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+          <xsl:for-each select="node()[@object_id='141'][normalize-space(.)!='']">
             <xsl:apply-templates mode="data-set" select=".">
               <xsl:with-param name="n" select="position()"/>
             </xsl:apply-templates>

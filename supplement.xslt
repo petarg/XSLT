@@ -111,6 +111,12 @@
       <xsl:when test="$ext=''">
         <xsl:text>Unknown File Type</xsl:text>
       </xsl:when>
+      <xsl:when test="$ext='wav'">
+        <xsl:text>Waveform Audio File Format</xsl:text>
+      </xsl:when>
+      <xsl:when test="$ext='ods'">
+        <xsl:text>OpenDocument Spreadsheet</xsl:text>
+      </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="$ext"/><xsl:text> file</xsl:text>
       </xsl:otherwise>

@@ -17,9 +17,9 @@
 
   <xsl:template mode="p" match="*">
     <xsl:choose>
-      <xsl:when test="normalize-space(.)='' and count(.//node()[@citation_id!=''])=0"/>
+      <xsl:when test="normalize-space(.)=''"/>
       <xsl:when test="count(node()[(name()='p') or (name()='ul') or (name()='ol')])!=0">
-        <xsl:for-each select="node()[(normalize-space(.)!='') or (count(.//node()[@citation_id!=''])!=0) or (name()!='')]">
+        <xsl:for-each select="node()[(normalize-space(.)!='') or (name()!='')]">
           <xsl:apply-templates mode="p-format" select="."/>
         </xsl:for-each>
       </xsl:when>

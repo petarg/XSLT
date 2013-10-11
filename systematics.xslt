@@ -18,7 +18,7 @@
     <sec>
       <xsl:attribute name="sec-type"><xsl:value-of select="@display_name"/></xsl:attribute>
       <title><xsl:value-of select="@display_name"/></title>
-      <xsl:for-each select="node()[@object_id='41'][normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]"><!-- Treatments -->
+      <xsl:for-each select="node()[@object_id='41'][normalize-space(.)!='']"><!-- Treatments -->
         <xsl:variable name="status-animalia">
           <xsl:call-template name="taxon-status-new">
             <xsl:with-param name="kingdom" select="'animalia'"/>
@@ -284,7 +284,7 @@
   </xsl:template>
 
   <xsl:template mode="treatment-sections" match="*">
-    <xsl:for-each select="node()[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+    <xsl:for-each select="node()[normalize-space(.)!='']">
       <xsl:choose>
         <xsl:when test="(@display_name='') and (name()!='section')">
           <xsl:call-template name="raise-error">
@@ -331,6 +331,7 @@
         <title>Materials</title>
         <list>
           <xsl:attribute name="list-type">alpha-lower</xsl:attribute>
+          <xsl:attribute name="list-content">occurrences</xsl:attribute>
           <xsl:for-each select="material">
              <xsl:for-each select="extended_darwincore">
                <list-item>

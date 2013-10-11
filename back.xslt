@@ -15,7 +15,7 @@
   <xsl:template name="back-ack">
     <xsl:for-each select="$back_ack">
       <xsl:for-each select="fields">
-        <xsl:for-each select="node()[@id='223'][normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+        <xsl:for-each select="node()[@id='223'][normalize-space(.)!='']">
           <ack>
             <title>Acknowledgements</title>
             <xsl:apply-templates mode="p" select="value"/>
@@ -25,7 +25,7 @@
     </xsl:for-each>
   </xsl:template>
   <xsl:template name="back-contrib">
-    <xsl:for-each select="$back_contrib[normalize-space(.)!='' or count(.//node()[@citation_id!=''])!=0]">
+    <xsl:for-each select="$back_contrib[normalize-space(.)!='']">
       <xsl:apply-templates mode="section" select="." >
         <xsl:with-param name="title">
           <xsl:value-of select="fields/node()[@id='464']/@field_name"/>

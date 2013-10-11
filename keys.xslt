@@ -8,7 +8,7 @@
   xmlns:tp="http://www.plazi.org/taxpub">
   <xsl:template mode="keys" match="*">
     <sec>
-      <xsl:attribute name="sec-type">Identification Keys</xsl:attribute>
+      <xsl:attribute name="sec-type">keys</xsl:attribute>
       <title>Identification Keys</title>
       <xsl:apply-templates mode="key" select="." />
     </sec>
@@ -17,10 +17,9 @@
     <xsl:for-each select="identification_key">
       <xsl:variable name="title" select="fields/title/value"/>
       <xsl:variable name="key_notes" select="fields/key_notes/value"/>
+      <xsl:variable name="key_number" select="position()"/>
       <sec>
-        <xsl:attribute name="sec-type">
-          <xsl:value-of select="normalize-space($title)"/>
-        </xsl:attribute>
+        <xsl:attribute name="sec-type">key</xsl:attribute>
         <title>
           <xsl:apply-templates mode="title" select="$title"/>
         </title>
@@ -32,20 +31,31 @@
                 <xsl:variable name="tnext" select="fields/thesis_next_couplet/value"/>
                 <xsl:variable name="ataxon" select="fields/antithesis_taxon_name/value"/>
                 <xsl:variable name="anext" select="fields/antithesis_next_couplet/value"/>
+                <xsl:variable name="couplet_number" select="position()"/>
                 <tr>
+                  <xsl:attribute name="content-type">thesis</xsl:attribute>
                   <td>
                     <xsl:attribute name="rowspan">1</xsl:attribute>
                     <xsl:attribute name="colspan">1</xsl:attribute>
-                    <xsl:number/>
+                    <xsl:attribute name="content-type">lead</xsl:attribute>
+                    <xsl:attribute name="id">
+                      <xsl:text>KEY</xsl:text>
+                      <xsl:value-of select="$key_number"/>
+                      <xsl:text>.</xsl:text>
+                      <xsl:value-of select="$couplet_number"/>
+                    </xsl:attribute>
+                    <xsl:value-of select="$couplet_number"/>
                   </td>
                   <td>
                     <xsl:attribute name="rowspan">1</xsl:attribute>
                     <xsl:attribute name="colspan">1</xsl:attribute>
+                    <xsl:attribute name="content-type">thesis-desc</xsl:attribute>
                     <xsl:apply-templates mode="td-format" select="fields/thesis/value"/>
                   </td>
                   <td>
                     <xsl:attribute name="rowspan">1</xsl:attribute>
                     <xsl:attribute name="colspan">1</xsl:attribute>
+                    <xsl:attribute name="content-type">lead-to</xsl:attribute>
                     <xsl:if test="normalize-space($ttaxon)!=''">
                       <xsl:apply-templates mode="td-format" select="$ttaxon" />
                       <xsl:if test="normalize-space($tnext)!=''">
@@ -53,24 +63,38 @@
                       </xsl:if>
                     </xsl:if>
                     <xsl:if test="normalize-space($tnext)!=''">
-                      <xsl:apply-templates mode="format" select="$tnext" />
+                      <!-- <xsl:apply-templates mode="format" select="$tnext" /> -->
+                      <xref>
+                        <xsl:attribute name="ref-type">other</xsl:attribute>
+                        <xsl:attribute name="rid">
+                          <xsl:text>KEY</xsl:text>
+                          <xsl:value-of select="$key_number"/>
+                          <xsl:text>.</xsl:text>
+                          <xsl:value-of select="normalize-space($tnext)"/>
+                        </xsl:attribute>
+                          <xsl:value-of select="normalize-space($tnext)"/>
+                      </xref>
                     </xsl:if>
                   </td>
                 </tr>
                 <tr>
+                  <xsl:attribute name="content-type">antithesis</xsl:attribute>
                   <td>
                     <xsl:attribute name="rowspan">1</xsl:attribute>
                     <xsl:attribute name="colspan">1</xsl:attribute>
+                    <xsl:attribute name="content-type">lead</xsl:attribute>
                     <xsl:text>–</xsl:text>
                   </td>
                   <td>
                     <xsl:attribute name="rowspan">1</xsl:attribute>
                     <xsl:attribute name="colspan">1</xsl:attribute>
+                    <xsl:attribute name="content-type">antithesis-desc</xsl:attribute>
                     <xsl:apply-templates mode="td-format" select="fields/antithesis/value"/>
                   </td>
                   <td>
                     <xsl:attribute name="rowspan">1</xsl:attribute>
                     <xsl:attribute name="colspan">1</xsl:attribute>
+                    <xsl:attribute name="content-type">lead-to</xsl:attribute>
                     <xsl:if test="normalize-space($ataxon)!=''">
                       <xsl:apply-templates mode="td-format" select="$ataxon" />
                       <xsl:if test="normalize-space($anext)!=''">
@@ -78,7 +102,17 @@
                       </xsl:if>
                     </xsl:if>
                     <xsl:if test="normalize-space($anext)!=''">
-                      <xsl:apply-templates mode="format" select="$anext" />
+                      <!-- <xsl:apply-templates mode="format" select="$anext" /> -->
+                      <xref>
+                        <xsl:attribute name="ref-type">other</xsl:attribute>
+                        <xsl:attribute name="rid">
+                          <xsl:text>KEY</xsl:text>
+                          <xsl:value-of select="$key_number"/>
+                          <xsl:text>.</xsl:text>
+                          <xsl:value-of select="normalize-space($anext)"/>
+                        </xsl:attribute>
+                          <xsl:value-of select="normalize-space($anext)"/>
+                      </xref>
                     </xsl:if>
                   </td>
                 </tr>
