@@ -62,8 +62,8 @@
         <year>2013</year>
       </pub-date>
       <pub-date pub-type="epub">
-        <day>16</day>
-        <month>9</month>
+        <day>23</day>
+        <month>10</month>
         <year>2013</year>
       </pub-date>
       <issue>1</issue>

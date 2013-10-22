@@ -103,7 +103,7 @@
                 </caption>
               </xsl:for-each>
               <xsl:for-each select="node()[@object_id='235']"><!-- Plate type wrapper -->
-                <xsl:for-each select="./*/node()"><!-- Plate part -->
+                <xsl:for-each select="./*/node()[normalize-space(.)!='']"><!-- Plate part -->
                   <xsl:choose>
                     <xsl:when test="@object_id='225'"><!-- Plate part a -->
                       <xsl:apply-templates mode="plate-part" select=".">
@@ -351,13 +351,11 @@
   <xsl:template mode="tables-table-elements" match="tr">
     <xsl:param name="align"/>
     <xsl:if test="normalize-space(.)!=''">
-      <tbody>
-        <tr>
-          <xsl:apply-templates mode="tables-table-elements" select="node()">
-            <xsl:with-param name="align" select="$align"/>
-          </xsl:apply-templates>
-        </tr>
-      </tbody>
+      <tr>
+        <xsl:apply-templates mode="tables-table-elements" select="node()">
+          <xsl:with-param name="align" select="$align"/>
+        </xsl:apply-templates>
+      </tr>
     </xsl:if>
   </xsl:template>
   <xsl:template mode="tables-table-elements" match="th | td">
