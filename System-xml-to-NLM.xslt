@@ -11,7 +11,7 @@
   <xsl:import href="format.xslt" />
   <xsl:import href="section.xslt" />
   <xsl:import href="taxons.xslt" />
-  <xsl:import href="ref1.xslt" />
+  <xsl:import href="references.xslt" />
   <xsl:import href="supplement.xslt" />
   <xsl:import href="keys.xslt" />
   <xsl:import href="systematics.xslt" />

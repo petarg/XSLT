@@ -90,6 +90,11 @@
         <xsl:when test="name()='xref' and normalize-space(@ref-type)!=''">
           <xsl:copy-of select="."/>
         </xsl:when>
+        <xsl:when test="name()='ol' or name()='ul' or name()='p'">
+          <INVALID-TAG>
+            <xsl:apply-templates mode="p-format" select="."/>
+          </INVALID-TAG>
+        </xsl:when>
         <xsl:otherwise>
           <INVALID-TAG>
             <xsl:copy-of select="."/>
@@ -170,6 +175,11 @@
         </xsl:when>
         <xsl:when test="name()='xref' and normalize-space(@ref-type)!=''">
           <xsl:copy-of select="."/>
+        </xsl:when>
+        <xsl:when test="name()='ol' or name()='ul' or name()='p'">
+          <INVALID-TAG>
+            <xsl:apply-templates mode="p-format" select="."/>
+          </INVALID-TAG>
         </xsl:when>
         <xsl:otherwise>
           <INVALID-TAG>

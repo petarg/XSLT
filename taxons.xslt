@@ -56,10 +56,20 @@
   <xsl:template mode="taxon-object-id" match="*">
     <xsl:for-each select="external_links/external_link[normalize-space(.)!='']"><!-- Do not edit! -->
       <xsl:variable name="link_type" select="normalize-space(fields/link_type/value)"/>
+      <xsl:variable name="link_label" select="normalize-space(fields/label/value)"/>
       <xsl:variable name="link" select="normalize-space(fields/link/value)"/>
       <object-id>
         <xsl:attribute name="xlink:type">simple</xsl:attribute>
-        <xsl:attribute name="object-id-type"><xsl:value-of select="$link_type"/></xsl:attribute>
+        <xsl:attribute name="object-id-type">
+          <xsl:choose>
+            <xsl:when test="$link_type='Other URL' and $link_label!=''">
+              <xsl:value-of select="$link_label"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$link_type"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:attribute>
         <xsl:value-of select="$link"/>
       </object-id>
     </xsl:for-each>

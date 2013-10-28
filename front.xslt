@@ -9,6 +9,10 @@
   <xsl:param name="front_abstract" select="/document/objects/article_metadata/abstract_and_keywords/fields/abstract"/>
   <xsl:param name="front_keywords" select="/document/objects/article_metadata/abstract_and_keywords/fields/keywords"/>
   <xsl:param name="front_funding" select="/document/objects/article_metadata/funding_agencies"/>
+  
+  <xsl:param name="new_taxons_iczn_count" select="count(//node()[@object_id='184'])+count(//node()[@object_id='179'])"/>
+  <xsl:param name="new_taxons_icn_count" select="count(//node()[@object_id='192'])+count(//node()[@object_id='182'])"/>
+  <xsl:param name="new_taxons_count" select="$new_taxons_iczn_count+$new_taxons_icn_count"/>
 
   <xsl:template name="front">
     <front>
@@ -50,7 +54,7 @@
   <xsl:template name="front-article-meta">
     <article-meta>
       <article-id pub-id-type="publisher-id"><xsl:value-of select="$jname"/></article-id>
-      <article-id pub-id-type="doi">10.3897/xxx.000.0000</article-id>
+      <article-id pub-id-type="doi">10.3897/BDJ.1.e000</article-id>
       <article-id pub-id-type="other"><xsl:value-of select="/document/@id"/></article-id>
       <xsl:call-template name="front-article-categories"/>
       <xsl:call-template name="front-title-group"/>
@@ -67,7 +71,7 @@
         <year>2013</year>
       </pub-date>
       <issue>1</issue>
-      <elocation-id>e</elocation-id>
+      <elocation-id>e000</elocation-id>
       <history>
         <date date-type="received">
           <day>00</day>
@@ -81,6 +85,13 @@
         </date>
       </history>
       <xsl:call-template name="front-permissions"/>
+      <!-- ZooBank LSID and others -->
+      <xsl:if test="$new_taxons_iczn_count!=0">
+        <self-uri>
+          <xsl:attribute name="content-type">zoobank-lsid</xsl:attribute>
+          <xsl:attribute name="xlink:type">simple</xsl:attribute>
+        </self-uri>
+      </xsl:if>
       <xsl:call-template name="front-abstract"/>
       <xsl:call-template name="front-keywords"/>
       <xsl:call-template name="front-funding"/>
@@ -142,6 +153,13 @@
           <xsl:for-each select="node()[@object_id='5'][normalize-space(.)!='']">
             <xsl:apply-templates mode="front-xref-aff" select="."/>
           </xsl:for-each>
+          <!-- ZooBank LSID etc. only if there are new taxons -->
+          <xsl:if test="$new_taxons_iczn_count!=0">
+            <uri>
+              <xsl:attribute name="content-type">zoobank-lsid</xsl:attribute>
+              <xsl:attribute name="xlink:type">simple</xsl:attribute>
+            </uri>
+          </xsl:if>
         </contrib>
       </xsl:for-each>
     </contrib-group>
