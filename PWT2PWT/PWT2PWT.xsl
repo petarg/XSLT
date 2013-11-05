@@ -9,8 +9,12 @@
   <xsl:output method="xml" encoding="UTF-8" />
   <xsl:template match="/document">
     <document>
-      <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
-      <xsl:attribute name="journal_id"><xsl:value-of select="@journal_id"/></xsl:attribute>
+      <xsl:attribute name="id">
+        <xsl:value-of select="@id"/>
+      </xsl:attribute>
+      <xsl:attribute name="journal_id">
+        <xsl:value-of select="@journal_id"/>
+      </xsl:attribute>
       <xsl:apply-templates/>
     </document>
   </xsl:template>

@@ -88,7 +88,7 @@
       <!-- ZooBank LSID and others -->
       <xsl:if test="$new_taxons_iczn_count!=0">
         <self-uri>
-          <xsl:attribute name="content-type">zoobank-lsid</xsl:attribute>
+          <xsl:attribute name="content-type">zoobank</xsl:attribute>
           <xsl:attribute name="xlink:type">simple</xsl:attribute>
         </self-uri>
       </xsl:if>
@@ -156,7 +156,7 @@
           <!-- ZooBank LSID etc. only if there are new taxons -->
           <xsl:if test="$new_taxons_iczn_count!=0">
             <uri>
-              <xsl:attribute name="content-type">zoobank-lsid</xsl:attribute>
+              <xsl:attribute name="content-type">zoobank</xsl:attribute>
               <xsl:attribute name="xlink:type">simple</xsl:attribute>
             </uri>
           </xsl:if>

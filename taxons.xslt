@@ -59,6 +59,11 @@
       <xsl:variable name="link_label" select="normalize-space(fields/label/value)"/>
       <xsl:variable name="link" select="normalize-space(fields/link/value)"/>
       <object-id>
+        <xsl:choose><!-- TODO OBJECT-ID CONTENT-TYPE -->
+          <xsl:when test="$link_type='ZooBank'">
+            <xsl:attribute name="content-type">zoobank</xsl:attribute>
+          </xsl:when>
+        </xsl:choose>
         <xsl:attribute name="xlink:type">simple</xsl:attribute>
         <xsl:attribute name="object-id-type">
           <xsl:choose>

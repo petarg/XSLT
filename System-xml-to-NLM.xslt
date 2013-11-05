@@ -23,8 +23,8 @@
   <xsl:import href="floats.xslt" />
 
   <xsl:output method="xml" encoding="UTF-8" indent="yes"
-    doctype-system="http://pmt.pensoft.eu/lib/publishing/tax-treatment-NS0.dtd"
-    doctype-public="-//TaxonX//DTD Taxonomic Treatment Publishing DTD v0 20100105//EN"/>
+    doctype-system="https://raw.github.com/tcatapano/TaxPub/v0.5-beta/tax-treatment-NS0.dtd"
+    doctype-public="-//TaxPub//DTD Taxonomic Treatment Publishing DTD v0.5 20110606//EN"/>
 
   <xsl:template match="/">
     <article>

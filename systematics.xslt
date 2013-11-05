@@ -276,7 +276,9 @@
     </tp:taxon-name>
     <xsl:apply-templates mode="taxon-authority" select="$taxon_name"/>
     <xsl:if test="$status!=''">
-      <tp:taxon-status><xsl:value-of select="$status"/></tp:taxon-status>
+      <tp:taxon-status>
+        <xsl:value-of select="$status"/>
+      </tp:taxon-status>
     </xsl:if>
   </xsl:template>
 
@@ -337,26 +339,40 @@
           <xsl:attribute name="list-type">alpha-lower</xsl:attribute>
           <xsl:attribute name="list-content">occurrences</xsl:attribute>
           <xsl:for-each select="material">
-             <xsl:for-each select="extended_darwincore">
-               <list-item>
-                 <xsl:call-template name="materials_label"/>
-                 <xsl:for-each select="node()[name()!='' and name()!='fields']">
-                   <p>
-                     <xsl:for-each select="node()[normalize-space()!='']">
-                       <bold>
-                         <xsl:value-of select="@display_name"/>
-                         <xsl:text>:</xsl:text>
-                       </bold>
-                       <xsl:text> </xsl:text>
-                       <xsl:apply-templates mode="materials_mode" select="."/>
-                       <xsl:if test="position()!=last()">
-                         <xsl:text>; </xsl:text>
-                       </xsl:if>
-                     </xsl:for-each>
-                   </p>
-                 </xsl:for-each>
-               </list-item>
-             </xsl:for-each>
+            <xsl:variable name="type_status" select="normalize-space(fields/type_status/value)"/>
+            <xsl:variable name="type_status_label" select="fields/type_status/@field_name"/>
+            <xsl:for-each select="extended_darwincore">
+              <list-item>
+                <xsl:for-each select="node()[name()!='' and name()!='fields']">
+                  <p>
+                    <xsl:if test="$type_status!=''">
+                      <bold>
+                        <xsl:value-of select="$type_status_label"/>
+                        <xsl:text>:</xsl:text>
+                      </bold>
+                      <xsl:text> </xsl:text>
+                      <named-content>
+                        <xsl:attribute name="content-type">dwc:typeStatus</xsl:attribute>
+                        <xsl:attribute name="xlink:type">simple</xsl:attribute>
+                        <xsl:value-of select="$type_status"/>
+                      </named-content>
+                      <xsl:text>. </xsl:text>
+                    </xsl:if>
+                    <xsl:for-each select="node()[normalize-space()!='']">
+                      <bold>
+                        <xsl:value-of select="@display_name"/>
+                        <xsl:text>:</xsl:text>
+                      </bold>
+                      <xsl:text> </xsl:text>
+                      <xsl:apply-templates mode="materials_mode" select="."/>
+                      <xsl:if test="position()!=last()">
+                        <xsl:text>; </xsl:text>
+                      </xsl:if>
+                    </xsl:for-each>
+                  </p>
+                </xsl:for-each>
+              </list-item>
+            </xsl:for-each>
           </xsl:for-each>
         </list>
       </tp:treatment-sec>
@@ -393,15 +409,5 @@
   </xsl:template>
   <xsl:template mode="material_mode_content" match="@*|node()">
     <xsl:value-of select="normalize-space(.)"/>
-  </xsl:template>
-  <xsl:template name="materials_label">
-    <xsl:variable name="type_status" select="normalize-space(fields/type_status/value)"/>
-    <xsl:if test="$type_status!=''">
-    <label>
-      <xsl:value-of select="fields/type_status/@field_name"/>
-      <xsl:text>: </xsl:text>
-      <xsl:value-of select="$type_status"/>
-     </label>
-     </xsl:if>
   </xsl:template>
 </xsl:stylesheet>
