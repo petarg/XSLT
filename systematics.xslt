@@ -246,7 +246,6 @@
               <xsl:choose>
                 <xsl:when test="normalize-space(@field_name)=''">
                   <kwd>
-                    <!-- <xsl:value-of select="value"/> -->
                     <xsl:apply-templates mode="format" select="value"/>
                   </kwd>
                 </xsl:when>
@@ -254,7 +253,6 @@
                   <kwd>
                     <xsl:value-of select="@field_name"/>
                     <xsl:text>: </xsl:text>
-                    <!-- <xsl:value-of select="value"/> -->
                     <xsl:apply-templates mode="format" select="value"/>
                   </kwd>
                 </xsl:otherwise>
