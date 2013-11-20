@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs"  xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tp="http://www.plazi.org/taxpub">
+<xsl:stylesheet version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  exclude-result-prefixes="xs"
+  xmlns:mml="http://www.w3.org/1998/Math/MathML"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:tp="http://www.plazi.org/taxpub">
   <xsl:param name="jname" select="/document/document_info/journal_name"/>
+  <xsl:param name="journal_id" select="/document/@journal_id"/>
   <xsl:param name="front_classifications" select="/document/objects/article_metadata/classifications"/>
   <xsl:param name="front_article_title" select="/document/objects/article_metadata/title_and_authors/fields/title/value"/>
   <xsl:param name="front_authors" select="/document/objects/article_metadata/title_and_authors"/>
@@ -9,46 +17,15 @@
   <xsl:param name="front_abstract" select="/document/objects/article_metadata/abstract_and_keywords/fields/abstract"/>
   <xsl:param name="front_keywords" select="/document/objects/article_metadata/abstract_and_keywords/fields/keywords"/>
   <xsl:param name="front_funding" select="/document/objects/article_metadata/funding_agencies"/>
-  
   <xsl:param name="new_taxons_iczn_count" select="count(//node()[@object_id='184'])+count(//node()[@object_id='179'])"/>
   <xsl:param name="new_taxons_icn_count" select="count(//node()[@object_id='192'])+count(//node()[@object_id='182'])"/>
   <xsl:param name="new_taxons_count" select="$new_taxons_iczn_count+$new_taxons_icn_count"/>
 
   <xsl:template name="front">
     <front>
-      <xsl:call-template name="front-journal-meta"/>
+      <xsl:copy-of select="document('journals.xml')/journals/journal[@id=$journal_id]/journal-meta"/>
       <xsl:call-template name="front-article-meta"/>
     </front>
-  </xsl:template>
-
-  <xsl:template name="front-journal-meta">
-    <xsl:variable name="bdj" select="'Biodiversity Data Journal'"/>
-    <xsl:variable name="bdjabbrev" select="'BDJ'"/>
-    <journal-meta>
-      <xsl:choose>
-        <xsl:when test="$jname=$bdj">
-          <journal-id journal-id-type="pmc">
-            <xsl:value-of select="$bdj"/>
-          </journal-id>
-          <journal-id journal-id-type="publisher-id">
-            <xsl:value-of select="$bdj"/>
-          </journal-id>
-          <journal-title-group>
-            <journal-title xml:lang="en">
-              <xsl:value-of select="$bdj"/>
-            </journal-title>
-            <abbrev-journal-title xml:lang="en">
-              <xsl:value-of select="$bdjabbrev"/>
-            </abbrev-journal-title>
-          </journal-title-group>
-          <issn pub-type="ppub">1314-2836</issn>
-          <issn pub-type="epub">1314-2828</issn>
-        </xsl:when>
-      </xsl:choose>
-      <publisher>
-        <publisher-name>Pensoft Publishers</publisher-name>
-      </publisher>
-    </journal-meta>
   </xsl:template>
 
   <xsl:template name="front-article-meta">

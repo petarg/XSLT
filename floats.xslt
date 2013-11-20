@@ -295,7 +295,6 @@
     </table-wrap>
   </xsl:template>
   <xsl:template name="tables-table">
-    <xsl:variable name="align" select="@align"/>
     <table>
       <xsl:if test="normalize-space(@border)">
         <xsl:attribute name="border">
@@ -322,44 +321,32 @@
           <xsl:value-of select="@summary"/>
         </xsl:attribute>
       </xsl:if>
-      <xsl:apply-templates mode="tables-table-elements" select="node()">
-        <xsl:with-param name="align" select="$align"/>
-      </xsl:apply-templates>
+      <xsl:apply-templates mode="tables-table-elements" select="node()"/>
     </table>
   </xsl:template>
   <xsl:template mode="tables-table-elements" match="@*|node()"/>
   <xsl:template mode="tables-table-elements" match="thead | tbody">
-    <xsl:param name="align"/>
     <xsl:if test="normalize-space(.)!=''">
       <xsl:element name="{name()}">
-        <xsl:apply-templates mode="tables-table-elements" select="node()">
-          <xsl:with-param name="align" select="$align"/>
-        </xsl:apply-templates>
+        <xsl:apply-templates mode="tables-table-elements" select="node()"/>
       </xsl:element>
     </xsl:if>
   </xsl:template>
   <xsl:template mode="tables-table-elements" match="thead/tr | tbody/tr | tfoot/tr">
-    <xsl:param name="align"/>
     <xsl:if test="normalize-space(.)!=''">
       <tr>
-        <xsl:apply-templates mode="tables-table-elements" select="node()">
-          <xsl:with-param name="align" select="$align"/>
-        </xsl:apply-templates>
+        <xsl:apply-templates mode="tables-table-elements" select="node()"/>
       </tr>
     </xsl:if>
   </xsl:template>
   <xsl:template mode="tables-table-elements" match="tr">
-    <xsl:param name="align"/>
     <xsl:if test="normalize-space(.)!=''">
       <tr>
-        <xsl:apply-templates mode="tables-table-elements" select="node()">
-          <xsl:with-param name="align" select="$align"/>
-        </xsl:apply-templates>
+        <xsl:apply-templates mode="tables-table-elements" select="node()"/>
       </tr>
     </xsl:if>
   </xsl:template>
   <xsl:template mode="tables-table-elements" match="th | td">
-    <xsl:param name="align"/>
     <xsl:element name="{name()}">
       <xsl:attribute name="rowspan">
         <xsl:choose>
@@ -381,9 +368,9 @@
           </xsl:otherwise>
         </xsl:choose>
       </xsl:attribute>
-      <xsl:if test="$align!=''">
+      <xsl:if test="normalize-space(@align)!=''">
         <xsl:attribute name="align">
-          <xsl:value-of select="$align"/>
+          <xsl:value-of select="@align"/>
         </xsl:attribute>
       </xsl:if>
       <xsl:if test="normalize-space(@style)!=''">

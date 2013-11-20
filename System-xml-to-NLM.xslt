@@ -25,6 +25,7 @@
   <xsl:output method="xml" encoding="UTF-8" indent="yes"
     doctype-system="https://raw.github.com/tcatapano/TaxPub/v0.5-beta/tax-treatment-NS0.dtd"
     doctype-public="-//TaxPub//DTD Taxonomic Treatment Publishing DTD v0.5 20110606//EN"/>
+  <xsl:preserve-space elements="*"/>
 
   <xsl:template match="/">
     <article>

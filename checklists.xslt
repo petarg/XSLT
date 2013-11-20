@@ -96,7 +96,7 @@
     <xsl:variable name="treatment_id" select="fields/node()[name()=$rank]/@id"/>
     <xsl:variable name="taxon" select="fields/node()[@id=$treatment_id]"/>
     <tp:taxon-treatment>
-      <xsl:call-template name="checklist-treatment-meta"/>
+      <!-- <xsl:call-template name="checklist-treatment-meta"/> -->
       <tp:nomenclature>
         <tp:taxon-name>
           <tp:taxon-name-part>
@@ -156,7 +156,7 @@
     <xsl:variable name="rank" select="normalize-space(fields/node()[@id='414']/value)"/>
     <xsl:variable name="treatment_id" select="fields/node()[name()=$rank]/@id"/>
     <tp:taxon-treatment>
-      <xsl:call-template name="checklist-treatment-meta"/>
+      <!-- <xsl:call-template name="checklist-treatment-meta"/> -->
       <tp:nomenclature>
         <xsl:apply-templates mode="get-subgenus-tagged" select="$top">
           <xsl:with-param name="put_object_id" select="true()"/>
@@ -200,7 +200,7 @@
     <xsl:variable name="rank" select="normalize-space(fields/node()[@id='414']/value)"/>
     <xsl:variable name="treatment_id" select="fields/node()[name()=$rank]/@id"/>
     <tp:taxon-treatment>
-      <xsl:call-template name="checklist-treatment-meta"/>
+      <!-- <xsl:call-template name="checklist-treatment-meta"/> -->
       <tp:nomenclature>
         <xsl:apply-templates mode="get-species-tagged" select="$top">
           <xsl:with-param name="put_object_id" select="true()"/>
@@ -239,7 +239,7 @@
     </tp:taxon-treatment>
   </xsl:template>
 
-  <xsl:template name="checklist-treatment-meta">
+  <!-- <xsl:template name="checklist-treatment-meta">
     <tp:treatment-meta>
       <kwd-group>
         <xsl:for-each select="fields/node()[@rank_id!=''][normalize-space(.)!='']">
@@ -256,7 +256,7 @@
         </xsl:for-each>
       </kwd-group>
     </tp:treatment-meta>
-  </xsl:template>
+  </xsl:template> -->
   <xsl:template mode="get-higher-tagged" match="*">
     <xsl:param name="put_object_id" select="true()"/>
     <xsl:param name="taxon_rank" select="'family'"/>

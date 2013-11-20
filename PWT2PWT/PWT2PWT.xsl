@@ -7,6 +7,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:tp="http://www.plazi.org/taxpub">
   <xsl:output method="xml" encoding="UTF-8" />
+  <xsl:preserve-space elements="*"/>
   <xsl:template match="/document">
     <document>
       <xsl:attribute name="id">
@@ -699,7 +700,7 @@
      <xref>
        <xsl:attribute name="ref-type">table</xsl:attribute>
        <xsl:attribute name="rid">
-         <xsl:text>B</xsl:text>
+         <xsl:text>T</xsl:text>
          <xsl:value-of select="@rid"/>
        </xsl:attribute>
        <xsl:value-of select="."/>
@@ -709,7 +710,7 @@
      <xref>
        <xsl:attribute name="ref-type">fig</xsl:attribute>
        <xsl:attribute name="rid">
-         <xsl:text>B</xsl:text>
+         <xsl:text>F</xsl:text>
          <xsl:value-of select="@rid"/>
        </xsl:attribute>
        <xsl:value-of select="."/>

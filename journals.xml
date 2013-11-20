@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<journals>
+<journal id="1">
+<journal-meta>
+<journal-id journal-id-type="pmc">Biodiversity Data Journal</journal-id>
+<journal-id journal-id-type="publisher-id">Biodiversity Data Journal</journal-id>
+<journal-title-group>
+<journal-title xml:lang="en">Biodiversity Data Journal</journal-title>
+<abbrev-journal-title xml:lang="en">BDJ</abbrev-journal-title>
+</journal-title-group>
+<issn pub-type="ppub">1314-2836</issn>
+<issn pub-type="epub">1314-2828</issn>
+<publisher>
+<publisher-name>Pensoft Publishers</publisher-name>
+</publisher>
+</journal-meta>
+</journal>
+</journals>
