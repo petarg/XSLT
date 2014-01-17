@@ -32,15 +32,18 @@
 
   <xsl:template mode="data-set" match="*">
     <xsl:param name="n" select='0'/>
+    <xsl:variable name="title">
+      <xsl:text>Data set </xsl:text>
+      <xsl:value-of select="$n"/>
+    </xsl:variable>
+    
     <xsl:variable name="description" select="fields/node()[@id='399']"/>
     <sec>
       <xsl:attribute name="sec-type">
-        <xsl:text>Data set </xsl:text>
-        <xsl:value-of select="$n"/>
+        <xsl:value-of select="$title"/>
       </xsl:attribute>
       <title>
-        <xsl:text>Data set </xsl:text>
-        <xsl:value-of select="$n"/>
+        <xsl:value-of select="$title"/>
         <xsl:text>.</xsl:text>
       </title>
       <xsl:apply-templates mode="little-section" select="fields/node()[@id='397']"/><!-- Data set name -->
@@ -66,8 +69,7 @@
           <xsl:attribute name="orientation">portrait</xsl:attribute>
           <xsl:attribute name="position">anchor</xsl:attribute>
           <label>
-            <xsl:text>Data set </xsl:text>
-            <xsl:value-of select="$n"/>
+            <xsl:value-of select="$title"/>
             <xsl:text>.</xsl:text>
           </label>
           <table>
