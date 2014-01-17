@@ -48,8 +48,14 @@
               <xsl:for-each select="fields/node()[@id='483']">
                 <graphic>
                   <xsl:attribute name="xlink:href">
-                    <xsl:text>big_</xsl:text>
-                    <xsl:value-of select="normalize-space(value)"/>
+                  <xsl:text>biodiversity_data_journal-</xsl:text>
+      <xsl:value-of select="$article_issue"/>
+      <xsl:text>-e</xsl:text>
+      <xsl:value-of select="$article_id"/>
+      <xsl:text>-g00</xsl:text>
+      <xsl:number/>
+<!--                     <xsl:text>big_</xsl:text> -->
+<!--                     <xsl:value-of select="normalize-space(value)"/> -->
                     <xsl:text>.jpg</xsl:text>
                   </xsl:attribute>
                   <xsl:attribute name="position">float</xsl:attribute>
@@ -169,8 +175,13 @@
     <xsl:param name="id" select="'1'"/>
     <xsl:variable name="caption" select="fields/node()[@id='487']/value"/>
     <xsl:variable name="url">
-      <xsl:text>big_</xsl:text>
-      <xsl:value-of select="fields/image_id/value"/>
+      <xsl:text>biodiversity_data_journal-</xsl:text>
+      <xsl:value-of select="$article_issue"/>
+      <xsl:text>-e</xsl:text>
+      <xsl:value-of select="$article_id"/>
+      <xsl:text>-g00</xsl:text>
+      <xsl:number/>
+<!--       <xsl:value-of select="fields/image_id/value"/> -->
       <xsl:text>.jpg</xsl:text>
     </xsl:variable>
     <fig>

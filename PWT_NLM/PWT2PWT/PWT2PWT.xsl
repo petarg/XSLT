@@ -25,6 +25,7 @@
       <xsl:apply-templates />
     </xsl:copy>
   </xsl:template>
+  <xsl:template match="wbr"/>
   <xsl:template match="span | div | comment-start | comment-end">
     <xsl:apply-templates select="node()"/>
   </xsl:template>

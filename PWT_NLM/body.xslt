@@ -28,7 +28,14 @@
           <xsl:when test="@object_id='24'">
             <xsl:apply-templates mode="keys" select="." />
           </xsl:when>
-          <xsl:when test="@object_id='111'">
+          <!-- <xsl:when test="@object_id='111'"> -->
+          <xsl:when test="@object_id='190'"><!-- Project description -->
+            <xsl:apply-templates mode="project-decription" select="."/>
+          </xsl:when>
+          <xsl:when test="@object_id='189'"><!-- General description -->
+            <xsl:apply-templates mode="project-decription" select="."/>
+          </xsl:when>
+          <xsl:when test="@object_id='123'"><!-- Sampling methods -->
             <xsl:apply-templates mode="project-decription" select="."/>
           </xsl:when>
           <xsl:when test="@object_id='118'">

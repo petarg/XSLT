@@ -35,7 +35,7 @@
         </xsl:variable>
         <xsl:if test="normalize-space(node()[name()!='fields'])!=''">
           <tp:taxon-treatment>
-            <xsl:apply-templates mode="treatment-meta" select="."/>
+            <!-- <xsl:apply-templates mode="treatment-meta" select="."/> -->
             <!-- Taxon data part -->
             <xsl:for-each select="node()">
               <xsl:choose>

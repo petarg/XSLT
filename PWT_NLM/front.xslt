@@ -31,7 +31,12 @@
   <xsl:template name="front-article-meta">
     <article-meta>
       <article-id pub-id-type="publisher-id"><xsl:value-of select="$jname"/></article-id>
-      <article-id pub-id-type="doi">10.3897/BDJ.1.e000</article-id>
+      <article-id pub-id-type="doi">
+        <xsl:text>10.3897/BDJ.</xsl:text>
+        <xsl:value-of select="$article_issue"/>
+        <xsl:text>.</xsl:text>
+        <xsl:value-of select="$article_id"/>
+      </article-id>
       <article-id pub-id-type="other"><xsl:value-of select="/document/@id"/></article-id>
       <xsl:call-template name="front-article-categories"/>
       <xsl:call-template name="front-title-group"/>
@@ -47,8 +52,12 @@
         <month>10</month>
         <year>2013</year>
       </pub-date>
-      <issue>1</issue>
-      <elocation-id>e000</elocation-id>
+      <issue>
+        <xsl:value-of select="$article_issue"/>
+      </issue>
+      <elocation-id>
+        <xsl:value-of select="$article_id"/>
+      </elocation-id>
       <history>
         <date date-type="received">
           <day>00</day>

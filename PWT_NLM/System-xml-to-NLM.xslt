@@ -21,6 +21,9 @@
   <xsl:import href="body.xslt" />
   <xsl:import href="back.xslt" />
   <xsl:import href="floats.xslt" />
+  
+  <xsl:param name="article_issue">1</xsl:param>
+  <xsl:param name="article_id">1016</xsl:param>
 
   <xsl:output method="xml" encoding="UTF-8" indent="yes"
     doctype-system="https://raw.github.com/tcatapano/TaxPub/v0.5-beta/tax-treatment-NS0.dtd"

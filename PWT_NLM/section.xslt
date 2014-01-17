@@ -63,15 +63,17 @@
     </xsl:for-each>
   </xsl:template>
   <xsl:template mode="little-section" match="*">
-    <sec>
-      <xsl:attribute name="sec-type">
-        <xsl:value-of select="@field_name"/>
-      </xsl:attribute>
-      <title>
-        <xsl:value-of select="@field_name"/>
-      </title>
-      <xsl:apply-templates mode="p" select="value"/>
-    </sec>
+    <xsl:if test="normalize-space(.)!=''">
+      <sec>
+        <xsl:attribute name="sec-type">
+          <xsl:value-of select="@field_name"/>
+        </xsl:attribute>
+        <title>
+          <xsl:value-of select="@field_name"/>
+        </title>
+        <xsl:apply-templates mode="p" select="value"/>
+      </sec>
+    </xsl:if>
   </xsl:template>
   <xsl:template mode="little-section-uri" match="*">
     <sec>
@@ -150,17 +152,11 @@
         <xsl:attribute name="sec-type">
           <xsl:value-of select="../@display_name"/>
         </xsl:attribute>
+        <title>
+          <xsl:value-of select="../@display_name"/>
+        </title>
         <xsl:for-each select="node()[normalize-space(.)!='']">
-          <xsl:choose>
-            <xsl:when test="name()='title'">
-              <title>
-                <xsl:apply-templates mode="title" select="value"/>
-              </title>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:apply-templates mode="little-section" select="."/>
-            </xsl:otherwise>
-          </xsl:choose>
+           <xsl:apply-templates mode="little-section" select="."/>
         </xsl:for-each>
         <xsl:apply-templates mode="subsection" select="."/>
       </sec>
@@ -182,35 +178,24 @@
           <xsl:value-of select="../@display_name"/>
         </title>
         <xsl:for-each select="description[normalize-space(.)!='']">
-          <p>
-            <bold>
-              <xsl:value-of select="@field_name"/>
-              <xsl:text>:</xsl:text>
-            </bold>
-          </p>
-          <xsl:apply-templates mode="p" select="value"/>
+          <xsl:apply-templates mode="little-section" select="."/>
         </xsl:for-each>
         <xsl:choose>
-          <xsl:when test="normalize-space($global)!=''">
-            <p>
-              <bold>Coordinates:</bold>
-              <xsl:text> </xsl:text>
-              <xsl:value-of select="$global"/>
-            </p>
-          </xsl:when>
+          <xsl:when test="normalize-space($global)!=''"/>
           <xsl:otherwise>
-            <p>
-              <bold>Coordinates:</bold>
-              <xsl:text> </xsl:text>
-              <xsl:value-of select="$south"/>
-              <xsl:text> and </xsl:text>
-              <xsl:value-of select="$north"/>
-              <xsl:text> Latitude; </xsl:text>
-              <xsl:value-of select="$west"/>
-              <xsl:text> and </xsl:text>
-              <xsl:value-of select="$east"/>
-              <xsl:text> Longitude.</xsl:text>
-            </p>
+            <sec sec-type="Coordinates">
+              <title>Coordinates</title>
+              <p>
+                <xsl:value-of select="$south"/>
+                <xsl:text> and </xsl:text>
+                <xsl:value-of select="$north"/>
+                <xsl:text> Latitude; </xsl:text>
+                <xsl:value-of select="$west"/>
+                <xsl:text> and </xsl:text>
+                <xsl:value-of select="$east"/>
+                <xsl:text> Longitude.</xsl:text>
+              </p>
+            </sec>
           </xsl:otherwise>
         </xsl:choose>
         <xsl:apply-templates mode="subsection" select="."/>
@@ -272,52 +257,55 @@
           <xsl:apply-templates mode="little-section" select="."/>
         </xsl:for-each>
         <xsl:if test="count(taxa)!=0">
-          <table-wrap id="taxonomic_coverage">
-            <xsl:attribute name="position">anchor</xsl:attribute>
-            <xsl:attribute name="orientation">portrait</xsl:attribute>
-            <table>
-              <thead>
-                <tr>
-                  <th>
-                    <xsl:attribute name="rowspan">1</xsl:attribute>
-                    <xsl:attribute name="colspan">1</xsl:attribute>
-                    <xsl:text>Rank</xsl:text>
-                  </th>
-                  <th>
-                    <xsl:attribute name="rowspan">1</xsl:attribute>
-                    <xsl:attribute name="colspan">1</xsl:attribute>
-                    <xsl:text>Scientific Name</xsl:text>
-                  </th>
-                  <th>
-                    <xsl:attribute name="rowspan">1</xsl:attribute>
-                    <xsl:attribute name="colspan">1</xsl:attribute>
-                    <xsl:text>Common Name</xsl:text>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <xsl:for-each select="taxa[normalize-space(.)!='']">
+          <sec sec-type="Taxa included">
+            <title>Taxa included</title>
+            <table-wrap id="taxonomic_coverage">
+              <xsl:attribute name="position">anchor</xsl:attribute>
+              <xsl:attribute name="orientation">portrait</xsl:attribute>
+              <table>
+                <thead>
                   <tr>
-                    <td>
+                    <th>
                       <xsl:attribute name="rowspan">1</xsl:attribute>
                       <xsl:attribute name="colspan">1</xsl:attribute>
-                      <xsl:apply-templates mode="format" select="fields/node()[@id='453']/value"/>
-                    </td>
-                    <td>
+                      <xsl:value-of select="taxa[1]/fields/node()[@id='453']/@field_name"/>
+                    </th>
+                    <th>
                       <xsl:attribute name="rowspan">1</xsl:attribute>
                       <xsl:attribute name="colspan">1</xsl:attribute>
-                      <xsl:apply-templates mode="format" select="fields/node()[@id='451']/value"/>
-                    </td>
-                    <td>
+                      <xsl:value-of select="taxa[1]/fields/node()[@id='451']/@field_name"/>
+                    </th>
+                    <th>
                       <xsl:attribute name="rowspan">1</xsl:attribute>
                       <xsl:attribute name="colspan">1</xsl:attribute>
-                      <xsl:apply-templates mode="format" select="fields/node()[@id='452']/value"/>
-                    </td>
+                      <xsl:value-of select="taxa[1]/fields/node()[@id='452']/@field_name"/>
+                    </th>
                   </tr>
-                </xsl:for-each>
-              </tbody>
-            </table>
-          </table-wrap>
+                </thead>
+                <tbody>
+                  <xsl:for-each select="taxa[normalize-space(.)!='']">
+                    <tr>
+                      <td>
+                        <xsl:attribute name="rowspan">1</xsl:attribute>
+                        <xsl:attribute name="colspan">1</xsl:attribute>
+                        <xsl:apply-templates mode="format" select="fields/node()[@id='453']/value"/>
+                      </td>
+                      <td>
+                        <xsl:attribute name="rowspan">1</xsl:attribute>
+                        <xsl:attribute name="colspan">1</xsl:attribute>
+                        <xsl:apply-templates mode="format" select="fields/node()[@id='451']/value"/>
+                      </td>
+                      <td>
+                        <xsl:attribute name="rowspan">1</xsl:attribute>
+                        <xsl:attribute name="colspan">1</xsl:attribute>
+                        <xsl:apply-templates mode="format" select="fields/node()[@id='452']/value"/>
+                      </td>
+                    </tr>
+                  </xsl:for-each>
+                </tbody>
+              </table>
+            </table-wrap>
+          </sec>
         </xsl:if>
         <xsl:apply-templates mode="subsection" select="."/>
       </sec>
@@ -519,6 +507,11 @@
         </title>
         <xsl:for-each select="node()[@object_id='124'][normalize-space(.)!='']">
           <xsl:apply-templates mode="temporal-coverage-section" select="."/>
+        </xsl:for-each>
+        <xsl:for-each select="fields[normalize-space(.)!='']">
+          <xsl:for-each select="node()[normalize-space(.)!='']">
+            <xsl:apply-templates mode="little-section" select="."/>
+          </xsl:for-each>
         </xsl:for-each>
         <xsl:apply-templates mode="subsection" select="."/>
       </sec>
