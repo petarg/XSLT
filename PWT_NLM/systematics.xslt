@@ -308,10 +308,14 @@
     <!-- This template matches all treatment sections with predefined names -->
     <xsl:variable name="content" select="fields/*/value"/>
     <tp:treatment-sec>
-      <xsl:attribute name="sec-type"><xsl:value-of select="@display_name"/></xsl:attribute>
-      <title><xsl:value-of select="@display_name"/></title>
+      <xsl:attribute name="sec-type">
+        <xsl:value-of select="@display_name"/>
+      </xsl:attribute>
+      <title>
+        <xsl:value-of select="@display_name"/>
+      </title>
       <xsl:apply-templates mode="p" select="fields/*/value"/>
-      <xsl:apply-templates mode="subsection" select="."/>
+      <xsl:apply-templates mode="tp-subsection" select="."/>
     </tp:treatment-sec>
   </xsl:template>
   <xsl:template mode="treatment-section-section" match="*">
@@ -319,12 +323,16 @@
     <xsl:variable name="title" select="fields/title/value"/>
     <xsl:variable name="content" select="fields/content/value"/>
     <tp:treatment-sec>
-      <xsl:attribute name="sec-type"><xsl:value-of select="normalize-space($title)"/></xsl:attribute>
+      <xsl:attribute name="sec-type">
+        <xsl:value-of select="normalize-space($title)"/>
+      </xsl:attribute>
       <xsl:if test="normalize-space($title)!=''">
-        <title><xsl:apply-templates mode="title" select="$title"/></title>
+        <title>
+          <xsl:apply-templates mode="title" select="$title"/>
+        </title>
       </xsl:if>
       <xsl:apply-templates mode="p" select="$content"/>
-      <xsl:apply-templates mode="subsection" select="."/>
+      <xsl:apply-templates mode="tp-subsection" select="."/>
     </tp:treatment-sec>
   </xsl:template>
 

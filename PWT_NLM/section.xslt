@@ -62,6 +62,33 @@
       </sec>
     </xsl:for-each>
   </xsl:template>
+  <xsl:template mode="tp-subsection" match="*">
+    <xsl:for-each select="subsection">
+      <xsl:variable name="title" select="fields/node()[@id='211']/value"/>
+      <tp:treatment-sec>
+        <xsl:attribute name="sec-type">
+          <xsl:value-of select="normalize-space($title)"/>
+        </xsl:attribute>
+        <title>
+          <xsl:apply-templates mode="title" select="$title"/>
+        </title>
+        <xsl:apply-templates mode="p" select="fields/content/value" />
+      </tp:treatment-sec>
+    </xsl:for-each>
+  </xsl:template>
+  <xsl:template mode="little-tp-section" match="*">
+    <xsl:if test="normalize-space(.)!=''">
+      <tp:treatment-sec>
+        <xsl:attribute name="sec-type">
+          <xsl:value-of select="@field_name"/>
+        </xsl:attribute>
+        <title>
+          <xsl:value-of select="@field_name"/>
+        </title>
+        <xsl:apply-templates mode="p" select="value"/>
+      </tp:treatment-sec>
+    </xsl:if>
+  </xsl:template>
   <xsl:template mode="little-section" match="*">
     <xsl:if test="normalize-space(.)!=''">
       <sec>

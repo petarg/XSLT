@@ -60,7 +60,7 @@
           <xsl:value-of select="@display_name"/>
         </title>
         <xsl:for-each select="fields/node()[normalize-space(.)!='']">
-          <xsl:apply-templates mode="little-section" select="."/>
+          <xsl:apply-templates mode="little-tp-section" select="."/>
         </xsl:for-each>
       </tp:treatment-sec>
     </xsl:for-each>
